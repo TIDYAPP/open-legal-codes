@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-ix/section-908">
+  <meta>
+    <dc:title>Repealed by election June 3, 1980</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-ix/section-908"
+             temporalId="sSection 908">
+      <num>Section 908</num>
+      <heading>Repealed by election June 3, 1980</heading>
+      <content>
+        <p>Section 908. - Repealed by election June 3, 1980.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

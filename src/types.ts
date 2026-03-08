@@ -63,6 +63,8 @@ export interface TocNode {
   heading: string;
   /** Whether this node has retrievable content (sections do; chapters may be containers) */
   hasContent: boolean;
+  /** Publisher's internal node ID — used during crawl */
+  sourceNodeId?: string;
   /** Children in the hierarchy */
   children?: TocNode[];
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xiii/section-1301">
+  <meta>
+    <dc:title>Special municipal elections</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xiii/section-1301"
+             temporalId="sSection 1301">
+      <num>Section 1301</num>
+      <heading>Special municipal elections</heading>
+      <content>
+        <p>All other municipal elections that may be held by authority of this Charter, or of
+               general law, or by ordinance, shall be known as special municipal elections.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

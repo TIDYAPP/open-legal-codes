@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.14">
+  <meta>
+    <dc:title>Delegation of authority generally</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.14"
+             temporalId="sSEC_ 1_14">
+      <num>SEC. 1.14</num>
+      <heading>Delegation of authority generally</heading>
+      <content>
+        <p>Whenever by the provisions of this code any power is granted to, or a duty is imposed
+               upon, a public officer, the power may be exercised or the duty performed by a duly
+               appointed deputy, designee or other person duly authorized by law.</p>
+        <p>(Code 1938, Sec. 7; Ord. No. 3.01, 3/27/01.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

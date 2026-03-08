@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.6">
+  <meta>
+    <dc:title>Distributing, etc., on premises without owner's consent prohibited.*</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.6"
+             temporalId="sSEC_ 3_6">
+      <num>SEC. 3.6</num>
+      <heading>Distributing, etc., on premises without owner's consent prohibited.*</heading>
+      <content>
+        <p>No person shall distribute, deposit, place, throw, scatter or cast any commercial
+               or noncommercial handbill upon any private premises when the owner or occupant of
+               said premises has expressed an objection to such distribution, depositing, placement,
+               throwing, scattering or casting; nor shall any person so distribute, deposit, place,
+               throw, scatter or cast any such handbill without securing or otherwise preventing
+               such handbill from being blown or drifted about such premises or elsewhere.</p>
+        <p>(Ord. No. 175.481, 6/30/58; Ord. No. 1.72, 1/10/72.)</p>
+        <p>* As to leaving drugs, etc., on the door steps, etc., see Sec. 21.15 of this code.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

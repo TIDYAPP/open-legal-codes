@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xiii/section-1302">
+  <meta>
+    <dc:title>Procedure for holding elections</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xiii/section-1302"
+             temporalId="sSection 1302">
+      <num>Section 1302</num>
+      <heading>Procedure for holding elections</heading>
+      <content>
+        <p>Except as hereinafter provided, all elections shall be held in accordance with the
+               provisions of the Elections Code of the State of California, as the same now exists
+               or may hereafter be amended, for the holding of elections in general law cities, insofar
+               as the same are not in conflict with this Charter. In all municipal elections, the
+               city council may appoint a canvassing board, which shall meet on the morning of the
+               first Tuesday following the election and canvass the returns and certify the results
+               thereof to the city council.</p>
+        <p>(As amended November 6, 1962.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

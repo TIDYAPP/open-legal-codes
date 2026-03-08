@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-507">
+  <meta>
+    <dc:title>Meetings of the council</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-507"
+             temporalId="sSection 507">
+      <num>Section 507</num>
+      <heading>Meetings of the council</heading>
+      <content>
+        <p>The council shall, by ordinance, provide for the time and place of holding its meetings
+               and the manner in which its special meetings may be called.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

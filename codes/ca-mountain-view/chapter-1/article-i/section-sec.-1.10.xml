@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.10">
+  <meta>
+    <dc:title>Same—Same—Same—Issuance of warrant for arrest</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.10"
+             temporalId="sSec_ 1_10">
+      <num>Sec. 1.10</num>
+      <heading>Same—Same—Same—Issuance of warrant for arrest</heading>
+      <content>
+        <p>When a person signs a written promise to appear at the time and place specified in
+               the written promise to appear and has not posted bail as provided in Section 853.1
+               of the Penal Code of the state, the magistrate shall issue and have delivered for
+               execution a warrant for his arrest within twenty (20) days after his failure to appear
+               as promised, or if such person promises to appear before an officer authorized to
+               accept bail other than a magistrate and fails to do so on or before the date which
+               he promised to appear, then, within twenty (20) days after the delivery of such written
+               promise to appear by the officer to a magistrate having jurisdiction over the offense.</p>
+        <p>(Ord. No. 175.457, 3/10/58.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

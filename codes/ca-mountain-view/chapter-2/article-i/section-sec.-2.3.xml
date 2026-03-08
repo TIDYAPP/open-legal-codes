@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.3">
+  <meta>
+    <dc:title>Same—Special meetings; notice</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.3"
+             temporalId="sSEC_ 2_3">
+      <num>SEC. 2.3</num>
+      <heading>Same—Special meetings; notice</heading>
+      <content>
+        <p>A special meeting may be called at any time by the mayor, or by any four (4) councilmembers,
+               by delivering personally or by mail written notice to each member of the council.
+               Such notice must be delivered personally or by mail at least twenty-four (24) hours
+               before the time of such meeting as specified in the notice. The call and notice shall
+               specify the time and place of the special meeting and the business to be transacted.
+               No other business shall be considered at such meeting. Such written notice may be
+               dispensed with as to any councilmember who at, or prior to, the time the meeting convenes
+               filed with the city clerk a written waiver of notice. Such written notice may also
+               be dispensed with as to any member who is actually present at the meeting at the time
+               it convenes.</p>
+        <p>(Ord. No. 175.553, 7/13/59; Ord. No. 3.10, § 2, 2/9/10.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

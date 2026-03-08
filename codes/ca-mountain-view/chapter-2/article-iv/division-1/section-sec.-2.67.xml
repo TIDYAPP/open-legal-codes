@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-iv/division-1/section-sec.-2.67">
+  <meta>
+    <dc:title>Members—Rights, privileges, immunities, etc</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-iv/division-1/section-sec.-2.67"
+             temporalId="sSEC_ 2_67">
+      <num>SEC. 2.67</num>
+      <heading>Members—Rights, privileges, immunities, etc</heading>
+      <content>
+        <p>In all matters pertaining to the enforcement of the police regulations of the city
+               each police officer of the city shall have and enjoy all the rights, privileges, immunities
+               and protection that are now, or may be hereafter, conferred by law on peace officers
+               of the state.</p>
+        <p>(Code 1938, Sec. 193; Ord. No. 15.79, 4/9/79.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

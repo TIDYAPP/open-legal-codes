@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-viii/section-sec.-2.86.1">
+  <meta>
+    <dc:title>General municipal elections—Time for holding</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-viii/section-sec.-2.86.1"
+             temporalId="sSEC_ 2_86_1">
+      <num>SEC. 2.86.1</num>
+      <heading>General municipal elections—Time for holding</heading>
+      <content>
+        <p>Pursuant to Charter Section 1300, general municipal elections for the election of city officers and such other purposes
+               as the council may prescribe shall be held in the city on the first Tuesday after
+               the first Monday in November of each even-numbered year, commencing with the year
+               1994. Such general municipal elections shall be consolidated with statewide elections
+               held on the same date.</p>
+        <p>(Ord. No. 1.94, 1/11/94.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

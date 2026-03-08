@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-5/article-i/section-sec.-5.4">
+  <meta>
+    <dc:title>Conditions related only to seizures of dogs running at large</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-5/article-i/section-sec.-5.4"
+             temporalId="sSEC_ 5_4">
+      <num>SEC. 5.4</num>
+      <heading>Conditions related only to seizures of dogs running at large</heading>
+      <content>
+        <p>An animal control officer shall not seize or impound a dog for running at large in
+               violation of Sec. 5.50 when the dog has not strayed from and is upon private property owned by the dog owner
+               or the person who has a right to control the dog, or upon private property to which
+               the dog owner or person who has a right to control the dog has a right of possession.</p>
+        <p>A dog that has strayed from but then returned to the private property of its owner
+               or the person who has a right to control the dog shall not be seized or impounded
+               merely for violation of Sec. 5.50, but in such a case, a citation for such violation may be issued; provided, however,
+               that if in such a situation, the owner or the person who has a right to control the
+               dog is not available at the premises, the dog may be impounded, but the officer shall
+               post a notice of such impoundment on the front door of the living unit or other conspicuous
+               place on the property of the owner or person who has a right to control the dog. This
+               notice shall state the following: that the dog has been impounded, where the dog is
+               being held, the name, address and telephone number of the agency or person to be contacted
+               regarding release of the dog, and an indication of the ultimate disposition of the
+               dog if no action to regain it is taken within a specified period of time by its owner
+               or by the person who has a right to control the dog.</p>
+        <p>This section shall not otherwise affect the authority of an animal control officer
+               to seize or impound a dog or issue citations as a result of the violation of other
+               sections of this chapter.</p>
+        <p>(Ord. No. 4.14, § 1, 4/8/14.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

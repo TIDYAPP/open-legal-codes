@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xiii/section-1304">
+  <meta>
+    <dc:title>Recall of elective officials</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xiii/section-1304"
+             temporalId="sSection 1304">
+      <num>Section 1304</num>
+      <heading>Recall of elective officials</heading>
+      <content>
+        <p>Every incumbent of an elective office of the city, whether elected by popular vote
+               or appointed thereto to fill a vacancy, shall be subject to removal from office by
+               recall by the voters of the city. The procedure to effect such removal from office
+               shall be as prescribed by the Elections Code of the State of California, as the same
+               now exists or may hereafter be amended, relating to the recall of municipal officers.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

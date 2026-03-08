@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-500">
+  <meta>
+    <dc:title>Term of office</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-500"
+             temporalId="sSection 500">
+      <num>Section 500</num>
+      <heading>Term of office</heading>
+      <content>
+        <p>Except as otherwise provided in this section, the members of the council shall hold
+               office for a term of four (4) years from and after the first meeting in January following
+               their election and continuing until their respective successors qualify.</p>
+        <p>Ties among candidates for any office shall be settled by the drawing of lots.</p>
+        <p>No person shall be eligible to serve as a member of the city council for more than
+               two successive four-year elective terms. Any person appointed or elected to the city
+               council to fill an unexpired term of not more than two years in length shall, however,
+               be eligible to serve two successive four-year elective terms upon the expiration of
+               the unexpired term for which that person was appointed or elected.</p>
+        <p>(As amended March 4, 1975; June 3, 1980; November 2, 1993.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

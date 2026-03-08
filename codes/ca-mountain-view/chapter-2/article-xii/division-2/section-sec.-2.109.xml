@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xii/division-2/section-sec.-2.109">
+  <meta>
+    <dc:title>Criminal enforcement</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xii/division-2/section-sec.-2.109"
+             temporalId="sSEC_ 2_109">
+      <num>SEC. 2.109</num>
+      <heading>Criminal enforcement</heading>
+      <content>
+        <p>Any person who knowingly, willfully or negligently violates any provisions of this
+               division is guilty of a misdemeanor. Any person who causes any other person to violate
+               any provision of this division, or who aids and abets any other person in the violation
+               of any provision of this division, shall be liable under the provisions of this division.
+               Any monetary penalty for such a violation shall be the maximum amount permitted by
+               law.</p>
+        <p>(Ord. No. 8.16, § 1, 6/14/16; Ord. No. 5.22, § 4, 4/26/22.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

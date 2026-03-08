@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1101">
+  <meta>
+    <dc:title>Tax system</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1101"
+             temporalId="sSection 1101">
+      <num>Section 1101</num>
+      <heading>Tax system</heading>
+      <content>
+        <p>Unless otherwise provided by ordinance, the city shall continue to use, for the purpose
+               of ad valorem municipal taxation, the county system of assessment and tax collection,
+               as such system is now in effect or may hereafter be amended and insofar as such provisions
+               are not in conflict with this Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

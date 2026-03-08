@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.14">
+  <meta>
+    <dc:title>Handbills offensive to public morals, etc., prohibited.*</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.14"
+             temporalId="sSEC_ 3_14">
+      <num>SEC. 3.14</num>
+      <heading>Handbills offensive to public morals, etc., prohibited.*</heading>
+      <content>
+        <p>No person shall post, hand out, distribute or transmit any commercial or noncommercial
+               handbill which may reasonably tend to incite riot or other public disorder, or which
+               advocates disloyalty to or the overthrow of the government of the United States or
+               of this state by means of any artifice, scheme, or violence, or which urges any unlawful
+               conduct, or encourages or tends to encourage a breach of the public peace or good
+               order of the community; or which is offensive to public morals or decency; or which
+               contains blasphemous, obscene, libelous or scurrilous language.</p>
+        <p>(Ord. No. 175.481, 6/30/58.)</p>
+        <p>* For state law as to obscene advertising displays, see B. &amp; P. C., Sec. 5402. As
+               to profanity, etc., generally, see Sec. 21.31 of this Code.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

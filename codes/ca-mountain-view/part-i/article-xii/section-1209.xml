@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xii/section-1209">
+  <meta>
+    <dc:title>Article not applicable to the city</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xii/section-1209"
+             temporalId="sSection 1209">
+      <num>Section 1209</num>
+      <heading>Article not applicable to the city</heading>
+      <content>
+        <p>Nothing in this article shall be construed to apply to the city, or any department
+               thereof, when furnishing any public utility or service.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

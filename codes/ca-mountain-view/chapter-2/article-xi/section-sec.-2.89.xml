@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xi/section-sec.-2.89">
+  <meta>
+    <dc:title>Lease of city property</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xi/section-sec.-2.89"
+             temporalId="sSEC_ 2_89">
+      <num>SEC. 2.89</num>
+      <heading>Lease of city property</heading>
+      <content>
+        <p>Except as provided herein, property owned, held or controlled by the city may be leased
+               for a period not to exceed fifty-five (55) years.</p>
+        <p>(Ord. No. 22.94, 11/22/94; Ord. No. 11.18, § 1, 10/23/18.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

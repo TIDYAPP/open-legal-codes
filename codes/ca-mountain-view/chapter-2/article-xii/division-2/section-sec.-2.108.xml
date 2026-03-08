@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xii/division-2/section-sec.-2.108">
+  <meta>
+    <dc:title>Updates to and requirement to update the top contributors list</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xii/division-2/section-sec.-2.108"
+             temporalId="sSEC_ 2_108">
+      <num>SEC. 2.108</num>
+      <heading>Updates to and requirement to update the top contributors list</heading>
+      <content>
+        <p>If the order of top contributors required to be disclosed pursuant to this division
+               changes or a new contributor qualifies as a top contributor, the disclosure in the
+               advertisement shall be updated to reflect the new top contributors within five (5)
+               business days unless the advertisement cannot be updated except by a subsequent order
+               for production or printing, in which case the disclosure shall be updated prior to
+               placing a new or modified order for additional printing of the advertisement.</p>
+        <p>(Ord. No. 8.16, § 1, 6/14/16.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

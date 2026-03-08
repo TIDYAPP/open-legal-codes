@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.6">
+  <meta>
+    <dc:title>Same—Loan, etc., by city official, employee, etc</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.6"
+             temporalId="sSEC_ 2_6">
+      <num>SEC. 2.6</num>
+      <heading>Same—Loan, etc., by city official, employee, etc</heading>
+      <content>
+        <p>No city official, city employee or any other person shall lend, give or transfer possession
+               of such city-owned equipment, tools or paraphernalia to any other city official, employee
+               or any other person with knowledge that the same shall be used for private purposes.</p>
+        <p>(Ord. No. 175.266, 7/14/54.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

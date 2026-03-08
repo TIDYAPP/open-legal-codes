@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.8">
+  <meta>
+    <dc:title>Same—Relief of calamity or disaster.*</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.8"
+             temporalId="sSEC_ 2_8">
+      <num>SEC. 2.8</num>
+      <heading>Same—Relief of calamity or disaster.*</heading>
+      <content>
+        <p>Nothing stated in Sec. 2.4 to 2.7 shall be construed to prohibit the use of city-owned equipment, tools or paraphernalia
+               for the relief of public or private calamity or disaster when authorized by a city
+               official.</p>
+        <p>(Ord. No. 175.266, 7/14/54.)</p>
+        <p>* As to civil defense and disaster generally, see Chapter 11 of this Code.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-ix/section-909">
+  <meta>
+    <dc:title>Recreation and parks commission(Established; composition</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-ix/section-909"
+             temporalId="sSection 909">
+      <num>Section 909</num>
+      <heading>Recreation and parks commission(Established; composition</heading>
+      <content>
+        <p>There shall be a recreation and parks commission consisting of five members. In the
+               event that the council contracts with other agencies interested in recreation and
+               parks for the joint exercise of any of such functions, such contract may provide for
+               representation on the commission of nominees of such agencies during the existence
+               of such contract or extensions thereof.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

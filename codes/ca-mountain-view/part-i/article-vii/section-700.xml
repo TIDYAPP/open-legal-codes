@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-vii/section-700">
+  <meta>
+    <dc:title>Enumeration</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-vii/section-700"
+             temporalId="sSection 700">
+      <num>Section 700</num>
+      <heading>Enumeration</heading>
+      <content>
+        <p>The officers of the City of Mountain View shall consist of the council, a city manager,
+               a city clerk, a city attorney, a city auditor, and such other subordinate officers,
+               assistants, deputies, and employees as the council may deem necessary to provide by
+               ordinance.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

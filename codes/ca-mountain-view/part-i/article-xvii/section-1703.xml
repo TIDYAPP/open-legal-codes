@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvii/section-1703">
+  <meta>
+    <dc:title>Exemptions</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvii/section-1703"
+             temporalId="sSection 1703">
+      <num>Section 1703</num>
+      <heading>Exemptions</heading>
+      <content>
+        <p>(a)</p>
+        <p>Fully Exempt (Exempt from Both Rent Stabilization and Just Cause for Eviction). The following Rental Units are exempt from all provisions of this Article:</p>
+        <p>(1)</p>
+        <p>Units in hotels, motels, inns, tourist homes and rooming and boarding houses which
+               are rented primarily to transient guests for a period of fewer than thirty (30) days
+               as defined in Mountain View City Code section 33.1(d);</p>
+        <p>(2)</p>
+        <p>Rental Units in any hospital, convent, monastery, extended medical care facility,
+               asylum, non-profit home for the aged, or dormitory owned and operated by an accredited
+               institution of higher education;</p>
+        <p>(3)</p>
+        <p>Rental Units owned or operated or managed by a not-for-profit organization pursuant
+               to a tax credit program;</p>
+        <p>(4)</p>
+        <p>Rental Units which a government unit, agency or authority owns, operates, or manages,
+               or in which governmentally-subsidized Tenants reside, if applicable federal or state
+               law or administrative regulation specifically exempt such units from municipal rent
+               control;</p>
+        <p>(5)</p>
+        <p>Rental Units with first certificate of occupancy after the effective date of this
+               Article; and</p>
+        <p>(6)</p>
+        <p>Rental Units additionally exempted pursuant to Section 1704.</p>
+        <p>(b)</p>
+        <p>Partially Exempt (Just Cause for Eviction Applies). The following Rental Units are
+               exempt from Sections 1706, 1707, and 1708 of this Article (regarding Stabilization of Rents) and from Sections 1710 and 1711 (regarding Petitions for Individual Rent Adjustment), but are not exempt
+               from Section 1705 (Just Cause for Eviction Protections):</p>
+        <p>(1)</p>
+        <p>Rental Units with an initial certificate of occupancy dated between February 1, 1995
+               and the effective date of this Article; and</p>
+        <p>(2)</p>
+        <p>Rental Units governed by Mountain View City Code Chapter 36, Article XIV (&quot;Affordable Housing Program&quot;) to the extent permissible by law.</p>
+        <p>(As added November 8, 2016.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

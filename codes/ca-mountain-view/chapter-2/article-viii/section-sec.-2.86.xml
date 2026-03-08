@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-viii/section-sec.-2.86">
+  <meta>
+    <dc:title>Elections on initiative ordinance measures—Time for holding</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-viii/section-sec.-2.86"
+             temporalId="sSEC_ 2_86">
+      <num>SEC. 2.86</num>
+      <heading>Elections on initiative ordinance measures—Time for holding</heading>
+      <content>
+        <p>When a special election is to be called on an initiative petition for a proposed ordinance,
+               it shall be held within the time as specified in the State Elections Code, and shall
+               be held in accordance with the provisions of the Elections Code of the State of California
+               except to the extent that such elections code provisions may be in conflict with a
+               resolution, ordinance, or charter provision of the city.</p>
+        <p>To avoid the holding of more than one election within the city within any six months,
+               the date for holding the special election on such a measure may be fixed at a later
+               date than specified within the Elections Code of the State of California, but at as
+               early a date as practicable after the expiration of six months from the last election
+               that was held within the city. When it is legally possible to hold such a special
+               election within six months prior to a regular election date, the city council may
+               submit the proposed ordinance at the regular election instead of at a special election.</p>
+        <p>For purposes of this section, an election is deemed to be held within the city whenever
+               such election includes all precincts within the city at the time of said election,
+               regardless of whether the election is held by the city or by some other agency.</p>
+        <p>Section 4020 of the Elections Code of the State of California or its successor shall
+               not be applicable in the City of Mountain View.</p>
+        <p>(Ord. No. 31.79, 7/31/79; Ord. No. 5.84, 2/14/84.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

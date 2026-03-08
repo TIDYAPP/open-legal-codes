@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvii/section-1717">
+  <meta>
+    <dc:title>Supersedes</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvii/section-1717"
+             temporalId="sSection 1717">
+      <num>Section 1717</num>
+      <heading>Supersedes</heading>
+      <content>
+        <p>(a)</p>
+        <p>This Article supersedes any ordinance passed by the City Council covering the area
+               of rents or evictions.</p>
+        <p>(b)</p>
+        <p>In the event any other ballot initiative addressing in whole or in part the same subject
+               matter as this Article is approved by a majority of the voters voting thereon at the
+               same election, the following provisions shall apply:</p>
+        <p>(1)</p>
+        <p>If this Article receives a greater number of affirmative votes than any conflicting
+               initiative, including one that would provide that property owners have the right to
+               set the price at which they rent residential property, then the provisions of this
+               Article shall supersede all conflicting provisions of the initiative with fewer affirmative
+               votes.</p>
+        <p>(2)</p>
+        <p>If this Article receives fewer affirmative votes than another initiative addressing
+               the same subject matter, all provisions of this Article which are not directly contradicted
+               by the initiative receiving a greater number of affirmative votes will apply to the
+               extent permitted by law.</p>
+        <p>(As added November 8, 2016.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

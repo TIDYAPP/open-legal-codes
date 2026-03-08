@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xii/section-1206">
+  <meta>
+    <dc:title>Payments to city based on gross annual receipts</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xii/section-1206"
+             temporalId="sSection 1206">
+      <num>Section 1206</num>
+      <heading>Payments to city based on gross annual receipts</heading>
+      <content>
+        <p>No new franchise or the renewal of an existing franchise shall be granted without
+               reserving to the city just and adequate compensation based on a percentage of the
+               gross annual receipts of the utility derived from the furnishing from within the city
+               of the utility service for which the franchise is awarded.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

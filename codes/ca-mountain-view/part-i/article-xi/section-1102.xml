@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1102">
+  <meta>
+    <dc:title>Tax limits</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1102"
+             temporalId="sSection 1102">
+      <num>Section 1102</num>
+      <heading>Tax limits</heading>
+      <content>
+        <p>(a)</p>
+        <p>General. Except as otherwise provided by this section, the council shall not levy a property
+               tax for municipal purposes in excess of one dollar and forty cents on each one hundred
+               dollars of assessed value of the taxable property in the city, unless authorized by
+               the affirmative votes of a majority of the electors voting on a proposition to increase
+               such levy at any election at which the question of such additional levy for municipal
+               purposes is submitted to the electors. The number of years that such additional levy
+               is to be made shall be specified in such proposition.</p>
+        <p>(b)</p>
+        <p>Additional taxes. There shall be levied and collected at the same time and in the same manner as other
+               property taxes are levied and collected, as additional taxes, if no other provision
+               for the payment thereof is made:</p>
+        <p>A tax sufficient to meet all obligations of the city for principal and interest of
+               all bonds or judgments due and unpaid or to become due during the ensuing fiscal year
+               which constitute the general obligations of the city.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

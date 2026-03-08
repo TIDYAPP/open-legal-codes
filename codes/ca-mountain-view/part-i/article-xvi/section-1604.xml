@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvi/section-1604">
+  <meta>
+    <dc:title>Violations</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvi/section-1604"
+             temporalId="sSection 1604">
+      <num>Section 1604</num>
+      <heading>Violations</heading>
+      <content>
+        <p>The violation of any provision of this Charter shall be deemed a misdemeanor and be
+               punishable upon conviction by a fine the maximum of which shall not exceed the amount
+               permitted by Section 520 of this Charter or by imprisonment for a term not exceeding six months or by both
+               such fine and imprisonment.</p>
+        <p>(As amended November 3, 1998.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

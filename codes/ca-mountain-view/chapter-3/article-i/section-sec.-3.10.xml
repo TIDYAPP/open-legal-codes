@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.10">
+  <meta>
+    <dc:title>Same—Application</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.10"
+             temporalId="sSEC_ 3_10">
+      <num>SEC. 3.10</num>
+      <heading>Same—Application</heading>
+      <content>
+        <p>Every applicant for a distributor's license shall make written application to the
+               director of finance upon a form or forms provided for such purposes by the director
+               of finance. Such form shall contain, among other things that may be required, the
+               name, the business address, and a brief description of the nature of the business
+               to be conducted by the applicant, the probable number of agents and employees so to
+               be engaged, together with a request for a license for the period for which this applicant
+               seeks to engage in such business. Such application shall be accompanied by the fee
+               provided for in Sec. 3.11.</p>
+        <p>(Ord. No. 175.481, 6/30/58.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

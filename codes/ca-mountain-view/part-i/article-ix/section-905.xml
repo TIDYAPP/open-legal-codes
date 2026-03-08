@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-ix/section-905">
+  <meta>
+    <dc:title>Compensation; vacancies</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-ix/section-905"
+             temporalId="sSection 905">
+      <num>Section 905</num>
+      <heading>Compensation; vacancies</heading>
+      <content>
+        <p>The members of the boards and commissions shall serve without compensation for their
+               services as such, but may receive reimbursement for necessary traveling and other
+               expenses incurred on official duty when such expenditures have received authorization
+               by the council. Any vacancies on any board or commission, from whatever cause arising,
+               shall be filled by appointment by the council. Upon a vacancy occurring, leaving an
+               unexpired portion of a term, any appointment to fill such vacancy shall be for the
+               unexpired portion of such term. If a member of a board or commission is absent from
+               three regular meetings of such board or commission, consecutively, or within a calendar
+               quarter, or is convicted of a crime involving moral turpitude, or ceases to be a qualified
+               elector and resident of the city, that office shall become vacant upon the declaration
+               of council. The council may, for good cause, determine that a vacancy has not been
+               created.</p>
+        <p>(As amended by election June 3, 1980; November 3, 1998.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

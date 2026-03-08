@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-vi/section-604">
+  <meta>
+    <dc:title>Rules and regulations</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-vi/section-604"
+             temporalId="sSection 604">
+      <num>Section 604</num>
+      <heading>Rules and regulations</heading>
+      <content>
+        <p>The city manager may prescribe such general rules and regulations as the city manager
+               may deem necessary or expedient for the general conduct of the administrative offices
+               and departments of the city under the city manager's jurisdiction.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

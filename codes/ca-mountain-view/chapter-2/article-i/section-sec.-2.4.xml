@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.4">
+  <meta>
+    <dc:title>Use of city property—Limited to lawful business of city</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.4"
+             temporalId="sSEC_ 2_4">
+      <num>SEC. 2.4</num>
+      <heading>Use of city property—Limited to lawful business of city</heading>
+      <content>
+        <p>No person or persons other than city officials or employees shall use any city-owned
+               equipment, tools or paraphernalia other than for the purpose of conducting the lawful
+               business of the city.</p>
+        <p>(Ord. No. 175.266, 7/14/54.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

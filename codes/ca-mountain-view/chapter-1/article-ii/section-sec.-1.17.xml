@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.17">
+  <meta>
+    <dc:title>Definitions</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.17"
+             temporalId="sSEC_ 1_17">
+      <num>SEC. 1.17</num>
+      <heading>Definitions</heading>
+      <content>
+        <p>For the purposes of this article, the following words shall have the meanings set
+               forth below:</p>
+        <p>a.</p>
+        <p>&quot;Enforcement officer&quot; shall mean any city employee or agent of the city designated
+                  with the authority to enforce any provision of this code.</p>
+        <p>b.</p>
+        <p>&quot;Enforcement official&quot; means the principal supervisor for any city department or division
+                  charged with responsibility for enforcement of any provision of this code.</p>
+        <p>(Ord. No. 12.02, 7/23/02.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

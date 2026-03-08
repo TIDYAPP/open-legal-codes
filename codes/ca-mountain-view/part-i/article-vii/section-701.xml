@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-vii/section-701">
+  <meta>
+    <dc:title>Appointment and removal</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-vii/section-701"
+             temporalId="sSection 701">
+      <num>Section 701</num>
+      <heading>Appointment and removal</heading>
+      <content>
+        <p>The city manager, city clerk, city auditor and city attorney shall be appointed by
+               and may be removed by the affirmative votes of at least five members of the council.
+               All other officers and department heads of the city shall be appointed by the city
+               manager and shall serve at the pleasure of the city manager.</p>
+        <p>(As amended April 12, 1960; June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

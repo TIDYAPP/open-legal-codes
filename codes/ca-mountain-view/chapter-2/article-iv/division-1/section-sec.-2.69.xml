@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-iv/division-1/section-sec.-2.69">
+  <meta>
+    <dc:title>Same—Duties.*</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-iv/division-1/section-sec.-2.69"
+             temporalId="sSEC_ 2_69">
+      <num>SEC. 2.69</num>
+      <heading>Same—Duties.*</heading>
+      <content>
+        <p>Each police officer of the city shall enforce the police regulations of the city,
+               prevent the commission of any breach of the peace, suppress riots and disorderly assemblages,
+               and arrest every person found violating any law or ordinance, or committing any act
+               injurious to the quiet and good order of the city, or to the person or property of
+               any resident thereof.</p>
+        <p>(Code 1938, Sec. 194; Ord. No. 15.79, 4/9/79.)</p>
+        <p>* For additional provisions as to powers and duties of chief of police, See Section 715, Article VII of the Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

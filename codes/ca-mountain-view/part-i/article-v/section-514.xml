@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-514">
+  <meta>
+    <dc:title>Adoption of ordinances and resolutions</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-514"
+             temporalId="sSection 514">
+      <num>Section 514</num>
+      <heading>Adoption of ordinances and resolutions</heading>
+      <content>
+        <p>With the sole exception of ordinances which take effect upon adoption referred to
+               in this article, no ordinance shall be adopted by the council on the day of its introduction,
+               nor within five days thereafter nor at any time other than at a regular or adjourned
+               regular meeting nor until such ordinance shall have been published as required in
+               this Charter. At the time of introduction or adoption of an ordinance or resolution
+               it shall be read in full, unless after the reading of the title thereof, the further
+               reading thereof is waived by unanimous consent of the councilmembers present. In the
+               event that any ordinance is altered after its introduction, the same shall not be
+               finally adopted except at a regular or adjourned regular meeting, held not less than
+               five days after the date upon which such ordinance was so altered. The correction
+               of typographical or clerical errors shall not constitute the making of an alteration
+               within the meaning of the foregoing sentence.</p>
+        <p>No order for the payment of money shall be adopted or made at any other than a regular
+               or adjourned regular meeting.</p>
+        <p>Any ordinance declared by the council to be necessary as an emergency measure for
+               preserving the public peace, health or safety, and containing a statement of the reasons
+               for its urgency, may be introduced and adopted at one and the same meeting if passed
+               by at least five affirmative votes.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

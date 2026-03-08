@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.8">
+  <meta>
+    <dc:title>Same—Application Generally—Fee</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.8"
+             temporalId="sSEC_ 3_18_8">
+      <num>SEC. 3.18.8</num>
+      <heading>Same—Application Generally—Fee</heading>
+      <content>
+        <p>Application for a permit required by Sec. 3.18.7 shall be made to the chief building inspector upon a form provided by the city and
+               shall contain such information as may be required by the chief building inspector
+               to assure compliance with this code and other ordinances of the city, and shall be
+               accompanied by a permit fee of ten (10) dollars.</p>
+        <p>(Ord. No. 175.622, 8/8/60.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

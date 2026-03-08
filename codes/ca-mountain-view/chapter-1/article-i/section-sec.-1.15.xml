@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.15">
+  <meta>
+    <dc:title>Official map</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.15"
+             temporalId="sSEC_ 1_15">
+      <num>SEC. 1.15</num>
+      <heading>Official map</heading>
+      <content>
+        <p>The survey made by Curtiss M. Barker, licensed surveyor and civil engineer, in December
+               and January, 1902 and 1903, and the map thereof showing the streets, sidewalks and
+               grades, is hereby accepted and adopted as the official survey and map of that part
+               of the city as designated and delineated on such map.</p>
+        <p>(Code 1938, Sec. 33.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

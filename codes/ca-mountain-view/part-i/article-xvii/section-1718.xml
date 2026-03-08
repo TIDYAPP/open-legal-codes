@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvii/section-1718">
+  <meta>
+    <dc:title>Decontrol</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvii/section-1718"
+             temporalId="sSection 1718">
+      <num>Section 1718</num>
+      <heading>Decontrol</heading>
+      <content>
+        <p>If the average annual vacancy rate in Controlled Rental Units exceeds five percent
+               (5%) , the Committee is empowered, at its discretion and in order to achieve the objectives
+               of this Article, to suspend the provisions of this Article. In determining the vacancy
+               rate for Controlled Rental Units, the Committee shall consider all available data
+               and shall conduct its own survey. If the Committee finds that the average annual vacancy
+               rate has thereafter fallen below five percent (5%) the provisions of this Article
+               shall be reimposed.</p>
+        <p>(As added November 8, 2016.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

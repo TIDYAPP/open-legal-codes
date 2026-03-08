@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-viii/section-800">
+  <meta>
+    <dc:title>Creation</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-viii/section-800"
+             temporalId="sSection 800">
+      <num>Section 800</num>
+      <heading>Creation</heading>
+      <content>
+        <p>The council shall have power to provide for the creation, establishment and maintenance
+               of a retirement or pension plan or plans for any or all of the appointive officers
+               and employees of the city.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

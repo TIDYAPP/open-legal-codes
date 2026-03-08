@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1103">
+  <meta>
+    <dc:title>Annual budget</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1103"
+             temporalId="sSection 1103">
+      <num>Section 1103</num>
+      <heading>Annual budget</heading>
+      <content>
+        <p>On such date in each year as shall be fixed by the council, the city manager shall
+               send to the council a careful estimate, in writing, of the amounts, specifying in
+               detail the objects thereof required during the next ensuing year for the business
+               and proper conduct of the various departments, offices, boards and commissions of
+               the city, over which the city manager has control. The city manager shall also at
+               such time submit to the council an estimate of the amount of income from fines, licenses,
+               and other sources of revenue, exclusive of taxes upon property, and the probable amount
+               required to be levied and raised by taxation.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

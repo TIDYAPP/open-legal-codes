@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xii/section-1200">
+  <meta>
+    <dc:title>When franchises are required</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xii/section-1200"
+             temporalId="sSection 1200">
+      <num>Section 1200</num>
+      <heading>When franchises are required</heading>
+      <content>
+        <p>No person, firm or corporation shall exercise any franchise right or privilege mentioned
+               in this article in the city except insofar as that person or it may be entitled to
+               do so by direct authority of the constitution of the State of California or of the
+               United States, unless that person or it shall have obtained a grant therefor in accordance
+               with the provisions of this article of this Charter and in accordance with the procedure
+               prescribed by ordinance. Nothing contained in this article shall be construed to invalidate
+               any lawful franchise heretofore granted nor to necessitate the obtaining of a new
+               franchise for a use for which a franchise holder shall have a valid unexpired franchise.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

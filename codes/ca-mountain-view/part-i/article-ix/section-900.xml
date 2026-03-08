@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-ix/section-900">
+  <meta>
+    <dc:title>Generally</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-ix/section-900"
+             temporalId="sSection 900">
+      <num>Section 900</num>
+      <heading>Generally</heading>
+      <content>
+        <p>There shall be the boards and commissions enumerated in this article which shall have
+               the powers and duties herein stated. Unless otherwise provided by this Charter, the
+               number of members to comprise any commission shall be determined by ordinance or resolution
+               of the council. No member of any board or commission shall hold any paid office or
+               employment in the city government. In order to be eligible for any appointment to
+               any board or commission, a person shall be a qualified elector of the city. In addition
+               to those herein provided, the council may create by ordinance or resolution such boards
+               or commissions as in its judgment are required and may grant to them such powers and
+               duties as are consistent with the provisions of this Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

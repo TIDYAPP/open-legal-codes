@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvi/section-1602">
+  <meta>
+    <dc:title>Effect of invalid provision in Charter</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvi/section-1602"
+             temporalId="sSection 1602">
+      <num>Section 1602</num>
+      <heading>Effect of invalid provision in Charter</heading>
+      <content>
+        <p>If any provision of this Charter, or the application thereof to any person or circumstance
+               is held invalid, the remainder of the Charter, and the application of such provision
+               to other persons or circumstances, shall not be affected thereby.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xii/division-6/section-sec.-2.180">
+  <meta>
+    <dc:title>Definitions</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xii/division-6/section-sec.-2.180"
+             temporalId="sSEC_ 2_180">
+      <num>SEC. 2.180</num>
+      <heading>Definitions</heading>
+      <content>
+        <p>The definitions set forth in the Political Reform Act of 1974 as amended (Government
+               Code Section 82000, et seq.) shall govern the interpretation of this division, unless
+               otherwise specified herein.</p>
+        <p>&quot;Local election&quot; means any election for an elective city office or city measure, including
+               any primary, general, runoff, special or recall election.</p>
+        <p>&quot;Person&quot; means the same as set forth in Government Code 82047 and (1) is active only
+               in the local election; or (2) is formed or existing primarily to support or oppose
+               a local candidate or measure as defined in 2 C.C.R. 18247.5.</p>
+        <p>(Ord. No. 5.22, § 7, 4/26/22.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

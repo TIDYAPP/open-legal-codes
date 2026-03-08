@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.12">
+  <meta>
+    <dc:title>Same—Publication of Code provisions.*</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.12"
+             temporalId="sSEC_ 1_12">
+      <num>SEC. 1.12</num>
+      <heading>Same—Publication of Code provisions.*</heading>
+      <content>
+        <p>Whenever any provision of this code requires the publication of any notice or other
+               matter except where otherwise provided, the same shall be made once in the official
+               newspaper of the city, or as an alternative, the publication shall be made by posting
+               such notice or matter in three (3) public places in the city for the required time.</p>
+        <p>(Code 1938, Sec. 29.)</p>
+        <p>* As to notices for public improvements generally, see Sec. 17.14 to 17.21 of this Code.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

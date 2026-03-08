@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.22">
+  <meta>
+    <dc:title>Hearing</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.22"
+             temporalId="sSEC_ 1_22">
+      <num>SEC. 1.22</num>
+      <heading>Hearing</heading>
+      <content>
+        <p>a.</p>
+        <p>Notice and time of hearing. Written notice of hearing shall be served on any person to whom the citation or compliance
+               order was addressed and shall contain the date, time and place at which the hearing
+               shall be conducted. The hearing shall be set for a date that is not less than fifteen
+               (15) days and not more than sixty (60) days from the date of the notice of hearing.
+               The hearing officer may approve a continuance of the hearing to any date for good
+               cause.</p>
+        <p>b.</p>
+        <p>Hearing procedure. At the hearing, the alleged violator shall have the opportunity to testify, present
+               evidence, and to cross-examine witnesses concerning the administrative citation or
+               compliance order. The alleged violator may appear personally or through an attorney.
+               Prehearing discovery is not authorized. Subpoena of witnesses and documents shall
+               be permitted as authorized by law. The hearing officer may conduct the hearing informally,
+               both as to rules of procedure and admission of evidence, in any manner which will
+               provide a fair hearing, and may continue the hearing to obtain additional evidence.
+               The administrative citation or administrative compliance order and any additional
+               report submitted by the enforcement officer, shall constitute presumptive evidence
+               of the respective facts contained in those documents.</p>
+        <p>c.</p>
+        <p>Failure to appear. The failure of any alleged violator to appear at the hearing after proper notice
+               or, in the alternative, to present written or demonstrative evidence shall constitute
+               an admission of the violation by the alleged violator and an exhaustion of administrative
+               remedies that may bar judicial review.</p>
+        <p>(Ord. No. 12.02, 7/23/02.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xiii/section-1303">
+  <meta>
+    <dc:title>The initiative and referendum</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xiii/section-1303"
+             temporalId="sSection 1303">
+      <num>Section 1303</num>
+      <heading>The initiative and referendum</heading>
+      <content>
+        <p>Except insofar as is otherwise provided by ordinances hereinafter enacted, the provisions
+               of the Elections Code of the State of California, as the same now exists or may hereafter
+               be amended, governing the initiative and the referendum shall apply to the use thereof
+               in the city insofar as the same are not in conflict with this Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

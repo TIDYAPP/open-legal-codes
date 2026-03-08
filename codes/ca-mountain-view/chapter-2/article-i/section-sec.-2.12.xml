@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.12">
+  <meta>
+    <dc:title>Appointment of deputy clerks by city clerk</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.12"
+             temporalId="sSEC_ 2_12">
+      <num>SEC. 2.12</num>
+      <heading>Appointment of deputy clerks by city clerk</heading>
+      <content>
+        <p>The city clerk may appoint deputy clerks, subject to the approval of the city council.</p>
+        <p>(Code 1938, Sec. 46; Ord. No. 175.128, 9/11/50.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

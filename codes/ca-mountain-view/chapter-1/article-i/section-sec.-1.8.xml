@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.8">
+  <meta>
+    <dc:title>Same—Citation or notice to appear; procedures after arrest</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.8"
+             temporalId="sSEC_ 1_8">
+      <num>SEC. 1.8</num>
+      <heading>Same—Citation or notice to appear; procedures after arrest</heading>
+      <content>
+        <p>If any person is arrested for a violation of a provision of this Code, or other ordinance
+               of the city, and such person is not immediately taken before a magistrate as prescribed
+               in the Penal Code of the state, the arresting officer shall prepare in duplicate a
+               written notice to appear in court, containing the name and address of such person,
+               the offense charged, and the time and place where and when such person shall appear
+               in court. After the issuance of the written notice to appear, the arresting officer
+               shall comply with, and the release or nonrelease of the person arrested shall be governed
+               by, the provisions of Section 853.6 of the Penal Code of the state, which Penal Code
+               section is incorporated herein by reference as if fully set forth at this point.</p>
+        <p>(Ord. No. 175.457, 3/10/58; Ord. No. 15.79, 4/9/79.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

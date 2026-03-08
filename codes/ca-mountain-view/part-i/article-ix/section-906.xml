@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-ix/section-906">
+  <meta>
+    <dc:title>Planning commission</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-ix/section-906"
+             temporalId="sSection 906">
+      <num>Section 906</num>
+      <heading>Planning commission</heading>
+      <content>
+        <p>There shall be a planning commission consisting of at least seven members, the number
+               of which membership shall be established, from time to time, by ordinance. The planning
+               commission shall have the power to:</p>
+        <p>(a)</p>
+        <p>Recommend to the council, after a public hearing thereon, the adoption, amendment
+                  or repeal of a master plan or any part thereof for the physical development of the
+                  city.</p>
+        <p>(b)</p>
+        <p>Exercise such functions with respect to land subdivisions, planning and zoning as
+                  may be prescribed by ordinance or resolution.</p>
+        <p>(c)</p>
+        <p>Exercise such functions regarding the environmental quality of the community as may,
+                  from time to time, be prescribed by ordinance or resolution. A special membership
+                  for the planning commission when exercising functions pursuant to this subsection
+                  may also be established by ordinance or resolution. (As amended November 3, 1970.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.3">
+  <meta>
+    <dc:title>Same—Traffic hazards to freeway users</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.3"
+             temporalId="sSEC_ 3_18_3">
+      <num>SEC. 3.18.3</num>
+      <heading>Same—Traffic hazards to freeway users</heading>
+      <content>
+        <p>No sign shall be painted, attached, installed, erected, constructed or relocated or
+               maintained in the city, if such sign, because of its location, size, nature or type,
+               constitutes or tends to constitute a hazard to the safe and efficient operation of
+               vehicles upon the freeway, or upon any ingress or egress ramps to or from a freeway,
+               or creates a condition which endangers the safety of persons or property thereon.</p>
+        <p>(Ord. No. 175.622, 8/8/60.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>
