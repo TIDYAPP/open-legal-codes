@@ -6,6 +6,10 @@ import { codeRoutes } from './routes/code.js';
 import { versionsRoutes } from './routes/versions.js';
 import { lookupRoutes } from './routes/lookup.js';
 
+import { store } from './store/index.js';
+
+store.initialize();
+
 const app = new Hono();
 
 // Health check

@@ -52,7 +52,13 @@ Filesystem-based. Each jurisdiction gets a directory under `codes/`:
 
 ### HTTP API (`src/routes/`)
 
-Hono-based server (`src/server.ts`). Routes are mostly stubbed — they need to be wired to `CodeStore`.
+Hono-based server (`src/server.ts`). Routes are wired to `CodeStore`:
+- `GET /api/v1/jurisdictions` — list jurisdictions (filter by type, state, publisher)
+- `GET /api/v1/jurisdictions/:id` — single jurisdiction metadata
+- `GET /api/v1/jurisdictions/:id/toc` — table of contents (with `?depth=N`)
+- `GET /api/v1/jurisdictions/:id/toc/*path` — TOC subtree at a path
+- `GET /api/v1/jurisdictions/:id/code/*path` — code content (`?format=text|xml|html`)
+- `GET /api/v1/lookup?city=X&state=Y` — find jurisdiction by name
 
 ### Converter (`src/converter/`)
 
@@ -71,7 +77,7 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 
 - Municode crawler: **working** — can crawl full municipal codes
 - Cache/storage: **working** — reads and writes jurisdiction data
-- HTTP API routes: **stubbed** — return empty/placeholder data, need to be connected to CodeStore
+- HTTP API routes: **working** — wired to CodeStore, returns text/xml/html
 - American Legal crawler: **stubbed** — interface defined, not implemented
 - CLI: **basic** — crawl and list commands work
 - MCP server: **not started**

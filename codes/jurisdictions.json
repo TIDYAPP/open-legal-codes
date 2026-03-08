@@ -30,5 +30,21 @@
     "lastCrawled": "",
     "lastUpdated": "",
     "currentVersion": ""
+  },
+  {
+    "id": "ca-amador-city",
+    "name": "Amador City, CA",
+    "type": "city",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "",
+    "publisher": {
+      "name": "municode",
+      "sourceId": "16935",
+      "url": "https://library.municode.com/ca/amador_city/codes/code_of_ordinances"
+    },
+    "lastCrawled": "",
+    "lastUpdated": "",
+    "currentVersion": ""
   }
 ]

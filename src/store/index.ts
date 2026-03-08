@@ -74,12 +74,37 @@ export class CodeStore {
 
   /** Read a USLM XML file from disk by jurisdiction and path */
   getCodeXml(jurisdictionId: string, codePath: string): string | null {
-    // codePath like "title-5/chapter-5.10/section-5.10.010"
     const filePath = join(this.codesDir, jurisdictionId, `${codePath}.xml`);
     if (!existsSync(filePath)) {
       return null;
     }
     return readFileSync(filePath, 'utf-8');
+  }
+
+  /** Read the original HTML file from disk */
+  getCodeHtml(jurisdictionId: string, codePath: string): string | null {
+    const filePath = join(this.codesDir, jurisdictionId, `${codePath}.html`);
+    if (!existsSync(filePath)) {
+      return null;
+    }
+    return readFileSync(filePath, 'utf-8');
+  }
+
+  /** Get plain text content (strips HTML tags) */
+  getCodeText(jurisdictionId: string, codePath: string): string | null {
+    const html = this.getCodeHtml(jurisdictionId, codePath);
+    if (!html) return null;
+    // Strip HTML tags and decode basic entities
+    return html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 }
 
