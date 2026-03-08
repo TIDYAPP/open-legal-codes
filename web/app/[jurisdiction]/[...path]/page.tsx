@@ -49,9 +49,12 @@ export default async function CodePage({
         </div>
       </div>
 
-      <div className="mt-6 text-sm text-gray-500">
+      <div className="mt-6 text-sm text-gray-500 space-y-1">
         <p>
-          API: <code className="font-mono text-xs">GET /api/v1/jurisdictions/{jurisdiction}/code/{codePath}</code>
+          Permalink: <code className="font-mono text-xs">https://openlegalcodes.org/{jurisdiction}/{codePath}</code>
+        </p>
+        <p>
+          API: <code className="font-mono text-xs">GET https://openlegalcodes.org/api/v1/jurisdictions/{jurisdiction}/code/{codePath}</code>
         </p>
       </div>
     </div>

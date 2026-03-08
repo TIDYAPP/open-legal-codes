@@ -39,6 +39,7 @@ export interface SearchResult {
   num: string;
   heading: string;
   snippet: string;
+  url: string;
 }
 
 export async function getJurisdictions(state?: string): Promise<Jurisdiction[]> {

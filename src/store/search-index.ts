@@ -17,6 +17,7 @@ export interface SearchResult {
   num: string;
   heading: string;
   snippet: string;
+  url: string;
 }
 
 /**
@@ -102,6 +103,7 @@ export class SearchIndex {
         num: entry.num,
         heading: entry.heading,
         snippet,
+        url: `https://openlegalcodes.org/${jurisdictionId}/${entry.path}`,
       });
     }
 

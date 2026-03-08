@@ -65,6 +65,7 @@ codeRoutes.get('/:id/code/*', (c) => {
       num: tocInfo?.num ?? null,
       heading: tocInfo?.heading ?? null,
       text,
+      url: `https://openlegalcodes.org/${id}/${path}`,
       lastCrawled: jurisdiction.lastCrawled || null,
     },
     meta: { timestamp: new Date().toISOString() },

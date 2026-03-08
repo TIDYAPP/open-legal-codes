@@ -1,53 +1,50 @@
 # Open Legal Codes
 
-Retrieve the text of US legal codes programmatically. Give it a jurisdiction and a code path, get the legislative text back.
+**Know what the law actually says.** Open Legal Codes retrieves the current text of US municipal codes from publisher websites, caches them locally, and serves them through a REST API, CLI, and MCP server. No signup, no API key.
 
-```bash
-# What does Mountain View's code say about dogs?
-npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "dog"
+Live at [openlegalcodes.org](https://openlegalcodes.org).
 
-# Get the exact text of a section
-npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path chapter-5/article-i/section-sec.-5.1
-```
+## The Problem
 
-## Why This Exists
+US municipal law is public domain ([Georgia v. Public.Resource.Org, 2020](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.)), but there's no open, machine-readable way to access it. The text is locked behind commercial publisher websites (Municode, American Legal, General Code) with no API or bulk download.
 
-There is no open, machine-readable source of US municipal law. The text is public domain ([Georgia v. Public.Resource.Org, 2020](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.)), but it's locked inside commercial publisher websites (Municode, American Legal) with no API or bulk download.
-
-Open Legal Codes crawls these publishers, caches the results locally, and serves them through a REST API, CLI, and MCP server for AI agents.
+If an AI agent tells you "Mountain View prohibits keeping more than 3 dogs," there's no way to verify that against the actual law text — until now.
 
 ## Quick Start
 
 ```bash
+git clone https://github.com/mchusma/open-legal-codes.git
+cd open-legal-codes
 npm install
-npm run dev          # Start API server at http://localhost:3100
+npm run dev          # API server at http://localhost:3100
 ```
 
-### Crawl a Jurisdiction
-
-Before you can query a jurisdiction, you need to crawl it:
+Crawl a jurisdiction, then query it:
 
 ```bash
-# List available jurisdictions in a state
-npx tsx src/cli.ts list --state CA
+npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
+npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "dog"
+npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path chapter-5/article-i/section-sec.-5.1
+```
 
-# Crawl a specific jurisdiction
+## How It Works
+
+1. **First request for a jurisdiction**: scrapes the publisher's site, caches the results locally. Takes up to ~1 minute.
+2. **Subsequent requests**: served from cache in milliseconds.
+3. **The more people use a jurisdiction, the faster it gets** — the cache stays warm.
+
+If you plan to use a specific jurisdiction, hit it once in advance to warm the cache:
+```bash
 npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
 ```
 
-## Using with AI Agents (MCP Server)
+Search is exact text matching — not semantic search. If an LLM claims "the law says X," you can search for those exact words to verify whether the law actually says that.
 
-The MCP server exposes 5 tools for AI agents to look up legal codes directly:
+## Point Your AI Agent at This
 
-| Tool | Description |
-|------|-------------|
-| `lookup_jurisdiction` | Find a jurisdiction by city/state |
-| `list_jurisdictions` | List available jurisdictions |
-| `get_table_of_contents` | Browse a jurisdiction's code structure |
-| `get_code_text` | Retrieve the text of a specific code section |
-| `search_code` | Search for keywords across a jurisdiction's code |
+The primary use case is AI agents that need to ground their answers in actual law text instead of training data.
 
-### Claude Desktop Configuration
+### Claude Desktop (MCP Server)
 
 Add to your `claude_desktop_config.json`:
 
@@ -63,65 +60,86 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-### Example: Verifying Legal Claims
+Available tools:
 
-An AI agent can use this to verify its own claims against actual law text, reducing hallucination:
+| Tool | What it does |
+|------|-------------|
+| `lookup_jurisdiction` | Find a jurisdiction by city/state |
+| `list_jurisdictions` | List available jurisdictions |
+| `get_table_of_contents` | Browse a jurisdiction's code structure |
+| `get_code_text` | Get the text of a specific code section |
+| `search_code` | Exact keyword search within a jurisdiction |
 
-1. User asks: *"Can I have a dog in Mountain View?"*
-2. Agent calls `search_code({ jurisdiction: "ca-mountain-view", query: "dog" })` to find relevant sections
-3. Agent calls `get_code_text({ jurisdiction: "ca-mountain-view", path: "chapter-5/article-i/section-sec.-5.1" })` to read the actual law
-4. Agent answers based on the real text — or flags if no relevant code is found
+### Claude Code
 
-This is the core value: AI agents can ground their answers about local law in the actual legislative text rather than training data.
-
-## CLI Reference
+Clone the repo and use the built-in skills:
 
 ```bash
-# Look up a specific code section
-npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
-
-# Browse table of contents (default depth: 3)
-npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
-
-# Search for keywords in a jurisdiction's code
-npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "rental"
-
-# Crawl a jurisdiction from its publisher
-npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
-
-# List available jurisdictions from Municode
-npx tsx src/cli.ts list --state CA
+# In the repo directory, Claude Code auto-loads project context via CLAUDE.md
+# Skills available: /query-code, /search-codes, /crawl-jurisdiction
 ```
+
+### Any HTTP Client
+
+```bash
+# Search for a term
+curl 'https://openlegalcodes.org/api/v1/jurisdictions/ca-mountain-view/search?q=dog&limit=10'
+
+# Get specific section text
+curl 'https://openlegalcodes.org/api/v1/jurisdictions/ca-mountain-view/code/chapter-5/article-i/section-sec.-5.1'
+
+# Find a jurisdiction
+curl 'https://openlegalcodes.org/api/v1/lookup?city=Mountain+View&state=CA'
+```
+
+### Anti-Hallucination Workflow
+
+This is the core value — agents can verify their own claims:
+
+1. User asks: *"Can I have a dog in Mountain View?"*
+2. Agent calls `search_code(jurisdiction: "ca-mountain-view", query: "dog")` → finds relevant sections
+3. Agent calls `get_code_text(jurisdiction: "ca-mountain-view", path: "chapter-5/article-i/...")` → reads the actual law
+4. Agent answers based on the real legislative text
+5. **If search returns nothing, the agent flags it** rather than making something up
 
 ## REST API
 
-Base URL: `http://localhost:3100/api/v1`
+Base URL: `https://openlegalcodes.org/api/v1`
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /jurisdictions` | List all jurisdictions (filter: `?state=CA&publisher=municode`) |
-| `GET /jurisdictions/:id` | Get jurisdiction metadata |
+| `GET /jurisdictions` | List jurisdictions (filter: `?state=CA&publisher=municode`) |
+| `GET /jurisdictions/:id` | Jurisdiction metadata |
 | `GET /jurisdictions/:id/toc` | Table of contents (`?depth=2`) |
 | `GET /jurisdictions/:id/toc/*path` | TOC subtree at a path |
 | `GET /jurisdictions/:id/code/*path` | Code text (`?format=text\|xml\|html`) |
 | `GET /jurisdictions/:id/search` | Keyword search (`?q=rental&limit=20`) |
 | `GET /lookup` | Find jurisdiction (`?city=Mountain+View&state=CA`) |
 
-### Example Response (Code Text)
-
+Example response:
 ```json
 {
   "data": {
     "jurisdiction": "ca-mountain-view",
     "jurisdictionName": "Mountain View, CA",
-    "path": "part-i/article-i/section-100",
-    "num": "Section 100",
-    "heading": "Name",
-    "text": "The municipal corporation now existing and known as the City of Mountain View...",
-    "lastCrawled": null
-  },
-  "meta": { "timestamp": "2026-03-08T21:00:00.000Z" }
+    "path": "chapter-5/article-i/section-sec.-5.1",
+    "num": "Sec. 5.1",
+    "heading": "Definitions",
+    "text": "Animal means any vertebrate member of the animal kingdom...",
+    "url": "https://openlegalcodes.org/ca-mountain-view/chapter-5/article-i/section-sec.-5.1",
+    "lastCrawled": "2026-03-08T12:00:00.000Z"
+  }
 }
+```
+
+## CLI Reference
+
+```bash
+npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
+npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "rental"
+npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
+npx tsx src/cli.ts list --state CA
 ```
 
 ## Architecture
@@ -132,78 +150,63 @@ Publisher APIs          Cache (filesystem)        Consumers
 │ Municode     │──┐    │ codes/           │      │ REST API        │
 │ American Legal│──┼──▶│   {jurisdiction}/ │──▶──│ CLI             │
 │ (future...)  │──┘    │     sections...   │      │ MCP Server      │
-└──────────────┘       │     _meta.json    │      └─────────────────┘
-                       │     _toc.json     │
+└──────────────┘       │     _meta.json    │      │ Web UI          │
+                       │     _toc.json     │      └─────────────────┘
                        └──────────────────┘
 ```
 
-**Publisher adapters** handle retrieval from each commercial publisher. Results are **cached to the filesystem** with metadata. **Consumers** provide different interfaces to query the cached data.
+- **Publisher adapters** (`src/crawlers/`) handle each publisher's quirks
+- **Cache** is filesystem-based — no database needed
+- **Search index** is built in memory at startup for fast keyword search
+- **CDN-ready** — static code sections are cacheable; only `/search` and `/lookup` need origin
 
-### Publisher Support
-
-The US municipal code market is dominated by three platforms under two parent companies:
+### Publisher Coverage
 
 | Publisher | Status | Coverage | Parent |
 |-----------|--------|----------|--------|
 | **Municode** | Working | ~4,200 municipalities | CivicPlus |
-| **American Legal** | Stubbed | ~3,500 municipalities | ICC |
+| **American Legal** | Adapter built | ~3,500 municipalities | ICC |
 | **eCode360 (General Code)** | Not started | ~4,400 municipalities | ICC |
 
-These three cover the vast majority of US municipal codes online (~8,000-10,000 jurisdictions total).
-
-Adding a new publisher means implementing the `CrawlerAdapter` interface in `src/crawlers/`.
-
-### Web App
-
-A Next.js frontend for browsing codes is included in `web/`:
-
-```bash
-npm run dev           # Start API server (port 3100)
-npm run web           # Start web app (port 3000)
-```
-
-The web app proxies API requests to the backend and includes agent usage instructions on every page.
-
-## Production Deployment
-
-The filesystem cache is designed to work well behind a CDN:
-
-- **Static files on disk** — TOC trees, HTML, and XML files are static after crawl. Serve them via nginx or Caddy with aggressive cache headers.
-- **CDN layer** — Put Cloudflare, CloudFront, or similar in front. Most requests are for cached code sections (static content).
-- **Origin server** — Only the `/search` and `/lookup` endpoints require hitting the origin. Everything else can be served from cache/CDN.
-- **No database needed** — Filesystem storage keeps the architecture simple. No SQLite, Postgres, or Redis required.
-
-```
-Client → CDN (Cloudflare) → Origin (Node.js + Hono)
-                                    ↓
-                              codes/ (filesystem)
-```
-
-For search at scale, consider pre-building a search index (e.g., writing a simple inverted index to disk during crawl) rather than scanning files at query time.
+These three cover the vast majority of US municipal codes (~8,000-10,000 jurisdictions).
 
 ## Development
 
 ```bash
 npm install              # Install dependencies
-npm run dev              # Start dev server (port 3100, with watch)
-npm run build            # Compile TypeScript to dist/
+npm run dev              # Dev server (port 3100, watch mode)
+npm run build            # Compile TypeScript
 npm run typecheck        # Type-check without emitting
-npm run test             # Run test suite (49 tests via vitest)
-npm run test:watch       # Run tests in watch mode
-npm run mcp              # Start MCP server (stdio transport)
+npm run test             # Run tests (59 tests, vitest)
+npm run test:watch       # Tests in watch mode
+npm run mcp              # MCP server (stdio transport)
+npm run web              # Web UI (port 3000)
 ```
 
-## Legal
+## Production Deployment
 
-The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes cannot be copyrighted.
+```
+Client → CDN (Cloudflare) → Origin (Node.js + Hono) → codes/ (filesystem)
+```
 
-This project's source code is MIT licensed.
+- Static code sections are CDN-cacheable with long TTLs
+- Only `/search` and `/lookup` hit origin
+- No database — the filesystem cache is the database
+- Pre-warm jurisdictions you care about with `crawl`
 
 ## Contributing
 
-This project needs help with:
+Ideas that would help:
 
-1. **Publisher adapters** — integrations with American Legal, QCode, CodePublishing, Sterling Codifiers, General Code
-2. **More jurisdictions** — crawl additional cities and contribute the cached data
-3. **Search improvements** — inverted index for faster keyword search
-4. **Text extraction** — better handling of edge cases in municipal code HTML
+- **Smarter caching** — cache until the law changes, then refresh (instead of time-based expiry)
+- **More publisher adapters** — eCode360, QCode, CodePublishing, Sterling Codifiers
+- **Missing jurisdictions** — crawl and contribute new cities
+- **Better text extraction** — edge cases in municipal code HTML
+
+Submit a PR. If you have ideas for improvement, open an issue.
+
+## Legal
+
+The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes cannot be copyrighted. We're not replacing publishers — we're making it easy for everyone to know what the laws actually are.
+
+This project's source code is MIT licensed.

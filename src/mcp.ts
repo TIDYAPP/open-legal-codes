@@ -130,10 +130,11 @@ server.tool(
       return { content: [{ type: 'text', text: `Code section '${path}' not found in '${jurisdiction}'. Use get_table_of_contents to browse available sections.` }] };
     }
 
+    const url = `https://openlegalcodes.org/${jurisdiction}/${path}`;
     return {
       content: [{
         type: 'text',
-        text: `${j.name} — ${path}\n\n${text}`,
+        text: `${j.name} — ${path}\nSource: ${url}\n\n${text}`,
       }],
     };
   }
@@ -161,7 +162,7 @@ server.tool(
     }
 
     const lines = results.map((m) =>
-      `${m.path}\n  ${m.num} ${m.heading}\n  ${m.snippet}`
+      `${m.path}\n  ${m.num} ${m.heading}\n  ${m.url}\n  ${m.snippet}`
     );
     return { content: [{ type: 'text', text: lines.join('\n\n') }] };
   }
