@@ -1,151 +1,125 @@
 # Open Legal Codes
 
-Open source repository of US legal codes in [USLM XML](https://github.com/usgpo/uslm) format, served via REST API.
-
-This is **not a search engine**. It's a structured code repository. You navigate the hierarchy (jurisdiction > title > chapter > section) and get the actual legislative text back. Think: npm registry for law.
+Retrieve the text of US legal codes programmatically. Give it a jurisdiction and a code path, get the legislative text back.
 
 ## Why
 
 There is no open, machine-readable source of US municipal law. The text is public domain ([Georgia v. Public.Resource.Org, 2020](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.)), but it's locked inside commercial publisher websites (Municode, American Legal) with no API or bulk download.
 
-Open Legal Codes crawls these publishers, converts the content to the official [USLM XML](https://github.com/usgpo/uslm) standard, stores it in git (for version history), and serves it via a simple REST API.
+Open Legal Codes provides a unified interface to retrieve legal codes from these publishers, caches the results locally, and makes them available for programmatic use.
+
+## How It Works
+
+```
+Publisher APIs          Cache (filesystem)        Consumers
+┌──────────────┐       ┌──────────────────┐      ┌─────────────────┐
+│ Municode     │──┐    │ codes/           │      │ Library API     │
+│ American Legal│──┼──▶│   {jurisdiction}/ │──▶──│ CLI             │
+│ (future...)  │──┘    │     sections...   │      │ MCP Server      │
+└──────────────┘       │     _meta.json    │      │ (AI agents)     │
+                       │     _toc.json     │      └─────────────────┘
+                       └──────────────────┘
+```
+
+**Publisher adapters** handle the specifics of retrieving content from each commercial publisher. Results are **cached to the filesystem** with metadata (including when they were last fetched). **Consumers** (a programmatic API, CLI tool, or MCP server) provide different ways to query the cached data.
 
 ## Quick Start
 
 ```bash
 npm install
 npm run dev
-# Open http://localhost:3100
+# Server at http://localhost:3100
 ```
 
-## API
-
-Base URL: `/api/v1`
-
-### Jurisdictions
-
-```
-GET /api/v1/jurisdictions                     # List all
-GET /api/v1/jurisdictions?type=city&state=CA   # Filter by type and state
-GET /api/v1/jurisdictions/ca-palm-desert       # Single jurisdiction
-```
-
-### Table of Contents
-
-```
-GET /api/v1/jurisdictions/ca-palm-desert/toc             # Full TOC tree
-GET /api/v1/jurisdictions/ca-palm-desert/toc?depth=1     # Top-level only
-GET /api/v1/jurisdictions/ca-palm-desert/toc/title-5     # Subtree
-```
-
-### Code Content
-
-```
-GET /api/v1/jurisdictions/ca-palm-desert/code/title-5
-GET /api/v1/jurisdictions/ca-palm-desert/code/title-5/chapter-5.10
-GET /api/v1/jurisdictions/ca-palm-desert/code/title-5/chapter-5.10/section-5.10.010
-GET /api/v1/jurisdictions/ca-palm-desert/code/title-5/chapter-5.10/section-5.10.010?format=json
-```
-
-Default format is USLM XML. Add `?format=json` for JSON output.
-
-Add `?version=<sha>` for point-in-time access (git commit SHA).
-
-### Lookup
-
-```
-GET /api/v1/lookup?city=Palm+Desert&state=CA
-```
-
-### Versions
-
-```
-GET /api/v1/jurisdictions/ca-palm-desert/versions?limit=20
-```
-
-## Data Format
-
-Codes are stored as USLM XML, the official US Government Publishing Office standard for legislative markup. Each section is a single XML file:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
-        identifier="/ca-palm-desert/title-5/chapter-5.10/section-5.10.010">
-  <meta>
-    <dc:title>Palm Desert Municipal Code - Section 5.10.010</dc:title>
-    <dc:publisher>City of Palm Desert</dc:publisher>
-  </meta>
-  <main>
-    <section identifier="/ca-palm-desert/title-5/chapter-5.10/section-5.10.010"
-             temporalId="s5_10_010">
-      <num>5.10.010</num>
-      <heading>Purpose.</heading>
-      <content>
-        <p>The purpose of this chapter is to establish regulations for
-        short-term rental properties within the City of Palm Desert...</p>
-      </content>
-    </section>
-  </main>
-</lawDoc>
-```
-
-## Storage Layout
-
-```
-codes/
-  jurisdictions.json              # Global registry
-  ca-palm-desert/
-    _meta.json                    # Jurisdiction metadata
-    _toc.json                     # Table of contents tree
-    title-5/
-      chapter-5.10/
-        section-5.10.010.xml      # One file per section
-        section-5.10.020.xml
-```
-
-One XML file per section. Git diffs show exactly what changed in the law.
-
-## Crawlers
-
-Currently supports two publishers:
-
-| Publisher | Method | Coverage |
-|-----------|--------|----------|
-| **Municode** | JSON API (`api.municode.com`) | ~3,200 municipalities |
-| **American Legal** | Playwright (Angular SPA) | ~2,000 municipalities |
+### Crawl a Jurisdiction
 
 ```bash
-# Crawl a specific jurisdiction
-npx open-legal-codes crawl --jurisdiction ca-palm-desert
+# Crawl a specific jurisdiction's full code
+npx open-legal-codes crawl --jurisdiction ca-mountain-view
 
 # List available jurisdictions in a state
 npx open-legal-codes list --state CA
 ```
 
+### Query a Code
+
+```
+GET /api/v1/jurisdictions/ca-mountain-view/code/part-i/article-i/section-100
+```
+
+Returns the text of that section.
+
+## Architecture
+
+### Publisher Adapters
+
+Each code publisher needs its own adapter that implements the `CrawlerAdapter` interface:
+
+| Publisher | Status | Coverage |
+|-----------|--------|----------|
+| **Municode** | Implemented | ~3,200 municipalities |
+| **American Legal** | Stubbed | ~2,000 municipalities |
+
+Adapters handle: listing available jurisdictions, fetching table of contents, and fetching section content.
+
+### Cache Layer
+
+Crawled content is stored on the filesystem under `codes/`:
+
+```
+codes/
+  jurisdictions.json              # Registry of all known jurisdictions
+  ca-mountain-view/
+    _meta.json                    # Jurisdiction metadata + last fetched timestamp
+    _toc.json                     # Table of contents tree
+    part-i/
+      article-i/
+        section-100.html          # Original HTML from publisher
+        section-100.xml           # Converted XML
+```
+
+The cache lets us serve requests without hitting publisher APIs on every query. Metadata tracks when content was last fetched so consumers know how fresh it is.
+
+### Consumers (Planned)
+
+- **Library API**: Import and call directly from Node.js code
+- **CLI**: Command-line tool for scripting and quick lookups
+- **MCP Server**: Model Context Protocol server so AI agents can look up legal codes
+- **HTTP API**: REST endpoints (current, partially implemented)
+
+## Roadmap
+
+Ordered by priority:
+
+1. **Wire up core query flow** — jurisdiction + code path → text, end to end
+2. **More publisher adapters** — American Legal, QCode, CodePublishing, etc.
+3. **CLI tool** — `open-legal-codes query ca-mountain-view part-i/article-i/section-100`
+4. **MCP server** — AI agents can retrieve legal codes directly
+5. **Keyword search** — find sections by searching terms across a jurisdiction's code
+6. **Structured formats** — JSON output, potentially USLM XML for consumers that want it
+
 ## Tech Stack
 
-- **TypeScript / Node.js**
-- **Hono** — minimal HTTP framework
-- **Cheerio** — HTML parsing for Municode
-- **Playwright** — browser automation for American Legal
-- **fast-xml-parser** — XML to JSON conversion
-- **Git** — version control for code changes (no database)
+- **TypeScript / Node.js** (ES modules)
+- **Hono** — HTTP framework
+- **Cheerio** — HTML parsing
+- **fast-xml-parser** — XML handling
 
 ## Legal
 
-The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes, including annotations, cannot be copyrighted.
+The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes cannot be copyrighted.
 
 This project's source code is MIT licensed.
 
 ## Status
 
-Early development. MVP target: serve Palm Desert, CA municipal code via the API.
+Early development. Municode adapter works and can crawl full municipal codes. API routes are being wired up.
 
 ## Contributing
 
 This project needs help with:
 
-1. **Crawler adapters** for additional publishers (QCode, CodePublishing, Sterling Codifiers, General Code)
-2. **HTML to USLM converter** improvements for edge cases in municipal code formatting
-3. **More jurisdictions** — run crawlers against new cities and submit the data
-4. **Federal and state codes** — integrate with existing government XML sources (GPO for federal, state legislature sites)
+1. **Publisher adapters** — integrations with American Legal, QCode, CodePublishing, Sterling Codifiers, General Code
+2. **Improving text extraction** — better handling of edge cases in municipal code HTML
+3. **More jurisdictions** — crawl additional cities and submit the data
+4. **CLI and MCP server** — building out the consumption layer
