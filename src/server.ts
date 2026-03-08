@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { jurisdictionsRoutes } from './routes/jurisdictions.js';
 import { tocRoutes } from './routes/toc.js';
@@ -11,6 +12,12 @@ import { store } from './store/index.js';
 store.initialize();
 
 const app = new Hono();
+
+// CORS for cross-origin API access
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['https://openlegalcodes.org', 'http://localhost:3000'];
+app.use('/api/*', cors({ origin: allowedOrigins }));
 
 // Health check
 app.get('/', (c) =>

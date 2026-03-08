@@ -1,0 +1,27 @@
+name: Deploy API to Hetzner
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'web/**'
+      - '*.md'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Hetzner
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/open-legal-codes
+            git pull origin main
+            docker compose build --no-cache
+            docker compose up -d
+            docker image prune -f
