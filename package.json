@@ -1,0 +1,39 @@
+{
+  "name": "open-legal-codes",
+  "version": "0.1.0",
+  "description": "Open source repository of US legal codes in USLM XML format, served via REST API",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "open-legal-codes": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "crawl": "tsx src/cli.ts crawl",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "law",
+    "legal",
+    "municipal-code",
+    "ordinance",
+    "uslm",
+    "legislation",
+    "open-data",
+    "government"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^4.0.0",
+    "@hono/node-server": "^1.0.0",
+    "cheerio": "^1.0.0",
+    "fast-xml-parser": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

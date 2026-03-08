@@ -1,0 +1,86 @@
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Jurisdiction, TocTree } from '../types.js';
+
+/**
+ * CodeStore — reads jurisdiction metadata, TOC trees, and USLM XML files
+ * from the filesystem. Loads indexes into memory on initialization.
+ */
+export class CodeStore {
+  private codesDir: string;
+  private jurisdictions: Map<string, Jurisdiction> = new Map();
+  private tocTrees: Map<string, TocTree> = new Map();
+
+  constructor(codesDir?: string) {
+    this.codesDir = codesDir || join(process.cwd(), 'codes');
+  }
+
+  /** Load jurisdictions.json and all _toc.json files into memory */
+  initialize(): void {
+    const registryPath = join(this.codesDir, 'jurisdictions.json');
+    if (!existsSync(registryPath)) {
+      console.warn(`[CodeStore] No jurisdictions.json found at ${registryPath}`);
+      return;
+    }
+
+    const raw = readFileSync(registryPath, 'utf-8');
+    const jurisdictions: Jurisdiction[] = JSON.parse(raw);
+
+    for (const j of jurisdictions) {
+      this.jurisdictions.set(j.id, j);
+
+      // Load TOC tree if available
+      const tocPath = join(this.codesDir, j.id, '_toc.json');
+      if (existsSync(tocPath)) {
+        const tocRaw = readFileSync(tocPath, 'utf-8');
+        this.tocTrees.set(j.id, JSON.parse(tocRaw));
+      }
+    }
+
+    console.log(`[CodeStore] Loaded ${this.jurisdictions.size} jurisdictions`);
+  }
+
+  getJurisdiction(id: string): Jurisdiction | undefined {
+    return this.jurisdictions.get(id);
+  }
+
+  listJurisdictions(filters?: {
+    type?: string;
+    state?: string;
+    publisher?: string;
+  }): Jurisdiction[] {
+    let results = Array.from(this.jurisdictions.values());
+
+    if (filters?.type) {
+      results = results.filter((j) => j.type === filters.type);
+    }
+    if (filters?.state) {
+      results = results.filter(
+        (j) => j.state?.toLowerCase() === filters.state!.toLowerCase()
+      );
+    }
+    if (filters?.publisher) {
+      results = results.filter(
+        (j) => j.publisher.name === filters.publisher
+      );
+    }
+
+    return results;
+  }
+
+  getToc(jurisdictionId: string): TocTree | undefined {
+    return this.tocTrees.get(jurisdictionId);
+  }
+
+  /** Read a USLM XML file from disk by jurisdiction and path */
+  getCodeXml(jurisdictionId: string, codePath: string): string | null {
+    // codePath like "title-5/chapter-5.10/section-5.10.010"
+    const filePath = join(this.codesDir, jurisdictionId, `${codePath}.xml`);
+    if (!existsSync(filePath)) {
+      return null;
+    }
+    return readFileSync(filePath, 'utf-8');
+  }
+}
+
+export const store = new CodeStore();
