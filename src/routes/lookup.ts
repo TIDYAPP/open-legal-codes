@@ -1,9 +1,10 @@
 import { Hono } from 'hono';
+import { store } from '../store/index.js';
 
 export const lookupRoutes = new Hono();
 
 /**
- * GET /lookup?city=Palm+Desert&state=CA&county=Riverside
+ * GET /lookup?city=Mountain+View&state=CA
  * Find a jurisdiction by city/state without knowing the slug.
  */
 lookupRoutes.get('/', (c) => {
@@ -18,9 +19,15 @@ lookupRoutes.get('/', (c) => {
     );
   }
 
-  // TODO: Match against jurisdictions registry
+  let results = store.listJurisdictions({ state: state || undefined });
+
+  if (city) {
+    const cityLower = city.toLowerCase();
+    results = results.filter((j) => j.name.toLowerCase().includes(cityLower));
+  }
+
   return c.json({
-    data: { jurisdictions: [] },
-    meta: { version: 'stub', timestamp: new Date().toISOString() },
+    data: { jurisdictions: results },
+    meta: { timestamp: new Date().toISOString() },
   });
 });

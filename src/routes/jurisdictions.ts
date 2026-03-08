@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import type { JurisdictionType } from '../types.js';
+import { store } from '../store/index.js';
 
 export const jurisdictionsRoutes = new Hono();
 
@@ -13,10 +14,10 @@ jurisdictionsRoutes.get('/', (c) => {
   const state = c.req.query('state');
   const publisher = c.req.query('publisher');
 
-  // TODO: Load from store, apply filters
+  const data = store.listJurisdictions({ type, state, publisher });
   return c.json({
-    data: [],
-    meta: { version: 'stub', timestamp: new Date().toISOString() },
+    data,
+    meta: { timestamp: new Date().toISOString() },
   });
 });
 
@@ -26,10 +27,17 @@ jurisdictionsRoutes.get('/', (c) => {
  */
 jurisdictionsRoutes.get('/:id', (c) => {
   const id = c.req.param('id');
+  const jurisdiction = store.getJurisdiction(id);
 
-  // TODO: Load from store
-  return c.json(
-    { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
-    404
-  );
+  if (!jurisdiction) {
+    return c.json(
+      { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
+      404
+    );
+  }
+
+  return c.json({
+    data: jurisdiction,
+    meta: { timestamp: new Date().toISOString() },
+  });
 });

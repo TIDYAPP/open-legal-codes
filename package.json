@@ -1,7 +1,7 @@
 {
   "name": "open-legal-codes",
   "version": "0.1.0",
-  "description": "Open source repository of US legal codes in USLM XML format, served via REST API",
+  "description": "Retrieve US legal codes programmatically. Give it a jurisdiction and code path, get the text back.",
   "type": "module",
   "main": "dist/server.js",
   "bin": {
@@ -12,7 +12,12 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "crawl": "tsx src/cli.ts crawl",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "mcp": "tsx src/mcp.ts",
+    "web": "npm run dev --workspace=web",
+    "web:build": "npm run build --workspace=web"
   },
   "keywords": [
     "law",
@@ -25,15 +30,18 @@
     "government"
   ],
   "license": "MIT",
+  "workspaces": ["web"],
   "dependencies": {
-    "hono": "^4.0.0",
     "@hono/node-server": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "cheerio": "^1.0.0",
-    "fast-xml-parser": "^4.0.0"
+    "fast-xml-parser": "^4.0.0",
+    "hono": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.18"
   }
 }

@@ -106,7 +106,6 @@ export class MunicodeCrawler implements CrawlerAdapter {
           },
           lastCrawled: '',
           lastUpdated: '',
-          currentVersion: '',
         };
       }
     }
@@ -209,6 +208,83 @@ export class MunicodeCrawler implements CrawlerAdapter {
       fetchedAt: new Date().toISOString(),
       sourceUrl: `${API_BASE}/CodesContent?productId=${productId}&jobId=${jobId}&nodeId=${sectionId}`,
     };
+  }
+
+  /**
+   * Look up a municipality by name instead of listing all clients in a state.
+   * Faster for targeted queries.
+   */
+  async lookupByName(name: string, state: string): Promise<Jurisdiction | null> {
+    try {
+      const clients = await this.http.getJson<MunicodeClient[]>(
+        `${API_BASE}/Clients/name`,
+        { clientName: name, stateAbbr: state.toUpperCase() },
+      );
+      if (clients.length === 0) return null;
+
+      const client = clients[0];
+      const abbr = client.State.StateAbbreviation;
+      const slug = slugify(client.ClientName);
+
+      return {
+        id: `${abbr.toLowerCase()}-${slug}`,
+        name: `${client.ClientName}, ${abbr}`,
+        type: 'city',
+        state: abbr,
+        parentId: abbr.toLowerCase(),
+        fips: null,
+        publisher: {
+          name: 'municode',
+          sourceId: String(client.ClientID),
+          url: `https://library.municode.com/${abbr.toLowerCase()}/${slug}/codes/code_of_ordinances`,
+        },
+        lastCrawled: '',
+        lastUpdated: '',
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Search the Municode API for full-text results.
+   * This searches the publisher's live data — works even for uncrawled jurisdictions.
+   */
+  async searchRemote(
+    sourceId: string,
+    query: string,
+    limit = 20,
+  ): Promise<{ title: string; snippet: string; nodeId: string }[]> {
+    const { productId } = await this.resolve(sourceId);
+    const clientId = parseInt(sourceId, 10);
+
+    try {
+      const data = await this.http.getJson<any>(
+        `${API_BASE}/search`,
+        {
+          clientId: String(clientId),
+          searchText: query,
+          pageNum: '1',
+          pageSize: String(limit),
+          titlesOnly: 'false',
+          isAdvanced: 'false',
+          isAutocomplete: 'false',
+          mode: 'standard',
+          sort: '0',
+          fragmentSize: '200',
+        },
+      );
+
+      if (!data?.Results) return [];
+
+      return data.Results.map((r: any) => ({
+        title: r.Title || '',
+        snippet: r.Fragment || r.Content || '',
+        nodeId: r.NodeId || r.Id || '',
+      }));
+    } catch {
+      return [];
+    }
   }
 }
 

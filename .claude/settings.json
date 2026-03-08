@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm test)",
+      "Bash(npx tsx src/cli.ts *)",
+      "Bash(npx tsx src/mcp.ts)"
+    ]
+  }
+}

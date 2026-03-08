@@ -12,8 +12,7 @@
       "url": "https://library.municode.com/ca/palm_desert/codes/code_of_ordinances"
     },
     "lastCrawled": "",
-    "lastUpdated": "",
-    "currentVersion": ""
+    "lastUpdated": ""
   },
   {
     "id": "ca-mountain-view",
@@ -28,7 +27,21 @@
       "url": "https://library.municode.com/ca/mountain_view/codes/city_code"
     },
     "lastCrawled": "",
-    "lastUpdated": "",
-    "currentVersion": ""
+    "lastUpdated": ""
+  },
+  {
+    "id": "ca-amador-city",
+    "name": "Amador City, CA",
+    "type": "city",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "",
+    "publisher": {
+      "name": "municode",
+      "sourceId": "16935",
+      "url": "https://library.municode.com/ca/amador_city/codes/code_of_ordinances"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
   }
 ]

@@ -98,7 +98,6 @@ export async function runCrawl(
     ...jurisdiction,
     lastCrawled: now,
     lastUpdated: now,
-    currentVersion: 'initial',
   });
 
   progress.phase = 'done';
