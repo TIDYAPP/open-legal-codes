@@ -94,6 +94,7 @@ Hono-based server (`src/server.ts`). Routes are wired to `CodeStore`:
 - `GET /api/v1/jurisdictions/:id/toc` — table of contents (with `?depth=N`)
 - `GET /api/v1/jurisdictions/:id/toc/*path` — TOC subtree at a path
 - `GET /api/v1/jurisdictions/:id/code/*path` — code content (`?format=text|xml|html`)
+- `GET /api/v1/jurisdictions/:id/search?q=keyword` — keyword search across sections
 - `GET /api/v1/lookup?city=X&state=Y` — find jurisdiction by name
 
 ### Converter (`src/converter/`)
@@ -116,6 +117,6 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - HTTP API routes: **working** — wired to CodeStore, returns text/xml/html
 - CLI: **working** — query, toc, search, crawl, list commands
 - MCP server: **working** — 5 tools for AI agent access
-- Tests: **working** — 44 tests across 5 test files (vitest)
+- Tests: **working** — 49 tests across 5 test files (vitest)
 - American Legal crawler: **stubbed** — interface defined, not implemented
-- Search: **basic** — keyword search within a jurisdiction (linear scan)
+- Search: **working** — keyword search within a jurisdiction via API, CLI, and MCP (linear scan)

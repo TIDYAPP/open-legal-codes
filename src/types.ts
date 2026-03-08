@@ -29,8 +29,6 @@ export interface Jurisdiction {
   lastCrawled: string;
   /** ISO timestamp of last detected content change */
   lastUpdated: string;
-  /** Git commit SHA of current version */
-  currentVersion: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -110,21 +108,8 @@ export interface CodeContent {
   xml?: string;
   /** Parsed JSON structure (when format=json) */
   content?: ContentNode[];
-  /** Git commit SHA */
-  version: string;
   /** ISO timestamp */
   lastUpdated: string;
-}
-
-// ---------------------------------------------------------------------------
-// Version History
-// ---------------------------------------------------------------------------
-
-export interface VersionEntry {
-  version: string;
-  date: string;
-  message: string;
-  changedPaths: string[];
 }
 
 // ---------------------------------------------------------------------------

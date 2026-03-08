@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { jurisdictionsRoutes } from '../routes/jurisdictions.js';
 import { tocRoutes } from '../routes/toc.js';
 import { codeRoutes } from '../routes/code.js';
+import { searchRoutes } from '../routes/search.js';
 import { lookupRoutes } from '../routes/lookup.js';
 import { store } from '../store/index.js';
 
@@ -17,6 +18,7 @@ const api = new Hono();
 api.route('/jurisdictions', jurisdictionsRoutes);
 api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);
+api.route('/jurisdictions', searchRoutes);
 api.route('/lookup', lookupRoutes);
 app.route('/api/v1', api);
 
@@ -68,7 +70,6 @@ describe('GET /api/v1/jurisdictions/:id/toc', () => {
   it('limits depth', async () => {
     const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/toc?depth=1');
     const body = await res.json();
-    // All children at depth 1 should have empty children arrays
     for (const child of body.data.children) {
       expect(child.children).toEqual([]);
     }
@@ -89,6 +90,7 @@ describe('GET /api/v1/jurisdictions/:id/code/*', () => {
     const body = await res.json();
     expect(body.data.text).toContain('Mountain View');
     expect(body.data.jurisdiction).toBe('ca-mountain-view');
+    expect(body.data.jurisdictionName).toBe('Mountain View, CA');
     expect(body.data.path).toBe(section);
   });
 
@@ -114,6 +116,44 @@ describe('GET /api/v1/jurisdictions/:id/code/*', () => {
   it('returns 404 for unknown jurisdiction', async () => {
     const res = await fetch('/api/v1/jurisdictions/nonexistent/code/anything');
     expect(res.status).toBe(404);
+  });
+});
+
+describe('GET /api/v1/jurisdictions/:id/search', () => {
+  it('returns results for a known term', async () => {
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/search?q=Mountain+View');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.query).toBe('Mountain View');
+    expect(body.data.jurisdiction).toBe('ca-mountain-view');
+    expect(body.data.results.length).toBeGreaterThan(0);
+    expect(body.data.results[0]).toHaveProperty('path');
+    expect(body.data.results[0]).toHaveProperty('snippet');
+  });
+
+  it('returns empty results for nonsense term', async () => {
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/search?q=xyzzy123nonsense');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.results).toEqual([]);
+    expect(body.data.total).toBe(0);
+  });
+
+  it('returns 404 for unknown jurisdiction', async () => {
+    const res = await fetch('/api/v1/jurisdictions/nonexistent/search?q=test');
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 400 when q is missing', async () => {
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/search');
+    expect(res.status).toBe(400);
+  });
+
+  it('respects limit parameter', async () => {
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/search?q=the&limit=3');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.results.length).toBeLessThanOrEqual(3);
   });
 });
 

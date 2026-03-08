@@ -106,7 +106,6 @@ export class MunicodeCrawler implements CrawlerAdapter {
           },
           lastCrawled: '',
           lastUpdated: '',
-          currentVersion: '',
         };
       }
     }
