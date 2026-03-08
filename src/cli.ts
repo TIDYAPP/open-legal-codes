@@ -119,40 +119,21 @@ async function main() {
       const store = new CodeStore();
       store.initialize();
 
-      const toc = store.getToc(jurisdictionId);
-      if (!toc) {
+      const jurisdiction = store.getJurisdiction(jurisdictionId);
+      if (!jurisdiction) {
         console.error(`Jurisdiction "${jurisdictionId}" not found.`);
         process.exit(1);
       }
 
-      const queryLower = query.toLowerCase();
-      const queryLen = query.length;
-      let count = 0;
-
-      function searchNodes(nodes: TocNode[]) {
-        for (const node of nodes) {
-          if (node.hasContent) {
-            const text = store.getCodeText(jurisdictionId!, node.path);
-            if (text && text.toLowerCase().includes(queryLower)) {
-              count++;
-              const idx = text.toLowerCase().indexOf(queryLower);
-              const start = Math.max(0, idx - 40);
-              const end = Math.min(text.length, idx + queryLen + 40);
-              const snippet = (start > 0 ? '...' : '') +
-                text.slice(start, end) +
-                (end < text.length ? '...' : '');
-              console.log(`  ${node.path}`);
-              console.log(`    ${node.num}${node.heading ? ' — ' + node.heading : ''}`);
-              console.log(`    ${snippet}\n`);
-            }
-          }
-          if (node.children) searchNodes(node.children);
-        }
-      }
-
       console.log(`Searching "${query}" in ${jurisdictionId}...\n`);
-      searchNodes(toc.children);
-      console.log(`${count} sections found.`);
+      const results = store.search(jurisdictionId, query);
+
+      for (const r of results) {
+        console.log(`  ${r.path}`);
+        console.log(`    ${r.num}${r.heading ? ' — ' + r.heading : ''}`);
+        console.log(`    ${r.snippet}\n`);
+      }
+      console.log(`${results.length} sections found.`);
       break;
     }
 

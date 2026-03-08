@@ -1,21 +1,29 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Jurisdiction, TocTree, TocNode } from '../types.js';
+import { SearchIndex } from './search-index.js';
+import type { SearchResult } from './search-index.js';
+
+export type { SearchResult };
 
 /**
- * CodeStore — reads jurisdiction metadata, TOC trees, and USLM XML files
- * from the filesystem. Loads indexes into memory on initialization.
+ * CodeStore — reads jurisdiction metadata, TOC trees, and code files.
+ * On initialization, loads all data into memory including a search index
+ * so queries never hit disk. This supports high-concurrency scenarios
+ * (100+ concurrent searches) without blocking on file I/O.
  */
 export class CodeStore {
   private codesDir: string;
   private jurisdictions: Map<string, Jurisdiction> = new Map();
   private tocTrees: Map<string, TocTree> = new Map();
+  private searchIndex: SearchIndex;
 
   constructor(codesDir?: string) {
     this.codesDir = codesDir || join(process.cwd(), 'codes');
+    this.searchIndex = new SearchIndex(this.codesDir);
   }
 
-  /** Load jurisdictions.json and all _toc.json files into memory */
+  /** Load jurisdictions, TOC trees, and search index into memory */
   initialize(): void {
     const registryPath = join(this.codesDir, 'jurisdictions.json');
     if (!existsSync(registryPath)) {
@@ -29,13 +37,15 @@ export class CodeStore {
     for (const j of jurisdictions) {
       this.jurisdictions.set(j.id, j);
 
-      // Load TOC tree if available
       const tocPath = join(this.codesDir, j.id, '_toc.json');
       if (existsSync(tocPath)) {
         const tocRaw = readFileSync(tocPath, 'utf-8');
         this.tocTrees.set(j.id, JSON.parse(tocRaw));
       }
     }
+
+    // Build in-memory search index from cached content
+    this.searchIndex.buildAll(this.tocTrees);
 
     console.log(`[CodeStore] Loaded ${this.jurisdictions.size} jurisdictions`);
   }
@@ -108,11 +118,15 @@ export class CodeStore {
     return readFileSync(filePath, 'utf-8');
   }
 
-  /** Get plain text content (strips HTML tags) */
+  /** Get plain text content — uses in-memory index first, falls back to disk */
   getCodeText(jurisdictionId: string, codePath: string): string | null {
+    // Try index first (no disk I/O)
+    const indexed = this.searchIndex.getText(jurisdictionId, codePath);
+    if (indexed !== null) return indexed;
+
+    // Fall back to disk for non-indexed content
     const html = this.getCodeHtml(jurisdictionId, codePath);
     if (!html) return null;
-    // Strip HTML tags and decode basic entities
     return html
       .replace(/<[^>]+>/g, ' ')
       .replace(/&amp;/g, '&')
@@ -123,6 +137,16 @@ export class CodeStore {
       .replace(/&nbsp;/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  /** Search for keywords within a jurisdiction. Uses in-memory index — no disk I/O. */
+  search(jurisdictionId: string, query: string, limit = 20): SearchResult[] {
+    return this.searchIndex.search(jurisdictionId, query, limit);
+  }
+
+  /** Check if a jurisdiction has search index */
+  hasSearchIndex(jurisdictionId: string): boolean {
+    return this.searchIndex.hasIndex(jurisdictionId);
   }
 }
 

@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import type { TocNode } from '../types.js';
 import { store } from '../store/index.js';
 
 export const searchRoutes = new Hono();
@@ -7,7 +6,9 @@ export const searchRoutes = new Hono();
 /**
  * GET /jurisdictions/:id/search?q=rental&limit=20
  * Search for sections containing specific keywords within a jurisdiction's code.
- * Returns matching section paths, headings, and text snippets.
+ *
+ * Uses in-memory search index — no disk I/O at query time.
+ * Handles 100+ concurrent requests without blocking.
  */
 searchRoutes.get('/:id/search', (c) => {
   const id = c.req.param('id');
@@ -29,52 +30,22 @@ searchRoutes.get('/:id/search', (c) => {
     );
   }
 
-  const toc = store.getToc(id);
-  if (!toc) {
+  if (!store.hasSearchIndex(id)) {
     return c.json(
       { error: { code: 'NOT_FOUND', message: `No code data available for '${id}'` } },
       404
     );
   }
 
-  const queryLower = query.toLowerCase();
-  const queryLen = query.length;
-  const matches: { path: string; num: string; heading: string; snippet: string }[] = [];
-
-  function searchNodes(nodes: TocNode[]) {
-    for (const node of nodes) {
-      if (matches.length >= limit) return;
-      if (node.hasContent) {
-        const text = store.getCodeText(id, node.path);
-        if (text && text.toLowerCase().includes(queryLower)) {
-          const idx = text.toLowerCase().indexOf(queryLower);
-          const start = Math.max(0, idx - 80);
-          const end = Math.min(text.length, idx + queryLen + 80);
-          const snippet =
-            (start > 0 ? '...' : '') +
-            text.slice(start, end) +
-            (end < text.length ? '...' : '');
-          matches.push({
-            path: node.path,
-            num: node.num,
-            heading: node.heading,
-            snippet,
-          });
-        }
-      }
-      if (node.children) searchNodes(node.children);
-    }
-  }
-
-  searchNodes(toc.children);
+  const results = store.search(id, query, limit);
 
   return c.json({
     data: {
       jurisdiction: id,
       jurisdictionName: jurisdiction.name,
       query,
-      results: matches,
-      total: matches.length,
+      results,
+      total: results.length,
     },
     meta: { timestamp: new Date().toISOString() },
   });

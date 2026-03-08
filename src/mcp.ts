@@ -148,42 +148,20 @@ server.tool(
     max_results: z.number().optional().describe('Maximum results to return (default: 10)'),
   },
   async ({ jurisdiction, query, max_results }) => {
-    const toc = store.getToc(jurisdiction);
-    if (!toc) {
+    const j = store.getJurisdiction(jurisdiction);
+    if (!j) {
       return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found.` }] };
     }
 
     const limit = max_results ?? 10;
-    const queryLower = query.toLowerCase();
-    const matches: { path: string; heading: string; snippet: string }[] = [];
+    const results = store.search(jurisdiction, query, limit);
 
-    function searchNodes(nodes: TocNode[]) {
-      for (const node of nodes) {
-        if (matches.length >= limit) return;
-        if (node.hasContent) {
-          const text = store.getCodeText(jurisdiction, node.path);
-          if (text && text.toLowerCase().includes(queryLower)) {
-            const idx = text.toLowerCase().indexOf(queryLower);
-            const start = Math.max(0, idx - 60);
-            const end = Math.min(text.length, idx + query.length + 60);
-            const snippet = (start > 0 ? '...' : '') +
-              text.slice(start, end) +
-              (end < text.length ? '...' : '');
-            matches.push({ path: node.path, heading: `${node.num} ${node.heading}`.trim(), snippet });
-          }
-        }
-        if (node.children) searchNodes(node.children);
-      }
-    }
-
-    searchNodes(toc.children);
-
-    if (matches.length === 0) {
+    if (results.length === 0) {
       return { content: [{ type: 'text', text: `No sections found matching "${query}" in ${jurisdiction}.` }] };
     }
 
-    const lines = matches.map((m) =>
-      `${m.path}\n  ${m.heading}\n  ${m.snippet}`
+    const lines = results.map((m) =>
+      `${m.path}\n  ${m.num} ${m.heading}\n  ${m.snippet}`
     );
     return { content: [{ type: 'text', text: lines.join('\n\n') }] };
   }
