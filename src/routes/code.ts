@@ -45,7 +45,7 @@ codeRoutes.get('/:id/code/*', (c) => {
     return c.body(html);
   }
 
-  // Default: plain text
+  // Default: plain text with rich context for agents
   const text = store.getCodeText(id, path);
   if (!text) {
     return c.json(
@@ -54,12 +54,18 @@ codeRoutes.get('/:id/code/*', (c) => {
     );
   }
 
+  // Look up TOC node for heading/num context
+  const tocInfo = store.getTocNode(id, path);
+
   return c.json({
     data: {
       jurisdiction: id,
+      jurisdictionName: jurisdiction.name,
       path,
+      num: tocInfo?.num ?? null,
+      heading: tocInfo?.heading ?? null,
       text,
-      lastCrawled: jurisdiction.lastCrawled,
+      lastCrawled: jurisdiction.lastCrawled || null,
     },
     meta: { timestamp: new Date().toISOString() },
   });

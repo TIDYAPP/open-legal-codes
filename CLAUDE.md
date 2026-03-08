@@ -12,14 +12,50 @@ npm run dev              # Start dev server (port 3100, with watch)
 npm run build            # Compile TypeScript to dist/
 npm run start            # Run compiled server
 npm run typecheck        # Type-check without emitting
+npm run test             # Run test suite (vitest)
+npm run test:watch       # Run tests in watch mode
+npm run mcp              # Start MCP server (stdio transport)
 npm run crawl            # Run crawler (needs args, see CLI)
 ```
 
 ### CLI
 
 ```bash
-npx open-legal-codes crawl --jurisdiction ca-mountain-view
-npx open-legal-codes list --state CA
+# Query a specific code section
+npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+
+# Browse table of contents
+npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
+
+# Search for terms in a jurisdiction's code
+npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "parking"
+
+# Crawl a jurisdiction from its publisher
+npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
+
+# List available jurisdictions
+npx tsx src/cli.ts list --state CA
+```
+
+### MCP Server
+
+The MCP server exposes 5 tools for AI agents:
+- `lookup_jurisdiction` — find a jurisdiction by city/state
+- `list_jurisdictions` — list available jurisdictions
+- `get_table_of_contents` — browse a jurisdiction's code structure
+- `get_code_text` — retrieve the text of a specific code section
+- `search_code` — search for terms across a jurisdiction's code
+
+Configure in `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "legal-codes": {
+      "command": "npx",
+      "args": ["tsx", "src/mcp.ts"]
+    }
+  }
+}
 ```
 
 ## Architecture
@@ -78,7 +114,8 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - Municode crawler: **working** — can crawl full municipal codes
 - Cache/storage: **working** — reads and writes jurisdiction data
 - HTTP API routes: **working** — wired to CodeStore, returns text/xml/html
+- CLI: **working** — query, toc, search, crawl, list commands
+- MCP server: **working** — 5 tools for AI agent access
+- Tests: **working** — 44 tests across 5 test files (vitest)
 - American Legal crawler: **stubbed** — interface defined, not implemented
-- CLI: **basic** — crawl and list commands work
-- MCP server: **not started**
-- Search: **not started**
+- Search: **basic** — keyword search within a jurisdiction (linear scan)

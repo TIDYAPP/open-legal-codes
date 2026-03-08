@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Jurisdiction, TocTree } from '../types.js';
+import type { Jurisdiction, TocTree, TocNode } from '../types.js';
 
 /**
  * CodeStore — reads jurisdiction metadata, TOC trees, and USLM XML files
@@ -70,6 +70,24 @@ export class CodeStore {
 
   getToc(jurisdictionId: string): TocTree | undefined {
     return this.tocTrees.get(jurisdictionId);
+  }
+
+  /** Find a TOC node by path (for metadata lookups) */
+  getTocNode(jurisdictionId: string, codePath: string): TocNode | undefined {
+    const toc = this.tocTrees.get(jurisdictionId);
+    if (!toc) return undefined;
+    return this.findNodeByPath(toc.children, codePath);
+  }
+
+  private findNodeByPath(nodes: TocNode[], targetPath: string): TocNode | undefined {
+    for (const node of nodes) {
+      if (node.path === targetPath) return node;
+      if (targetPath.startsWith(node.path + '/') && node.children) {
+        const found = this.findNodeByPath(node.children, targetPath);
+        if (found) return found;
+      }
+    }
+    return undefined;
   }
 
   /** Read a USLM XML file from disk by jurisdiction and path */
