@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.215">
+  <meta>
+    <dc:title>Postaward</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.215"
+             temporalId="sSEC_ 2_215">
+      <num>SEC. 2.215</num>
+      <heading>Postaward</heading>
+      <content>
+        <p>a.</p>
+        <p>Bid protests. The purchasing agent may alter and/or shorten the normal bid protest process if emergency
+               circumstances will not permit a delay resulting from the normal bid protest process,
+               but such period shall be no less than twenty-four (24) hours.</p>
+        <p>b.</p>
+        <p>Authority to cancel procurements. The city manager or designee has the authority to rescind a purchase contract for
+               nonperformance within twenty-four (24) hours when a contractor or vendor, once awarded
+               a contract, is unable to immediately perform under the terms of the contract.</p>
+        <p>(Ord. No. 7.16, § 1, 5/24/16; Ord. No. 5.2025, § 6, 6/24/25.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

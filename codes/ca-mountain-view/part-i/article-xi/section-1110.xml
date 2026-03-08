@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1110">
+  <meta>
+    <dc:title>Actions against the city</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1110"
+             temporalId="sSection 1110">
+      <num>Section 1110</num>
+      <heading>Actions against the city</heading>
+      <content>
+        <p>All claims and actions for money or damages against the city or any commission, board,
+               officer, or employee thereof shall be governed by the California Tort Claims Act,
+               commencing with Title 1,
+               
+               Division 3.6, Section 810 of the Government Code
+               
+               .</p>
+        <p>(As amended April 12, 1960; November 2, 1993.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

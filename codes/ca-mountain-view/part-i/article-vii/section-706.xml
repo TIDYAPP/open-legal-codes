@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-vii/section-706">
+  <meta>
+    <dc:title>Financial interest in city contracts prohibited</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-vii/section-706"
+             temporalId="sSection 706">
+      <num>Section 706</num>
+      <heading>Financial interest in city contracts prohibited</heading>
+      <content>
+        <p>No officer or employee of the city shall become financially interested except by testate
+               or intestate succession, either directly or indirectly, in any contract, sale, purchase,
+               lease or transfer of real or personal property to which the city is a party, or be
+               employed by any public service corporation regulated by, or holding franchises in
+               the city if such activity or contract would violate the provisions of California Government
+               Code Section 1090, et seq. A willful violation of this provision shall be deemed a
+               misdemeanor. Any contract made in contravention of this section shall be void.</p>
+        <p>(As amended June 3, 1980; November 3, 1998.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

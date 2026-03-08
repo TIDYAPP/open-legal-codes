@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.11">
+  <meta>
+    <dc:title>Same—Not to be issued when sign to be primarily viewed from freeway</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.11"
+             temporalId="sSEC_ 3_18_11">
+      <num>SEC. 3.18.11</num>
+      <heading>Same—Not to be issued when sign to be primarily viewed from freeway</heading>
+      <content>
+        <p>No permit required by this division shall be issued to erect, construct or relocate
+               any advertising structure, billboard or sign, regardless of location, having the advertising
+               thereon viewed primarily from a freeway.</p>
+        <p>(Ord. No. 175.622, 8/8/60.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-iv/division-2/section-sec.-2.69.6">
+  <meta>
+    <dc:title>Creation of position of community service officer; duties</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-iv/division-2/section-sec.-2.69.6"
+             temporalId="sSEC_ 2_69_6">
+      <num>SEC. 2.69.6</num>
+      <heading>Creation of position of community service officer; duties</heading>
+      <content>
+        <p>Within the police department of the city is the position of &quot;community service officer.&quot;
+               It shall be the duty of any person occupying this position to:</p>
+        <p>(a)</p>
+        <p>Enforce all provisions of the Mountain View City Code and any ordinance enacted by
+                  the city council of the city which is not codified into this Code.</p>
+        <p>(b)</p>
+        <p>Enforce all provisions of state law declared to be misdemeanors or infractions, including
+                  all state vehicle laws applicable to street traffic in the city which may be assigned
+                  to such officer by the chief of police pursuant to subsection a. of Sec. 19.28 of Article 11 of Chapter 19 of this Code; and</p>
+        <p>(c)</p>
+        <p>Perform such other duties or functions which may be assigned or delegated to such
+                  officer by the chief of police pursuant to Sec. 1.14 of Chapter 1 of this Code.</p>
+        <p>(Ord. No. 15.79, 4/9/79.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

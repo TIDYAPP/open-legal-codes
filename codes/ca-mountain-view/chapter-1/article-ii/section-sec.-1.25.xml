@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.25">
+  <meta>
+    <dc:title>Judicial review</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-ii/section-sec.-1.25"
+             temporalId="sSEC_ 1_25">
+      <num>SEC. 1.25</num>
+      <heading>Judicial review</heading>
+      <content>
+        <p>Any person subject to a decision of the hearing officer may obtain judicial review
+               of the decision in the superior court pursuant to the provisions of California Government
+               Code Section 53069.4.</p>
+        <p>(Ord. No. 12.02, 7/23/02.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

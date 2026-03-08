@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.13">
+  <meta>
+    <dc:title>Same—Duration</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.13"
+             temporalId="sSEC_ 3_18_13">
+      <num>SEC. 3.18.13</num>
+      <heading>Same—Duration</heading>
+      <content>
+        <p>Permits issued pursuant to this division shall become null and void upon the expiration
+               of six (6) months after the date of issuance if the work authorized by such permit
+               has not been completed.</p>
+        <p>(Ord. No. 175.622, 8/8/60.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

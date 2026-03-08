@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-520">
+  <meta>
+    <dc:title>Violation of ordinances; penalty</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-520"
+             temporalId="sSection 520">
+      <num>Section 520</num>
+      <heading>Violation of ordinances; penalty</heading>
+      <content>
+        <p>A violation of any ordinance of the city shall constitute a misdemeanor, unless the
+               violation of such ordinance is designated as an infraction, and may be prosecuted
+               in the name of the People of the State of California or may be redressed by civil
+               action. The maximum fine or penalty for any misdemeanor or infraction shall not exceed
+               the maximum fine or penalty as set forth in the Government Code of the State of California
+               for the violation of a municipal ordinance.</p>
+        <p>(As amended November 2, 1993; November 3, 1998.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

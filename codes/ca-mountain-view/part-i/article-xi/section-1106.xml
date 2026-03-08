@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1106">
+  <meta>
+    <dc:title>Independent audit</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1106"
+             temporalId="sSection 1106">
+      <num>Section 1106</num>
+      <heading>Independent audit</heading>
+      <content>
+        <p>The council shall employ, at the beginning of each fiscal year, an independent certified
+               public accountant who, at such time or times as may be specified by the council, at
+               least annually, shall examine the books, records, inventories, and reports of all
+               officers and employees who receive, handle or disburse public funds and all such other
+               officers and employees and departments as the council may direct.</p>
+        <p>As soon as practicable after the end of the fiscal year, a final audit and report
+               shall be submitted by such accountant to the council, one copy thereof to be distributed
+               to each member, one to the city auditor, city manager and city attorney, respectively,
+               and three additional copies to be placed on file in the office of the city clerk where
+               they shall be available for inspection by the general public.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xiv/section-1400">
+  <meta>
+    <dc:title>Effect of Charter</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xiv/section-1400"
+             temporalId="sSection 1400">
+      <num>Section 1400</num>
+      <heading>Effect of Charter</heading>
+      <content>
+        <p>The organization, government and administration of the Public school system of the
+               City of Mountain View shall not be affected by the adoption of this Charter, but shall
+               continue in existence as is now or hereafter prescribed by the Education Code of the
+               State of California.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

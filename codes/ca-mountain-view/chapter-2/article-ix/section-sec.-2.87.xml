@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-ix/section-sec.-2.87">
+  <meta>
+    <dc:title>Specified departments of the city</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-ix/section-sec.-2.87"
+             temporalId="sSEC_ 2_87">
+      <num>SEC. 2.87</num>
+      <heading>Specified departments of the city</heading>
+      <content>
+        <p>In addition to the offices of city manager, city attorney, and city clerk, already
+               established in the City Charter, and the police department, already created by City
+               Code Section 2.66, the City of Mountain View shall have the following departments:</p>
+        <p>1.</p>
+        <p>Fire</p>
+        <p>2.</p>
+        <p>Public Works</p>
+        <p>3.</p>
+        <p>Maintenance</p>
+        <p>4.</p>
+        <p>Planning</p>
+        <p>5.</p>
+        <p>Recreation</p>
+        <p>6.</p>
+        <p>Library</p>
+        <p>7.</p>
+        <p>Finance</p>
+        <p>The city council shall, from time to time, provide by ordinance or resolution for
+               divisions, offices and/or agencies within such departments.</p>
+        <p>(Ord. No. 17.81, 9/14/81.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

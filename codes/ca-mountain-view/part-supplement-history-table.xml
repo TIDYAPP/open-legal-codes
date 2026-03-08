@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/section-supplement-history-table">
+  <meta>
+    <dc:title></dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/section-supplement-history-table"
+             temporalId="sSUPPLEMENT HISTORY TABLE">
+      <num>SUPPLEMENT HISTORY TABLE</num>
+      <heading></heading>
+      <content>
+        <p>The table below allows users of this code to quickly and accurately determine what
+            ordinances have been considered for codification in each supplement. Ordinances that
+            are of a general and permanent nature are codified in the code and are considered
+            &quot;Included.&quot; Ordinances that are not of a general and permanent nature and ordinances
+            that amend subject matter not found in the code are not codified and are considered
+            &quot;Omitted.&quot;</p>
+        <p>By adding to this table with each supplement, users of this code will be able to gain
+            a more complete picture of the code's historical evolution.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

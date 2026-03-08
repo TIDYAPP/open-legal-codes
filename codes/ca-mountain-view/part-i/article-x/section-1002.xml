@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-x/section-1002">
+  <meta>
+    <dc:title>Rules and regulations</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-x/section-1002"
+             temporalId="sSection 1002">
+      <num>Section 1002</num>
+      <heading>Rules and regulations</heading>
+      <content>
+        <p>The personnel system provided by this article shall be implemented by such rules and
+               regulations governing the administration thereof as are adopted by the council upon
+               the recommendation of the city manager.</p>
+        <p>(As amended June 3, 1980.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

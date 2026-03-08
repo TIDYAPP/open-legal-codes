@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvii/section-1706">
+  <meta>
+    <dc:title>Stabilization of rents</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvii/section-1706"
+             temporalId="sSection 1706">
+      <num>Section 1706</num>
+      <heading>Stabilization of rents</heading>
+      <content>
+        <p>(a)</p>
+        <p>Rents Stabilized. Upon the effective date of this Article, no Landlord shall charge Rent in an amount
+               that exceeds the sum of the Base Rent plus any lawful Rent increases actually implemented
+               pursuant to this Article.</p>
+        <p>(b)</p>
+        <p>Rent Increases Regulated. No Landlord shall increase Rent for a Covered Rental Unit except as authorized by
+               this Article. Rent increases shall be limited to those imposed pursuant to Section 1707 (Annual General Adjustment) and Section 1710(a) (Petition for Upward Adjustment—Fair Rate of Return). A Landlord may set the initial
+               Rent for a new tenancy pursuant to Section 1708 (Initial Rents for New Tenancies).</p>
+        <p>(c)</p>
+        <p>Security Deposit at Commencement of Tenancy Only. No Landlord shall increase a security or other deposit originally required from a
+               Tenant as a condition of occupancy of a Rental Unit.</p>
+        <p>(As added November 8, 2016.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

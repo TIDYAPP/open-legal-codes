@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.7">
+  <meta>
+    <dc:title>Same—Authorized rentals or leases</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-i/section-sec.-2.7"
+             temporalId="sSEC_ 2_7">
+      <num>SEC. 2.7</num>
+      <heading>Same—Authorized rentals or leases</heading>
+      <content>
+        <p>Nothing stated in Sec. 2.4 to 2.6 shall be construed to apply to lawful and legally authorized rentals or leases of
+               city equipment, tools or paraphernalia.</p>
+        <p>(Ord. No. 175.266, 7/14/54.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

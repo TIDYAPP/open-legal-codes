@@ -1,0 +1,12 @@
+{
+  "id": "ca-mountain-view",
+  "name": "Mountain View, CA",
+  "type": "city",
+  "state": "CA",
+  "codeName": "Mountain View, CA",
+  "publisher": {
+    "name": "municode",
+    "sourceId": "17072",
+    "url": "https://library.municode.com/ca/mountain_view/codes/city_code"
+  }
+}

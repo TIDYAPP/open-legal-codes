@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.4">
+  <meta>
+    <dc:title>Placing in vehicles prohibited; exception</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.4"
+             temporalId="sSEC_ 3_4">
+      <num>SEC. 3.4</num>
+      <heading>Placing in vehicles prohibited; exception</heading>
+      <content>
+        <p>No person shall distribute, deposit, place, throw, scatter or cast any commercial
+               or noncommercial handbill in or upon any automobile or other vehicle. The provisions
+               of this section shall not be deemed to prohibit the handing, transmitting or distributing
+               of any noncommercial handbill to the owner or other occupant of any automobile or
+               other vehicle, who is willing to accept the same.</p>
+        <p>(Ord. No. 175.481, 6/30/58.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-518">
+  <meta>
+    <dc:title>Signing and attesting ordinances</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-518"
+             temporalId="sSection 518">
+      <num>Section 518</num>
+      <heading>Signing and attesting ordinances</heading>
+      <content>
+        <p>All ordinances shall be signed by the mayor and attested by the city clerk.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

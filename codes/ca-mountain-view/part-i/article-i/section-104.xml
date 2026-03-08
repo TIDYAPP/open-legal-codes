@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-i/section-104">
+  <meta>
+    <dc:title>Continuance of contracts and public improvements</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-i/section-104"
+             temporalId="sSection 104">
+      <num>Section 104</num>
+      <heading>Continuance of contracts and public improvements</heading>
+      <content>
+        <p>All contracts entered into by the city or for its benefit prior to the effective date
+               of this Charter, shall continue in full force and effect. Public improvements for
+               which proceedings have been instituted under laws existing at the time this Charter
+               takes effect, in the discretion of the council, may be carried to completion as nearly
+               as practicable in accordance with the provisions of such existing laws or may be continued
+               or perfected under this Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

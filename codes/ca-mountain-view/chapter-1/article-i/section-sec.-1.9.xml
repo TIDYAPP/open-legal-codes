@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.9">
+  <meta>
+    <dc:title>Same—Same—Failure to appear</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.9"
+             temporalId="sSEC_ 1_9">
+      <num>SEC. 1.9</num>
+      <heading>Same—Same—Failure to appear</heading>
+      <content>
+        <p>Any person wilfully violating his written promise to appear in court issued pursuant
+               to the preceding section, is guilty of a misdemeanor regardless of the disposition
+               of the charge upon which he was originally arrested.</p>
+        <p>(Ord. No. 175.457, 3/10/58.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

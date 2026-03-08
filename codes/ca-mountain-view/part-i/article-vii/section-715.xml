@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-vii/section-715">
+  <meta>
+    <dc:title>Repealed by election June 3, 1980</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-vii/section-715"
+             temporalId="sSection 715">
+      <num>Section 715</num>
+      <heading>Repealed by election June 3, 1980</heading>
+      <content>
+        <p>Section 715. - Repealed by election June 3, 1980.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

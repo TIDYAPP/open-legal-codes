@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.1">
+  <meta>
+    <dc:title>How code designated and cited</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-1/article-i/section-sec.-1.1"
+             temporalId="sSEC_ 1_1">
+      <num>SEC. 1.1</num>
+      <heading>How code designated and cited</heading>
+      <content>
+        <p>The ordinances embraced in the following chapters and sections shall constitute and
+               be designated &quot;The Code of the City of Mountain View, California,&quot; and may be so cited.
+               Such code may also be cited as the &quot;Mountain View City Code.&quot;</p>
+        <p>(Code 1938, Sec. 1.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

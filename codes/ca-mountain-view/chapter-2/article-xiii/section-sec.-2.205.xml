@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.205">
+  <meta>
+    <dc:title>Departments to file estimates of needed supplies, materials, etc</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.205"
+             temporalId="sSEC_ 2_205">
+      <num>SEC. 2.205</num>
+      <heading>Departments to file estimates of needed supplies, materials, etc</heading>
+      <content>
+        <p>All departments shall file detailed estimates of their requirements in supplies, materials,
+               equipment and certain services in such manner, at such time and for such future periods
+               as the purchasing agent shall prescribe.</p>
+        <p>(Ord. No. 7.16, § 1, 5/24/16.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

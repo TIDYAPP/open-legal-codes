@@ -23,6 +23,11 @@ export function makeTemporalId(sectionNum: string): string {
 export function makeSlug(level: string, num: string): string {
   // "Chapter 5.10" → "chapter-5.10"
   // "Title 5" → "title-5"
-  const cleanNum = num.replace(/^(Title|Chapter|Article|Section|Part|Division)\s*/i, '');
-  return `${level.toLowerCase()}-${cleanNum}`;
+  // "PART I" → "part-i"
+  const cleanNum = num
+    .replace(/^(Title|Subtitle|Chapter|Subchapter|Article|Subarticle|Division|Subdivision|Part|Subpart|Section)\s*/i, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/^-|-$/g, '');
+  return `${level.toLowerCase()}-${cleanNum || 'untitled'}`;
 }

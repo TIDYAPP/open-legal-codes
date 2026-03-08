@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.56">
+  <meta>
+    <dc:title>Eviction prohibited</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.56"
+             temporalId="sSEC_ 3_56">
+      <num>SEC. 3.56</num>
+      <heading>Eviction prohibited</heading>
+      <content>
+        <p>No owner of any apartment house or mobile home park, nor the owner of any dwelling
+               unit located within a condominium project, mobile home park or planned unit development,
+               shall evict, or cause to be evicted, any individual on the basis that such individual,
+               while a lessee or tenant residing within such residential facility, went from door-to-door
+               within such residential facility seeking to communicate or disseminate political ideas
+               and/or solicit financial contributions pertaining to any candidate for elective office,
+               political party or measure.</p>
+        <p>(Ord. No. 39.78, 10/30/78.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

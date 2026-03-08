@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.8">
+  <meta>
+    <dc:title>Printing name and address of distributor or sponsor on handbills</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-i/section-sec.-3.8"
+             temporalId="sSEC_ 3_8">
+      <num>SEC. 3.8</num>
+      <heading>Printing name and address of distributor or sponsor on handbills</heading>
+      <content>
+        <p>No person shall distribute, deposit, scatter, hand out or circulate any commercial
+               or noncommercial handbill in any place, under any circumstances, which does not have
+               printed on the cover, front or back thereof, the name and address of the person who
+               caused the same to be distributed; provided, however, that in the case of a fictitious
+               person or club, in addition to such fictitious name, the true names and addresses
+               of the owners, managers or agents of the person sponsoring such handbill shall also
+               appear thereon.</p>
+        <p>(Ord. No. 175.481, 6/30/58.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

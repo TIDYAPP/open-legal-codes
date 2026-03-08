@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-501">
+  <meta>
+    <dc:title>Eligibility</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-501"
+             temporalId="sSection 501">
+      <num>Section 501</num>
+      <heading>Eligibility</heading>
+      <content>
+        <p>No person shall be eligible to be nominated for or to hold office as a member of the
+               council unless that person is and shall have been a resident and a registered voter
+               of the City of Mountain View at the time nomination papers are issued to the candidate
+               and that the person shall remain a resident and a qualified elector of the City of
+               Mountain View or of territory annexed thereto, as defined in the California Elections
+               Code.</p>
+        <p>(As amended April 9, 1974; June 3, 1980; November 3, 1998.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

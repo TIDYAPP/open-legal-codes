@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-510">
+  <meta>
+    <dc:title>Administering oaths; subpoenas</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-510"
+             temporalId="sSection 510">
+      <num>Section 510</num>
+      <heading>Administering oaths; subpoenas</heading>
+      <content>
+        <p>Each member of the council shall have the power to administer oaths and affirmations
+               in any investigation or proceeding pending before the council. The council shall have
+               the power and authority to compel the attendance of witnesses, to examine them under
+               oath and to compel the production of evidence before it. Subpoenas may be issued in
+               the name of the city and be attested by the city clerk. Disobedience of such subpoena
+               or the refusal to testify (upon other than constitutional grounds), shall be deemed
+               contempt and shall be punishable as provided by the general laws of this state.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

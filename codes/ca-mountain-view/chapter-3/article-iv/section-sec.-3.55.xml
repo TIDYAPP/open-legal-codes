@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.55">
+  <meta>
+    <dc:title>Expulsion of political canvassers from premises</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.55"
+             temporalId="sSEC_ 3_55">
+      <num>SEC. 3.55</num>
+      <heading>Expulsion of political canvassers from premises</heading>
+      <content>
+        <p>Nothing in this article shall prevent the owner of any apartment house, condominium
+               project, mobile home park, or planned unit development from expelling any political
+               canvasser from the property or premises who has engaged in conduct disruptive of the
+               owner's property. Speech by itself shall not be considered disruptive conduct. Disruptive
+               conduct by particular political canvassers shall not be grounds for expelling political
+               canvassers not engaged in such disruptive conduct, nor for preventing future access
+               to political canvassers.</p>
+        <p>(Ord. No. 39.78, 10/30/78.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

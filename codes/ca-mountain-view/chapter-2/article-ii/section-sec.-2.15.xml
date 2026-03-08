@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-ii/section-sec.-2.15">
+  <meta>
+    <dc:title>Subpoena power</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-ii/section-sec.-2.15"
+             temporalId="sSEC_ 2_15">
+      <num>SEC. 2.15</num>
+      <heading>Subpoena power</heading>
+      <content>
+        <p>In any investigation or hearing conducted in accordance with the personnel rules and
+               regulations, any lawfully authorized hearing body conducting such investigation or
+               hearing shall have the power to examine witnesses under oath and compel their attendance
+               or the production of evidence before it by subpoena issued in the name of the city.
+               Refusal of a person to produce documents, attend or testify in answer to such subpoena
+               shall subject such person to prosecution in the manner set forth by law for failure
+               to appear before the city council in response to a subpoena issued by the city council.</p>
+        <p>(Ord. No. 175.272, 8/11/54; Ord. No. 9.86, 3/18/86.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

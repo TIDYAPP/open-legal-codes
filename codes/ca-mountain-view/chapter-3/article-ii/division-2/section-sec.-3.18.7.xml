@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.7">
+  <meta>
+    <dc:title>Permit—Required</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-ii/division-2/section-sec.-3.18.7"
+             temporalId="sSEC_ 3_18_7">
+      <num>SEC. 3.18.7</num>
+      <heading>Permit—Required</heading>
+      <content>
+        <p>Except as otherwise provided in this division, it shall be unlawful for any person
+               to erect, alter or relocate within the city any sign, within view of a freeway, without
+               first obtaining a permit from the chief building inspector of the city, and paying
+               the required fee therefor.</p>
+        <p>(Ord. No. 175.622, 8/8/60.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

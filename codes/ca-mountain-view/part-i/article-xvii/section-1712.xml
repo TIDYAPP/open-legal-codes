@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xvii/section-1712">
+  <meta>
+    <dc:title>Judicial review</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xvii/section-1712"
+             temporalId="sSection 1712">
+      <num>Section 1712</num>
+      <heading>Judicial review</heading>
+      <content>
+        <p>A Landlord or Tenant aggrieved by any action or decision of the Committee may seek
+               judicial review pursuant to state law and this Article and its implementing regulations.
+               No action or decision by the Committee shall go into effect until any statutory time
+               period for such review has expired.</p>
+        <p>(As added November 8, 2016.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

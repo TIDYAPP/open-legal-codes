@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1100">
+  <meta>
+    <dc:title>The fiscal year</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1100"
+             temporalId="sSection 1100">
+      <num>Section 1100</num>
+      <heading>The fiscal year</heading>
+      <content>
+        <p>Unless otherwise provided by ordinance, the fiscal year of the city shall begin on
+               the first day of July of each year and end on the thirtieth day of June of the following
+               year.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

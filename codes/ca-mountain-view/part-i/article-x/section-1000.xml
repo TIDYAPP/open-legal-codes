@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-x/section-1000">
+  <meta>
+    <dc:title>Merit principle</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-x/section-1000"
+             temporalId="sSection 1000">
+      <num>Section 1000</num>
+      <heading>Merit principle</heading>
+      <content>
+        <p>Appointments and promotions in the classified service of the city shall be made according
+               to merit and fitness and from eligible lists to be established in accordance with
+               personnel rules and regulations adopted in the manner provided in this Charter.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

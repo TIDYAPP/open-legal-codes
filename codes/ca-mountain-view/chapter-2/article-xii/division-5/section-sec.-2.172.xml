@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xii/division-5/section-sec.-2.172">
+  <meta>
+    <dc:title>Campaign contribution limit—Voluntary expenditure limit not accepted</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xii/division-5/section-sec.-2.172"
+             temporalId="sSEC_ 2_172">
+      <num>SEC. 2.172</num>
+      <heading>Campaign contribution limit—Voluntary expenditure limit not accepted</heading>
+      <content>
+        <p>When the voluntary expenditure limit established in Division 3, Article XII, Chapter 2, has not been accepted by a candidate, no person shall make to any candidate for
+               city council or candidate-controlled committee, and no such candidate or candidate-controlled
+               committee shall accept from any person, a contribution or contributions that would
+               cause the total amount contributed by such person to the candidate or the candidate-controlled
+               committee to exceed five hundred dollars ($500.00) for each single election for city
+               council office. If contributions in excess of five hundred dollars ($500.00) are accepted,
+               the candidate or the candidate-controlled committee must return the excess amount
+               to the person who made the contribution within thirty (30) days of receipt.</p>
+        <p>(Ord. No. 5.22, § 6, 4/26/22.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-v/section-511">
+  <meta>
+    <dc:title>Citizen participation</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-v/section-511"
+             temporalId="sSection 511">
+      <num>Section 511</num>
+      <heading>Citizen participation</heading>
+      <content>
+        <p>No citizen shall be denied the right personally, or through counsel, to present grievances
+               or offer suggestions for the betterment of municipal affairs, at any regular meeting
+               of the council, nor to speak to the subject of any special meeting.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

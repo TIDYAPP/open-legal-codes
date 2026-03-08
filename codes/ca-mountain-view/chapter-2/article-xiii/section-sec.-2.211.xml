@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.211">
+  <meta>
+    <dc:title>Nonapplicability</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-xiii/section-sec.-2.211"
+             temporalId="sSEC_ 2_211">
+      <num>SEC. 2.211</num>
+      <heading>Nonapplicability</heading>
+      <content>
+        <p>The provisions of this article shall not be applicable to contracts for public works
+               as outlined in City Charter Section 1107, nor shall they apply to the following:</p>
+        <p>a.</p>
+        <p>Contracts involving the obtaining of professional or specialized services, including,
+                  but not limited to, services rendered by attorneys, architects, engineers, accountants
+                  and specialized consultants, except contracts for &quot;certain services&quot; as defined in
+                  Section 2.204;</p>
+        <p>b.</p>
+        <p>Where calling for bids on a competitive basis is, in the opinion of the purchasing
+                  agent, undesirable, impossible, unavailing or incongruous;</p>
+        <p>c.</p>
+        <p>Where the purchasing agent determines that the requirements can be met solely by a
+                  single patented article or process;</p>
+        <p>d.</p>
+        <p>Emergency situations;</p>
+        <p>e.</p>
+        <p>Where, in the sale or exchange of real property by the city, a public purpose is accomplished
+                  or the public interest is served by such sale or exchange, and the city council so
+                  finds.</p>
+        <p>(Ord. No. 7.16, § 1, 5/24/16; Ord. No. 5.17, § 2, 10/24/17.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

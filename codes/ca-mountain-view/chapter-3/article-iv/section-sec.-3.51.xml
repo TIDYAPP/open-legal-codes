@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.51">
+  <meta>
+    <dc:title>Purpose of article</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-3/article-iv/section-sec.-3.51"
+             temporalId="sSEC_ 3_51">
+      <num>SEC. 3.51</num>
+      <heading>Purpose of article</heading>
+      <content>
+        <p>It is the purpose of this article to provide an opportunity to persons residing in
+               apartment houses, condominium projects, mobile home parks or planned unit developments
+               within the City of Mountain View to gain access to any political canvasser who wishes
+               to contact such persons on a door-to-door basis, so such residents may receive the
+               benefit of any oral or written information such political canvasser is willing to
+               provide regarding any candidate for elective office, political party, or measure.</p>
+        <p>(Ord. No. 39.78, 10/30/78.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

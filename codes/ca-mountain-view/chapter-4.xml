@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/section-chapter-4">
+  <meta>
+    <dc:title>Ambulances</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/section-chapter-4"
+             temporalId="sCHAPTER 4">
+      <num>CHAPTER 4</num>
+      <heading>Ambulances</heading>
+      <content>
+        <p>Repealed May 10, 1983. (Ord. No. 97.76, 11/22/76; Ord. No. 61.77, 10/31/77; Ord. No.
+            11.83, 5/10/83.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

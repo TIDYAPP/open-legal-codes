@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1112">
+  <meta>
+    <dc:title>Centralized purchasing</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1112"
+             temporalId="sSection 1112">
+      <num>Section 1112</num>
+      <heading>Centralized purchasing</heading>
+      <content>
+        <p>A centralized purchasing system shall be established for all city departments, offices
+               and agencies. The city manager shall recommend and the council shall consider and
+               adopt by ordinance, rules and regulations governing the contracting for, purchasing,
+               inspection, storing, distribution or disposal of all property, supplies, materials,
+               and equipment required by any department, office or agency of the city government.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

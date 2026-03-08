@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xi/section-1105">
+  <meta>
+    <dc:title>Adoption of the budget</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xi/section-1105"
+             temporalId="sSection 1105">
+      <num>Section 1105</num>
+      <heading>Adoption of the budget</heading>
+      <content>
+        <p>After the conclusion of the public hearing the council shall further consider the
+               proposed budget and make any revisions thereof that it may deem advisable and thereafter
+               it shall adopt the budget with revisions, if any. Upon final adoption, the budget
+               shall be in effect for the ensuing fiscal year.</p>
+        <p>From the effective date of the budget, the several amounts stated therein as proposed
+               expenditures shall be and become appropriated to the various departments or activities
+               therein described. All appropriations shall lapse at the end of the fiscal year to
+               the extent that they shall not have been expended or lawfully encumbered.</p>
+        <p>At any meeting after the adoption of the budget, the council may amend or supplement
+               the budget by motion adopted by the affirmative votes of at least five members, so
+               as to authorize the transfer of unused balances appropriated for one purpose to another
+               purpose, or to appropriate available revenue not included in the budget.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

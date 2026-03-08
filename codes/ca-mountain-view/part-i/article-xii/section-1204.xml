@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xii/section-1204">
+  <meta>
+    <dc:title>Repealed by election November 3, 1998</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xii/section-1204"
+             temporalId="sSection 1204">
+      <num>Section 1204</num>
+      <heading>Repealed by election November 3, 1998</heading>
+      <content>
+        <p>Section 1204. - Repealed by election November 3, 1998.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

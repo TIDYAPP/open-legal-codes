@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/chapter-2/article-iv/division-2/section-sec.-2.69.8">
+  <meta>
+    <dc:title>Same—Powers of arrest</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/chapter-2/article-iv/division-2/section-sec.-2.69.8"
+             temporalId="sSEC_ 2_69_8">
+      <num>SEC. 2.69.8</num>
+      <heading>Same—Powers of arrest</heading>
+      <content>
+        <p>Any community service officer may arrest a person without a warrant whenever such
+               officer has reasonable cause to believe that the person to be arrested has committed
+               a misdemeanor or an infraction in such officer's presence which is a violation of
+               state law, this Code or any uncodified ordinance of the city.</p>
+        <p>(Ord. No. 15.79, 4/9/79.)</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lawDoc xmlns="http://xml.house.gov/schemas/uslm/1.0"
+        identifier="/ca-mountain-view/part-i/article-xii/section-1207">
+  <meta>
+    <dc:title>Article not applicable in certain cases</dc:title>
+  </meta>
+  <main>
+    <section identifier="/ca-mountain-view/part-i/article-xii/section-1207"
+             temporalId="sSection 1207">
+      <num>Section 1207</num>
+      <heading>Article not applicable in certain cases</heading>
+      <content>
+        <p>Nothing in this article shall be construed as applying to or requiring the operators
+               of refrigeration or storage utilities or the carriers of freight or passengers not
+               operating over a fixed route, or other public utilities or services not specifically
+               described in this article, to obtain a franchise to operate within the city unless
+               required so to do by ordinance of the City of Mountain View.</p>
+      </content>
+    </section>
+  </main>
+</lawDoc>
