@@ -15,7 +15,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "mcp": "tsx src/mcp.ts"
+    "mcp": "tsx src/mcp.ts",
+    "web": "npm run dev --workspace=web",
+    "web:build": "npm run build --workspace=web"
   },
   "keywords": [
     "law",
@@ -28,6 +30,7 @@
     "government"
   ],
   "license": "MIT",
+  "workspaces": ["web"],
   "dependencies": {
     "@hono/node-server": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.27.1",

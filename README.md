@@ -141,12 +141,28 @@ Publisher APIs          Cache (filesystem)        Consumers
 
 ### Publisher Support
 
-| Publisher | Status | Coverage |
-|-----------|--------|----------|
-| **Municode** | Working | ~3,200 municipalities |
-| **American Legal** | Stubbed | ~2,000 municipalities |
+The US municipal code market is dominated by three platforms under two parent companies:
+
+| Publisher | Status | Coverage | Parent |
+|-----------|--------|----------|--------|
+| **Municode** | Working | ~4,200 municipalities | CivicPlus |
+| **American Legal** | Stubbed | ~3,500 municipalities | ICC |
+| **eCode360 (General Code)** | Not started | ~4,400 municipalities | ICC |
+
+These three cover the vast majority of US municipal codes online (~8,000-10,000 jurisdictions total).
 
 Adding a new publisher means implementing the `CrawlerAdapter` interface in `src/crawlers/`.
+
+### Web App
+
+A Next.js frontend for browsing codes is included in `web/`:
+
+```bash
+npm run dev           # Start API server (port 3100)
+npm run web           # Start web app (port 3000)
+```
+
+The web app proxies API requests to the backend and includes agent usage instructions on every page.
 
 ## Production Deployment
 

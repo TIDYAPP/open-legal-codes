@@ -16,6 +16,8 @@ npm run test             # Run test suite (vitest)
 npm run test:watch       # Run tests in watch mode
 npm run mcp              # Start MCP server (stdio transport)
 npm run crawl            # Run crawler (needs args, see CLI)
+npm run web              # Start Next.js frontend (port 3000)
+npm run web:build        # Build Next.js frontend
 ```
 
 ### CLI
@@ -117,6 +119,8 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - HTTP API routes: **working** — wired to CodeStore, returns text/xml/html
 - CLI: **working** — query, toc, search, crawl, list commands
 - MCP server: **working** — 5 tools for AI agent access
-- Tests: **working** — 49 tests across 5 test files (vitest)
+- Web app: **working** — Next.js frontend in `web/` (browse, search, view codes)
+- Tests: **working** — 59 tests across 6 test files (vitest)
+- Search: **working** — in-memory index, keyword search via API, CLI, and MCP
 - American Legal crawler: **stubbed** — interface defined, not implemented
-- Search: **working** — keyword search within a jurisdiction via API, CLI, and MCP (linear scan)
+- eCode360 crawler: **not started** — has paid API, may need HTML scraping
