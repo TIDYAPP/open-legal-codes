@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { AgentBanner } from '@/components/agent-banner';
 
 interface SearchResult {
   path: string;
@@ -21,10 +20,9 @@ export default function SearchPage({
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  // Resolve params
   if (!jurisdiction) {
     params.then((p) => setJurisdiction(p.jurisdiction));
-    return <p>Loading...</p>;
+    return null;
   }
 
   async function handleSearch(e: React.FormEvent) {
@@ -44,53 +42,48 @@ export default function SearchPage({
   }
 
   return (
-    <div>
-      <div className="breadcrumbs mb-4">
-        <a href="/">Jurisdictions</a>
-        <span className="separator">/</span>
+    <div className="page">
+      <div className="breadcrumbs">
+        <a href="/">Codes</a>
+        <span className="sep">/</span>
         <a href={`/${jurisdiction}`}>{jurisdiction}</a>
-        <span className="separator">/</span>
-        <span className="text-gray-900">Search</span>
+        <span className="sep">/</span>
+        <span>Search</span>
       </div>
 
-      <h1 className="text-xl font-semibold mb-4">Search {jurisdiction}</h1>
+      <h1>Search</h1>
 
-      <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+      <form onSubmit={handleSearch} className="search-bar">
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for keywords (e.g. rental, parking, dog)"
-          style={{ flex: 1 }}
+          placeholder="Search for keywords..."
+          autoFocus
         />
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Searching...' : 'Search'}
+        <button type="submit" disabled={loading}>
+          {loading ? '...' : 'Search'}
         </button>
       </form>
 
-      <AgentBanner />
-
       {searched && (
-        <div className="mt-4 space-y-2">
+        <div>
           {results.length === 0 ? (
-            <p className="text-gray-500">No results found for &quot;{query}&quot;.</p>
+            <p className="text-muted">No results for &quot;{query}&quot;</p>
           ) : (
             <>
-              <p className="text-sm text-gray-500 mb-4">{results.length} sections found</p>
-              {results.map((r) => (
-                <a
-                  key={r.path}
-                  href={`/${jurisdiction}/${r.path}`}
-                  className="card block"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <div className="font-medium text-sm">
-                    {r.num}{r.heading ? ` — ${r.heading}` : ''}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">{r.path}</div>
-                  <div className="text-sm text-gray-700 mt-2">{r.snippet}</div>
-                </a>
-              ))}
+              <p className="text-xs text-faint mb-8">{results.length} results</p>
+              <div className="list">
+                {results.map((r) => (
+                  <a key={r.path} href={`/${jurisdiction}/${r.path}`}>
+                    <div style={{ fontWeight: 500, fontSize: 14 }}>
+                      {r.num}{r.heading ? ` — ${r.heading}` : ''}
+                    </div>
+                    <div className="text-xs text-faint mt-8">{r.path}</div>
+                    {r.snippet && <div className="text-sm text-muted mt-8">{r.snippet}</div>}
+                  </a>
+                ))}
+              </div>
             </>
           )}
         </div>

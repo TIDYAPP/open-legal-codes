@@ -102,6 +102,79 @@ This is the core value — agents can verify their own claims:
 4. Agent answers based on the real legislative text
 5. **If search returns nothing, the agent flags it** rather than making something up
 
+### What Agents Can Do With This
+
+#### Ground real-world advice in actual law
+
+Today, when you ask an AI "can I build a shed in my backyard?", you get hedge-everything answers: *"You should check with your local building department."* With Open Legal Codes, the agent checks for you:
+
+```
+Agent receives: "I want to build a 200 sq ft shed in Mountain View"
+
+1. search_code(jurisdiction: "ca-mountain-view", query: "accessory structure")
+   → finds Chapter 36, Zoning Ordinance
+
+2. get_code_text(jurisdiction: "ca-mountain-view", path: "chapter-36/article-ii/...")
+   → reads setback requirements, height limits, permit thresholds
+
+3. Agent responds:
+   "Mountain View allows accessory structures up to 120 sq ft without a permit,
+    but your 200 sq ft shed requires a building permit per Sec. 36.28.15(a).
+    Setbacks: 5 ft from side/rear property lines. Max height: 15 ft.
+    Full text: https://openlegalcodes.org/ca-mountain-view/chapter-36/..."
+```
+
+The agent goes from "check with your city" to citing the exact section, with a link the user can verify themselves.
+
+#### Compare laws across jurisdictions
+
+No human wants to manually read 10 cities' zoning codes to figure out where short-term rentals are allowed. An agent can query all of them in seconds:
+
+```
+User: "Which Bay Area cities allow Airbnb?"
+
+Agent calls search_code() across multiple jurisdictions:
+  search_code(jurisdiction: "ca-mountain-view", query: "short-term rental")
+  search_code(jurisdiction: "ca-san-jose", query: "short-term rental")
+  search_code(jurisdiction: "ca-palo-alto", query: "short-term rental")
+  ...
+
+Then reads the relevant sections with get_code_text() and compares:
+
+  "Here's what I found:
+   - Mountain View: Allowed with a business license, max 180 days/year (Sec. 36.42)
+   - San Jose: Allowed, host must be primary resident, max 180 days (Ch. 6.86)
+   - Palo Alto: Prohibited in residential zones (Sec. 18.12.030)
+   Sources: [links to each section]"
+```
+
+This turns days of paralegal research into a single conversation. Useful for real estate investors, businesses expanding to new cities, and policy researchers.
+
+#### Validate agent-generated plans against local law
+
+When agents start generating actionable plans — open a restaurant, renovate a house, launch an event — they can validate each step against the actual code before the user acts on bad advice:
+
+```
+User: "Help me plan opening a food truck in Missoula"
+
+Agent generates initial plan, then checks each step:
+
+1. search_code(jurisdiction: "mt-missoula", query: "mobile food vendor")
+   → finds Title 8, Business Regulations
+
+2. get_code_text() on each relevant section, then flags issues:
+
+   "Here's your checklist with legal requirements:
+    ✓ Business license required (Sec. 8.04.010) — $50/year
+    ✓ Mobile food vendor permit required (Sec. 8.60.020)
+    ⚠ Cannot operate within 200 ft of a restaurant during lunch hours (Sec. 8.60.040)
+    ⚠ Must have written permission from property owner for each location (Sec. 8.60.030)
+    ✗ Downtown district has additional restrictions — see Sec. 8.60.050
+    Full ordinance: [links]"
+```
+
+Instead of a generic plan that misses local requirements, the agent produces one that's grounded in what the law actually says — and flags the gotchas that trip people up.
+
 ## REST API
 
 Base URL: `https://openlegalcodes.org/api/v1`

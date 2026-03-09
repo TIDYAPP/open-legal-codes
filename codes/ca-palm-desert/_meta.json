@@ -5,9 +5,8 @@
   "state": "CA",
   "codeName": "Palm Desert Municipal Code",
   "publisher": {
-    "name": "municode",
-    "sourceId": "palm_desert",
-    "url": "https://library.municode.com/ca/palm_desert/codes/code_of_ordinances"
-  },
-  "notes": "Also available on American Legal: https://codelibrary.amlegal.com/codes/palmdesert/latest/palmdesert_ca"
+    "name": "amlegal",
+    "sourceId": "palmdesert",
+    "url": "https://codelibrary.amlegal.com/codes/palmdesert/latest/palmdesert_ca"
+  }
 }

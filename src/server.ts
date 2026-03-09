@@ -6,10 +6,13 @@ import { tocRoutes } from './routes/toc.js';
 import { codeRoutes } from './routes/code.js';
 import { searchRoutes } from './routes/search.js';
 import { lookupRoutes } from './routes/lookup.js';
+import { registryRoutes } from './routes/registry.js';
 
 import { store } from './store/index.js';
+import { registryStore } from './registry/store.js';
 
 store.initialize();
+registryStore.initialize();
 
 const app = new Hono();
 
@@ -47,6 +50,7 @@ api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);
 api.route('/jurisdictions', searchRoutes);
 api.route('/lookup', lookupRoutes);
+api.route('/registry', registryRoutes);
 
 app.route('/api/v1', api);
 

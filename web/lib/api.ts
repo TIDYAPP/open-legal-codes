@@ -75,3 +75,59 @@ export async function searchCode(
   const data = await apiFetch(`/api/v1/jurisdictions/${id}/search?q=${encodeURIComponent(query)}&limit=${limit}`);
   return data.data;
 }
+
+// --- Registry / Map ---
+
+export interface GeoEntry {
+  id: string;
+  lat: number;
+  lng: number;
+  /** status: 'available' | 'cached' */
+  s: string;
+  /** publisher name */
+  p: string;
+  /** jurisdiction type */
+  t: string;
+  /** display name */
+  n: string;
+  /** state abbreviation */
+  st: string | null;
+  /** population */
+  pop: number | null;
+}
+
+export interface RegistryStats {
+  total: number;
+  byPublisher: Record<string, number>;
+  byStatus: Record<string, number>;
+  byType: Record<string, number>;
+  byState: Record<string, number>;
+}
+
+export async function getRegistryGeo(): Promise<GeoEntry[]> {
+  const data = await apiFetch('/api/v1/registry/geo');
+  return data.data;
+}
+
+export async function getRegistryStats(): Promise<RegistryStats> {
+  const data = await apiFetch('/api/v1/registry/stats');
+  return data.data;
+}
+
+// --- Registry entries (full catalog) ---
+
+export interface RegistryEntry {
+  id: string;
+  name: string;
+  type: 'federal' | 'state' | 'county' | 'city' | 'hoa';
+  state: string | null;
+  publisher: string;
+  sourceUrl: string;
+  status: 'available' | 'cached';
+  population: number | null;
+}
+
+export async function getRegistryEntries(): Promise<RegistryEntry[]> {
+  const data = await apiFetch('/api/v1/registry');
+  return data.data;
+}

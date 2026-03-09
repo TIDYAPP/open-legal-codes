@@ -1,5 +1,4 @@
 import { getCodeText, getJurisdiction } from '@/lib/api';
-import { AgentBanner } from '@/components/agent-banner';
 
 export default async function CodePage({
   params,
@@ -17,45 +16,32 @@ export default async function CodePage({
     ]);
   } catch {
     return (
-      <div className="card">
-        <p>Section not found.</p>
-        <a href={`/${jurisdiction}`} className="mt-2 block">Back to table of contents</a>
+      <div className="page">
+        <p>Section not found. <a href={`/${jurisdiction}`}>Back to table of contents</a></p>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="breadcrumbs mb-4">
-        <a href="/">Jurisdictions</a>
-        <span className="separator">/</span>
+    <div className="page">
+      <div className="breadcrumbs">
+        <a href="/">Codes</a>
+        <span className="sep">/</span>
         <a href={`/${jurisdiction}`}>{j.name}</a>
-        <span className="separator">/</span>
-        <span className="text-gray-900">{codePath}</span>
+        <span className="sep">/</span>
+        <span>{codePath}</span>
       </div>
 
       {code.num && (
-        <h1 className="text-xl font-semibold mb-1">
-          {code.num}{code.heading ? ` — ${code.heading}` : ''}
-        </h1>
+        <h1>{code.num}{code.heading ? ` — ${code.heading}` : ''}</h1>
       )}
-      <p className="text-sm text-gray-500 mb-4">{j.name} · {codePath}</p>
+      <p className="meta mb-16">{j.name}</p>
 
-      <AgentBanner />
+      <div className="section-text">{code.text}</div>
 
-      <div className="card mt-4">
-        <div className="whitespace-pre-wrap leading-relaxed text-sm">
-          {code.text}
-        </div>
-      </div>
-
-      <div className="mt-6 text-sm text-gray-500 space-y-1">
-        <p>
-          Permalink: <code className="font-mono text-xs">https://openlegalcodes.org/{jurisdiction}/{codePath}</code>
-        </p>
-        <p>
-          API: <code className="font-mono text-xs">GET https://openlegalcodes.org/api/v1/jurisdictions/{jurisdiction}/code/{codePath}</code>
-        </p>
+      <div className="meta mt-24">
+        <p>Permalink: <code>openlegalcodes.org/{jurisdiction}/{codePath}</code></p>
+        <p>API: <code>GET /api/v1/jurisdictions/{jurisdiction}/code/{codePath}</code></p>
       </div>
     </div>
   );

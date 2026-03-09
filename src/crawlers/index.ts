@@ -4,18 +4,21 @@ import { AmlegalCrawler } from './amlegal.js';
 import { Ecode360Crawler } from './ecode360.js';
 import { EcfrCrawler } from './ecfr.js';
 import { CaliforniaLeginfoCrawler } from './ca-leginfo.js';
+import { createFallbackClient } from './browserbase-client.js';
 
 /**
  * Get the appropriate crawler adapter for a given publisher name.
+ * For amlegal and ecode360, uses a fallback client that tries plain HTTP
+ * first and only switches to Browserbase if blocked (cheaper).
  */
 export function getCrawler(publisherName: string): CrawlerAdapter {
   switch (publisherName) {
     case 'municode':
       return new MunicodeCrawler();
     case 'amlegal':
-      return new AmlegalCrawler();
+      return new AmlegalCrawler(createFallbackClient({ minDelayMs: 1000 }) as any);
     case 'ecode360':
-      return new Ecode360Crawler();
+      return new Ecode360Crawler(createFallbackClient({ minDelayMs: 2000 }) as any);
     case 'ecfr':
       return new EcfrCrawler();
     case 'ca-leginfo':

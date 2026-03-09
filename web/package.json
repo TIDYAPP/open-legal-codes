@@ -8,9 +8,18 @@
     "start": "next start"
   },
   "dependencies": {
+    "@deck.gl/core": "^9.2.11",
+    "@deck.gl/layers": "^9.2.11",
+    "@deck.gl/mapbox": "^9.2.11",
+    "@deck.gl/react": "^9.2.11",
+    "@types/leaflet": "^1.9.21",
+    "leaflet": "^1.9.4",
+    "maplibre-gl": "^5.19.0",
     "next": "^15.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
+    "react-map-gl": "^8.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

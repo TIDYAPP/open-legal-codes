@@ -30,13 +30,19 @@
     "government"
   ],
   "license": "MIT",
-  "workspaces": ["web"],
+  "workspaces": [
+    "web"
+  ],
   "dependencies": {
+    "@browserbasehq/sdk": "^2.7.0",
+    "@browserbasehq/stagehand": "^3.1.0",
     "@hono/node-server": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "cheerio": "^1.0.0",
     "fast-xml-parser": "^4.0.0",
-    "hono": "^4.0.0"
+    "hono": "^4.0.0",
+    "playwright-core": "^1.58.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

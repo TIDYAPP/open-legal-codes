@@ -45,6 +45,12 @@ export class Ecode360Crawler implements CrawlerAdapter {
     });
   }
 
+  async dispose(): Promise<void> {
+    if (typeof (this.http as any).dispose === 'function') {
+      await (this.http as any).dispose();
+    }
+  }
+
   async *listJurisdictions(state?: string): AsyncIterable<Jurisdiction> {
     const states = state ? [state.toUpperCase()] : [];
 
@@ -105,8 +111,27 @@ export class Ecode360Crawler implements CrawlerAdapter {
   }
 
   async fetchToc(sourceId: string): Promise<RawTocNode[]> {
+    // Try the JSON TOC API endpoint first (works with Browserbase)
+    const tocApiUrl = `${SITE_BASE}/toc/${sourceId}`;
+    console.log(`[ecode360] Fetching TOC from ${tocApiUrl}`);
+
+    try {
+      const tocHtml = await this.http.getHtml(tocApiUrl);
+      // Extract JSON: strip HTML tags if the browser wrapped it in <html><body><pre>...
+      const $ = cheerio.load(tocHtml);
+      const jsonText = $('pre').first().text() || $('body').text() || tocHtml;
+      const tocRoot: Ecode360TocNode = JSON.parse(jsonText.trim());
+      // Root node is the code itself; children are the top-level parts
+      const children = tocRoot.children || [];
+      console.log(`[ecode360] Got ${children.length} top-level TOC nodes from API`);
+      return children.map(node => this.transformTocNode(node));
+    } catch (err) {
+      console.warn(`[ecode360] TOC API failed, falling back to HTML: ${err}`);
+    }
+
+    // Fallback: fetch the main page and extract TOC
     const url = `${SITE_BASE}/${sourceId}`;
-    console.log(`[ecode360] Fetching TOC from ${url}`);
+    console.log(`[ecode360] Fetching TOC from ${url} (HTML fallback)`);
 
     const html = await this.http.getHtml(url);
     const $ = cheerio.load(html);
@@ -124,8 +149,8 @@ export class Ecode360Crawler implements CrawlerAdapter {
       }
     }
 
-    // Fallback: parse TOC from HTML links
-    console.warn('[ecode360] No data-toc-nodes found, falling back to HTML parsing');
+    // Last resort: parse TOC from HTML links
+    console.warn('[ecode360] No data-toc-nodes found, falling back to link parsing');
     return this.parseTocFromLinks($);
   }
 
@@ -172,21 +197,35 @@ export class Ecode360Crawler implements CrawlerAdapter {
   }
 
   async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    // Fetch the page for this GUID (returns the full chapter content)
     const url = `${SITE_BASE}/${sectionId}`;
     console.log(`[ecode360] Fetching section ${sectionId}`);
 
     const html = await this.http.getHtml(url);
     const $ = cheerio.load(html);
 
-    // Try to extract just the section content by GUID
-    const sectionContent = $(`#${sectionId}_content, .section_content#${sectionId}_content`).first();
+    // Try to extract section content by GUID
+    const sectionContent = $(`#${sectionId}_content`).first();
     if (sectionContent.length) {
-      // Include the section title
-      const sectionTitle = $(`.contentTitle[data-guid="${sectionId}"]`).first();
+      const sectionTitle = $(`.contentTitle[data-guid="${sectionId}"], #${sectionId}_title`).first();
       const titleHtml = sectionTitle.length ? sectionTitle.toString() : '';
       return {
         html: titleHtml + sectionContent.html(),
+        fetchedAt: new Date().toISOString(),
+        sourceUrl: url,
+      };
+    }
+
+    // For chapter/article pages rendered by Browserbase, extract all section contents
+    const allSections = $('[id$="_content"]');
+    if (allSections.length > 1) {
+      let combinedHtml = '';
+      allSections.each((_i, el) => {
+        const id = $(el).attr('id')?.replace('_content', '') || '';
+        const title = $(`#${id}_title`).first();
+        combinedHtml += (title.length ? title.toString() : '') + $.html(el);
+      });
+      return {
+        html: combinedHtml,
         fetchedAt: new Date().toISOString(),
         sourceUrl: url,
       };
