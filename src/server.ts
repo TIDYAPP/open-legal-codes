@@ -19,12 +19,17 @@ const allowedOrigins = process.env.CORS_ORIGINS
   : ['https://openlegalcodes.org', 'http://localhost:3000'];
 app.use('/api/*', cors({ origin: allowedOrigins }));
 
-// Health check
+// Health check with uptime and cache stats
+const startTime = Date.now();
 app.get('/', (c) =>
   c.json({
     name: 'Open Legal Codes',
     version: '0.1.0',
-    description: 'Retrieve US legal codes programmatically',
+    status: 'ok',
+    uptime_seconds: Math.floor((Date.now() - startTime) / 1000),
+    cache: {
+      jurisdictions: store.listJurisdictions().length,
+    },
     endpoints: {
       jurisdictions: '/api/v1/jurisdictions',
       lookup: '/api/v1/lookup?city=Mountain+View&state=CA',
