@@ -4,6 +4,7 @@ import type { Jurisdiction, TocNode } from '../types.js';
 import { transformToc, flattenContentNodes } from './toc-transformer.js';
 import { htmlToUslm } from '../converter/html-to-uslm.js';
 import { CodeWriter } from '../store/writer.js';
+import { crawlTracker } from '../crawl-tracker.js';
 
 export interface CrawlOptions {
   jurisdiction: Jurisdiction;
@@ -35,9 +36,13 @@ export async function runCrawl(
     errors: [],
   };
 
+  // Register active crawl
+  crawlTracker.start(jurisdiction.id);
+
   // Phase 1: Fetch TOC
   console.log(`\n[crawl] Fetching TOC for ${jurisdiction.name}...`);
   onProgress?.(progress);
+  crawlTracker.updateProgress(jurisdiction.id, progress);
 
   const rawToc = await crawler.fetchToc(sourceId);
   const tocTree = transformToc(rawToc, jurisdiction.id, jurisdiction.name);
@@ -59,6 +64,7 @@ export async function runCrawl(
   progress.total = contentNodes.length;
   console.log(`[crawl] Found ${contentNodes.length} content sections to fetch`);
   onProgress?.(progress);
+  crawlTracker.updateProgress(jurisdiction.id, progress);
 
   for (const node of contentNodes) {
     progress.currentPath = node.path;
@@ -90,6 +96,7 @@ export async function runCrawl(
 
     progress.completed++;
     onProgress?.(progress);
+    crawlTracker.updateProgress(jurisdiction.id, progress);
   }
 
   // Phase 3: Update registry
@@ -102,6 +109,7 @@ export async function runCrawl(
 
   progress.phase = 'done';
   onProgress?.(progress);
+  crawlTracker.finish(jurisdiction.id);
 
   console.log(`\n[crawl] Done. ${progress.completed} sections, ${progress.errors.length} errors.`);
   return progress;

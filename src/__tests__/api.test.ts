@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { Hono } from 'hono';
 import { jurisdictionsRoutes } from '../routes/jurisdictions.js';
 import { tocRoutes } from '../routes/toc.js';
@@ -6,6 +6,7 @@ import { codeRoutes } from '../routes/code.js';
 import { searchRoutes } from '../routes/search.js';
 import { lookupRoutes } from '../routes/lookup.js';
 import { store } from '../store/index.js';
+import { crawlTracker } from '../crawl-tracker.js';
 
 // Initialize store before tests
 beforeAll(() => {
@@ -169,5 +170,69 @@ describe('GET /api/v1/lookup', () => {
   it('returns 400 with no params', async () => {
     const res = await fetch('/api/v1/lookup');
     expect(res.status).toBe(400);
+  });
+});
+
+describe('202 CRAWL_IN_PROGRESS responses', () => {
+  afterEach(() => {
+    crawlTracker.finish('ca-mountain-view');
+  });
+
+  it('returns 202 for code request when crawl is active', async () => {
+    // Simulate an active crawl — tracker is active but path not yet cached
+    crawlTracker.start('ca-mountain-view');
+    crawlTracker.updateProgress('ca-mountain-view', {
+      phase: 'sections',
+      total: 300,
+      completed: 42,
+      errors: [],
+    });
+
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/code/nonexistent-path');
+    expect(res.status).toBe(202);
+    const body = await res.json();
+    expect(body.status).toBe('CRAWL_IN_PROGRESS');
+    expect(body.progress.phase).toBe('sections');
+    expect(body.progress.total).toBe(300);
+    expect(body.progress.completed).toBe(42);
+    expect(body.retryAfter).toBe(30);
+    expect(body.startedAt).toBeDefined();
+  });
+
+  it('returns 202 for XML code request when crawl is active', async () => {
+    crawlTracker.start('ca-mountain-view');
+
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/code/nonexistent-path?format=xml');
+    expect(res.status).toBe(202);
+    const body = await res.json();
+    expect(body.status).toBe('CRAWL_IN_PROGRESS');
+  });
+
+  it('returns 202 for HTML code request when crawl is active', async () => {
+    crawlTracker.start('ca-mountain-view');
+
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/code/nonexistent-path?format=html');
+    expect(res.status).toBe(202);
+    const body = await res.json();
+    expect(body.status).toBe('CRAWL_IN_PROGRESS');
+  });
+
+  it('still returns 404 for unknown jurisdiction even during crawl', async () => {
+    const res = await fetch('/api/v1/jurisdictions/nonexistent/code/anything');
+    expect(res.status).toBe(404);
+  });
+
+  it('still returns 404 for missing path when no crawl is active', async () => {
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/code/nonexistent-path');
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 200 for cached data even when crawl is active', async () => {
+    crawlTracker.start('ca-mountain-view');
+
+    const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/code/part-i/article-i/section-100');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.text).toBeDefined();
   });
 });
