@@ -11,8 +11,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@v1
         with:
@@ -22,6 +20,9 @@ jobs:
           script: |
             cd /opt/open-legal-codes
             git pull origin main
-            docker compose build --no-cache
+            docker compose build
             docker compose up -d
             docker image prune -f
+            # Health check against the local container
+            sleep 5
+            curl -sf http://localhost:3100/ || echo "Warning: health check failed, server may still be starting"
