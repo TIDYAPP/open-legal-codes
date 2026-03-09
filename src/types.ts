@@ -2,7 +2,7 @@
 // Jurisdiction
 // ---------------------------------------------------------------------------
 
-export type JurisdictionType = 'federal' | 'state' | 'county' | 'city';
+export type JurisdictionType = 'federal' | 'state' | 'county' | 'city' | 'hoa';
 
 export interface PublisherInfo {
   name: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo';

@@ -111,6 +111,11 @@ export async function runCrawl(
   onProgress?.(progress);
   crawlTracker.finish(jurisdiction.id);
 
+  // Clean up resources (e.g., Browserbase sessions)
+  if (typeof (crawler as any).dispose === 'function') {
+    await (crawler as any).dispose();
+  }
+
   console.log(`\n[crawl] Done. ${progress.completed} sections, ${progress.errors.length} errors.`);
   return progress;
 }

@@ -1,15 +1,30 @@
 [
   {
-    "id": "ca-palm-desert",
-    "name": "Palm Desert, CA",
+    "id": "ca-san-francisco",
+    "name": "San Francisco, CA",
     "type": "city",
     "state": "CA",
     "parentId": "ca",
-    "fips": "0655184",
+    "fips": "0667000",
     "publisher": {
-      "name": "municode",
-      "sourceId": "palm_desert",
-      "url": "https://library.municode.com/ca/palm_desert/codes/code_of_ordinances"
+      "name": "amlegal",
+      "sourceId": "san_francisco",
+      "url": "https://codelibrary.amlegal.com/codes/san_francisco/latest/overview"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "nj-hoboken",
+    "name": "Hoboken, NJ",
+    "type": "city",
+    "state": "NJ",
+    "parentId": "nj",
+    "fips": null,
+    "publisher": {
+      "name": "ecode360",
+      "sourceId": "HO0741",
+      "url": "https://ecode360.com/HO0741"
     },
     "lastCrawled": "",
     "lastUpdated": ""

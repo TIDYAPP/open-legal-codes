@@ -17,6 +17,9 @@ import type { Jurisdiction, TocNode } from './types.js';
 import { getCrawler, PUBLISHERS } from './crawlers/index.js';
 import { runCrawl } from './crawlers/pipeline.js';
 import { CodeStore } from './store/index.js';
+import { buildCatalog } from './registry/catalog-builder.js';
+import { loadCensusData } from './registry/census-loader.js';
+import { matchRegistryToCensus } from './registry/matcher.js';
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -42,6 +45,9 @@ Commands:
   search  --jurisdiction <id> --query <terms>       Search code text
   crawl   --jurisdiction <id>                       Crawl a jurisdiction from publisher
   list    [--state XX] [--publisher NAME]           List available jurisdictions
+  catalog [--publisher NAME] [--state XX]           Scan publishers to build registry
+  census                                            Download Census Bureau geographic data
+  match                                             Cross-reference registry with Census data
 
 Publishers: ${PUBLISHERS.join(', ')}
 
@@ -189,6 +195,51 @@ async function main() {
         count++;
       }
       console.log(`\n${count} jurisdictions found.`);
+      break;
+    }
+
+    case 'catalog': {
+      const publisher = getArg('publisher');
+      const state = getArg('state');
+      console.log('Building jurisdiction registry...');
+      const entries = await buildCatalog({
+        publisher: publisher || undefined,
+        state: state || undefined,
+        onProgress: (msg) => console.log(msg),
+      });
+      console.log(`\nRegistry complete: ${entries.length} jurisdictions`);
+      const byPublisher: Record<string, number> = {};
+      for (const e of entries) {
+        byPublisher[e.publisher] = (byPublisher[e.publisher] || 0) + 1;
+      }
+      for (const [pub, count] of Object.entries(byPublisher)) {
+        console.log(`  ${pub}: ${count}`);
+      }
+      break;
+    }
+
+    case 'census': {
+      console.log('Downloading Census Bureau gazetteer data...');
+      const places = await loadCensusData({
+        onProgress: (msg) => console.log(msg),
+      });
+      console.log(`\nCensus data loaded: ${places.length} places`);
+      const byType: Record<string, number> = {};
+      for (const p of places) {
+        byType[p.type] = (byType[p.type] || 0) + 1;
+      }
+      for (const [type, count] of Object.entries(byType)) {
+        console.log(`  ${type}: ${count}`);
+      }
+      break;
+    }
+
+    case 'match': {
+      console.log('Cross-referencing registry with Census data...');
+      const result = await matchRegistryToCensus({
+        onProgress: (msg) => console.log(msg),
+      });
+      console.log(`\nMatching complete: ${result.matched}/${result.total} matched (${Math.round(result.matched / result.total * 100)}%)`);
       break;
     }
 
