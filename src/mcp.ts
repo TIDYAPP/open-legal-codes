@@ -38,24 +38,25 @@ const server = new McpServer({
 
 server.tool(
   'lookup_jurisdiction',
-  'Find a jurisdiction by city and/or state. Returns matching jurisdiction IDs you can use with other tools.',
+  'Find a jurisdiction by name, state, or type. Returns matching jurisdiction IDs you can use with other tools.',
   {
-    city: z.string().optional().describe('City name, e.g. "Mountain View"'),
+    query: z.string().optional().describe('Name to search for, e.g. "Mountain View", "Civil Code", "Housing"'),
     state: z.string().optional().describe('Two-letter state code, e.g. "CA"'),
+    type: z.enum(['federal', 'state', 'county', 'city']).optional().describe('Jurisdiction type'),
   },
-  async ({ city, state }) => {
-    if (!city && !state) {
-      return { content: [{ type: 'text', text: 'Provide at least a city or state.' }] };
+  async ({ query, state, type }) => {
+    if (!query && !state && !type) {
+      return { content: [{ type: 'text', text: 'Provide at least a query, state, or type.' }] };
     }
 
-    let results = store.listJurisdictions({ state: state || undefined });
-    if (city) {
-      const cityLower = city.toLowerCase();
-      results = results.filter((j) => j.name.toLowerCase().includes(cityLower));
+    let results = store.listJurisdictions({ state: state || undefined, type: type || undefined });
+    if (query) {
+      const queryLower = query.toLowerCase();
+      results = results.filter((j) => j.name.toLowerCase().includes(queryLower) || j.id.includes(queryLower));
     }
 
     if (results.length === 0) {
-      return { content: [{ type: 'text', text: `No jurisdictions found matching city=${city || ''} state=${state || ''}` }] };
+      return { content: [{ type: 'text', text: `No jurisdictions found matching query=${query || ''} state=${state || ''} type=${type || ''}` }] };
     }
 
     const lines = results.map((j) => `${j.id} — ${j.name} (${j.publisher.name})`);
@@ -65,12 +66,13 @@ server.tool(
 
 server.tool(
   'list_jurisdictions',
-  'List all available jurisdictions, optionally filtered by state.',
+  'List all available jurisdictions, optionally filtered by state or type (federal, state, county, city).',
   {
     state: z.string().optional().describe('Two-letter state code to filter by, e.g. "CA"'),
+    type: z.enum(['federal', 'state', 'county', 'city']).optional().describe('Jurisdiction type to filter by'),
   },
-  async ({ state }) => {
-    const results = store.listJurisdictions({ state: state || undefined });
+  async ({ state, type }) => {
+    const results = store.listJurisdictions({ state: state || undefined, type: type || undefined });
 
     if (results.length === 0) {
       return { content: [{ type: 'text', text: 'No jurisdictions available.' }] };
