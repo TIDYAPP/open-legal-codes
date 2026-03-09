@@ -5,7 +5,7 @@
 export type JurisdictionType = 'federal' | 'state' | 'county' | 'city';
 
 export interface PublisherInfo {
-  name: 'municode' | 'amlegal';
+  name: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo';
   /** Publisher's internal ID for this code (e.g., Municode clientId) */
   sourceId: string;
   /** Canonical URL on publisher site */
@@ -153,7 +153,7 @@ export interface RawContent {
 }
 
 export interface CrawlerAdapter {
-  readonly publisherName: 'municode' | 'amlegal';
+  readonly publisherName: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo';
   /** Discover all available jurisdictions from this publisher */
   listJurisdictions(state?: string): AsyncIterable<Jurisdiction>;
   /** Fetch the table of contents tree for a jurisdiction */

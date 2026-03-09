@@ -43,5 +43,110 @@
     },
     "lastCrawled": "",
     "lastUpdated": ""
+  },
+  {
+    "id": "us-cfr-title-24",
+    "name": "CFR Title 24 — Housing and Urban Development",
+    "type": "federal",
+    "state": null,
+    "parentId": "us",
+    "fips": null,
+    "publisher": {
+      "name": "ecfr",
+      "sourceId": "24",
+      "url": "https://www.ecfr.gov/current/title-24"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "us-cfr-title-12",
+    "name": "CFR Title 12 — Banks and Banking",
+    "type": "federal",
+    "state": null,
+    "parentId": "us",
+    "fips": null,
+    "publisher": {
+      "name": "ecfr",
+      "sourceId": "12",
+      "url": "https://www.ecfr.gov/current/title-12"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "us-cfr-title-26",
+    "name": "CFR Title 26 — Internal Revenue",
+    "type": "federal",
+    "state": null,
+    "parentId": "us",
+    "fips": null,
+    "publisher": {
+      "name": "ecfr",
+      "sourceId": "26",
+      "url": "https://www.ecfr.gov/current/title-26"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "ca-civ",
+    "name": "California Civil Code",
+    "type": "state",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "06",
+    "publisher": {
+      "name": "ca-leginfo",
+      "sourceId": "CIV",
+      "url": "https://leginfo.legislature.ca.gov/faces/codesTOCSelected.xhtml?tocCode=CIV"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "ca-gov",
+    "name": "California Government Code",
+    "type": "state",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "06",
+    "publisher": {
+      "name": "ca-leginfo",
+      "sourceId": "GOV",
+      "url": "https://leginfo.legislature.ca.gov/faces/codesTOCSelected.xhtml?tocCode=GOV"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "ca-hsc",
+    "name": "California Health and Safety Code",
+    "type": "state",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "06",
+    "publisher": {
+      "name": "ca-leginfo",
+      "sourceId": "HSC",
+      "url": "https://leginfo.legislature.ca.gov/faces/codesTOCSelected.xhtml?tocCode=HSC"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
+  },
+  {
+    "id": "ca-rtc",
+    "name": "California Revenue and Taxation Code",
+    "type": "state",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "06",
+    "publisher": {
+      "name": "ca-leginfo",
+      "sourceId": "RTC",
+      "url": "https://leginfo.legislature.ca.gov/faces/codesTOCSelected.xhtml?tocCode=RTC"
+    },
+    "lastCrawled": "",
+    "lastUpdated": ""
   }
 ]

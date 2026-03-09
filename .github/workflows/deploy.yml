@@ -1,0 +1,28 @@
+name: Deploy API to Hetzner
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'web/**'
+      - '*.md'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Hetzner
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/open-legal-codes
+            git pull origin main
+            docker compose build
+            docker compose up -d
+            docker image prune -f
+            # Health check against the local container
+            sleep 5
+            curl -sf http://localhost:3100/ || echo "Warning: health check failed, server may still be starting"

@@ -1,0 +1,3 @@
+{$API_DOMAIN:api.openlegalcodes.org} {
+	reverse_proxy api:3100
+}

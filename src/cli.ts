@@ -14,7 +14,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Jurisdiction, TocNode } from './types.js';
-import { MunicodeCrawler } from './crawlers/municode.js';
+import { getCrawler, PUBLISHERS } from './crawlers/index.js';
 import { runCrawl } from './crawlers/pipeline.js';
 import { CodeStore } from './store/index.js';
 
@@ -41,13 +41,17 @@ Commands:
   toc     --jurisdiction <id> [--depth N]           Browse table of contents
   search  --jurisdiction <id> --query <terms>       Search code text
   crawl   --jurisdiction <id>                       Crawl a jurisdiction from publisher
-  list    [--state XX]                              List available jurisdictions
+  list    [--state XX] [--publisher NAME]           List available jurisdictions
+
+Publishers: ${PUBLISHERS.join(', ')}
 
 Examples:
   open-legal-codes query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
   open-legal-codes toc --jurisdiction ca-mountain-view --depth 2
   open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
-  open-legal-codes list --state CA`);
+  open-legal-codes crawl --jurisdiction us-cfr-title-24
+  open-legal-codes list --state CA
+  open-legal-codes list --publisher ecfr`);
 }
 
 async function main() {
@@ -151,14 +155,9 @@ async function main() {
         process.exit(1);
       }
 
-      if (jurisdiction.publisher.name !== 'municode') {
-        console.error(`Only Municode is supported. "${jurisdictionId}" uses ${jurisdiction.publisher.name}`);
-        process.exit(1);
-      }
+      console.log(`Crawling ${jurisdiction.name} (${jurisdiction.publisher.name}, sourceId: ${jurisdiction.publisher.sourceId})`);
 
-      console.log(`Crawling ${jurisdiction.name} (sourceId: ${jurisdiction.publisher.sourceId})`);
-
-      const crawler = new MunicodeCrawler();
+      const crawler = getCrawler(jurisdiction.publisher.name);
       const progress = await runCrawl(crawler, { jurisdiction }, (p) => {
         if (p.phase === 'sections' && p.total > 0) {
           const pct = Math.round((p.completed / p.total) * 100);
@@ -180,9 +179,10 @@ async function main() {
 
     case 'list': {
       const state = getArg('state');
-      const crawler = new MunicodeCrawler();
+      const publisher = getArg('publisher') || 'municode';
 
-      console.log(`Listing Municode jurisdictions${state ? ` in ${state}` : ''}...`);
+      const crawler = getCrawler(publisher);
+      console.log(`Listing ${publisher} jurisdictions${state ? ` in ${state}` : ''}...`);
       let count = 0;
       for await (const j of crawler.listJurisdictions(state)) {
         console.log(`${j.id}\t${j.name}\t${j.publisher.sourceId}`);

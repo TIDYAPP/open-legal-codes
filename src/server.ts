@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { jurisdictionsRoutes } from './routes/jurisdictions.js';
 import { tocRoutes } from './routes/toc.js';
@@ -12,12 +13,23 @@ store.initialize();
 
 const app = new Hono();
 
-// Health check
+// CORS for cross-origin API access
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['https://openlegalcodes.org', 'http://localhost:3000'];
+app.use('/api/*', cors({ origin: allowedOrigins }));
+
+// Health check with uptime and cache stats
+const startTime = Date.now();
 app.get('/', (c) =>
   c.json({
     name: 'Open Legal Codes',
     version: '0.1.0',
-    description: 'Retrieve US legal codes programmatically',
+    status: 'ok',
+    uptime_seconds: Math.floor((Date.now() - startTime) / 1000),
+    cache: {
+      jurisdictions: store.listJurisdictions().length,
+    },
     endpoints: {
       jurisdictions: '/api/v1/jurisdictions',
       lookup: '/api/v1/lookup?city=Mountain+View&state=CA',

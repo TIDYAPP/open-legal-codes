@@ -7,6 +7,8 @@ export interface HttpClientOptions {
   maxRetries?: number;
   timeoutMs?: number;
   userAgent?: string;
+  /** Extra headers to send with every request (e.g., Accept, Accept-Language) */
+  headers?: Record<string, string>;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -18,6 +20,7 @@ export class HttpClient {
   private maxRetries: number;
   private timeoutMs: number;
   private userAgent: string;
+  private extraHeaders: Record<string, string>;
   private lastRequestTime = 0;
 
   constructor(options?: HttpClientOptions) {
@@ -27,6 +30,7 @@ export class HttpClient {
     this.userAgent =
       options?.userAgent ??
       'OpenLegalCodes/0.1 (open-source municipal code archive)';
+    this.extraHeaders = options?.headers ?? {};
   }
 
   private async throttle(): Promise<void> {
@@ -59,7 +63,7 @@ export class HttpClient {
 
       try {
         const res = await fetch(fullUrl, {
-          headers: { 'User-Agent': this.userAgent },
+          headers: { 'User-Agent': this.userAgent, ...this.extraHeaders },
           signal: controller.signal,
         });
 
