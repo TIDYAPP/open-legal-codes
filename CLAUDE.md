@@ -71,6 +71,9 @@ Each publisher gets its own adapter implementing `CrawlerAdapter` (defined in `s
 
 **Implemented**: Municode (`municode.ts`) — uses their JSON API at `api.municode.com`
 **Adapter built**: American Legal (`amlegal.ts`) — extracts Redux state from HTML, no Playwright needed
+**Adapter built**: eCFR (`ecfr.ts`) — free REST API for all 50 CFR titles (federal regulations)
+**Adapter built**: eCode360 (`ecode360.ts`) — HTML scraper for ~4,400 municipal/county codes
+**Adapter built**: CA Leginfo (`ca-leginfo.ts`) — scrapes California's 30 state statute codes
 
 The crawl pipeline (`pipeline.ts`) orchestrates: fetch TOC → transform → fetch all sections → write to cache.
 
@@ -117,14 +120,26 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 
 ## Current State
 
+### Publisher Adapters
 - Municode crawler: **working** — can crawl full municipal codes
 - American Legal crawler: **adapter built** — Redux state extraction from HTML
+- eCFR crawler: **adapter built** — free REST API, all 50 CFR titles, no key needed
+- eCode360 crawler: **adapter built** — HTML scraper with cheerio
+- CA Leginfo crawler: **adapter built** — scrapes all 30 CA codes, public domain data
+
+### Coverage by Jurisdiction Type
+- **Federal**: CFR via eCFR API (Titles 12, 24, 26 pre-registered for property law)
+- **State**: California statutes via leginfo (Civil, Government, Health & Safety, Revenue & Taxation pre-registered)
+- **County**: Covered by Municode adapter (same platform as cities)
+- **City/Municipal**: Municode + American Legal + eCode360
+
+### Infrastructure
 - Cache/storage: **working** — reads and writes jurisdiction data
 - HTTP API routes: **working** — all responses include permalink URLs
-- CLI: **working** — query, toc, search, crawl, list commands
-- MCP server: **working** — 5 tools, responses include source URLs
+- CLI: **working** — query, toc, search, crawl, list commands; supports all publishers via `--publisher`
+- MCP server: **working** — 5 tools with type/query filters, responses include source URLs
 - Web app: **working** — Next.js in `web/`, browse/search/view codes
 - Claude Code skills: **working** — `.claude/skills/` for query, search, crawl
-- Tests: **working** — 59 tests across 6 test files (vitest)
+- Tests: **working** — 118 tests across 12 test files (vitest)
 - Search: **working** — in-memory index, exact keyword matching
-- eCode360 crawler: **not started**
+- Deployment: **ready** — Dockerfile, docker-compose, Caddy, GitHub Actions CI/CD
