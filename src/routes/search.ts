@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { store } from '../store/index.js';
+import { crawlTracker } from '../crawl-tracker.js';
 
 export const searchRoutes = new Hono();
 
@@ -31,6 +32,19 @@ searchRoutes.get('/:id/search', (c) => {
   }
 
   if (!store.hasSearchIndex(id)) {
+    const status = crawlTracker.getStatus(id);
+    if (status) {
+      return c.json(
+        {
+          status: 'CRAWL_IN_PROGRESS',
+          message: `Data for '${id}' is being fetched. This can take up to 10 minutes.`,
+          progress: { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed },
+          startedAt: status.startedAt,
+          retryAfter: 30,
+        },
+        202
+      );
+    }
     return c.json(
       { error: { code: 'NOT_FOUND', message: `No code data available for '${id}'` } },
       404
