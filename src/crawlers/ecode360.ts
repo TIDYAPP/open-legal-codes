@@ -4,23 +4,32 @@ import { HttpClient } from './http-client.js';
 import * as cheerio from 'cheerio';
 
 const SITE_BASE = 'https://ecode360.com';
+const LIBRARY_BASE = 'https://www.generalcode.com';
 
 /**
  * eCode360 / General Code Crawler Adapter
  *
  * eCode360 hosts ~4,400+ municipal and county codes across 25+ states.
- * No public API available for free — their developer API costs $595/yr per jurisdiction.
  *
- * URL patterns (numeric IDs):
- *   TOC:      https://ecode360.com/{jurisdictionId}  (e.g., /RE0793)
- *   Section:  https://ecode360.com/{sectionId}       (e.g., /6702702)
- *   Print:    https://ecode360.com/print/{sectionId}  (cleaner HTML)
+ * Key discovery: eCode360 embeds structured JSON data in HTML attributes:
+ *   - `data-toc-nodes` on <section id="code-toc-widget"> — complete TOC tree
+ *   - `data-customer` on <body> — jurisdiction metadata (name, state, county, pop)
+ *   - `window.SERVER_DATA` in <script> — config and version info
  *
- * The sourceId for this adapter is the jurisdiction code (e.g., "RE0793").
- * Section IDs are numeric strings (e.g., "6702702").
+ * URL patterns:
+ *   TOC:      https://ecode360.com/{custId}         (e.g., /HO0741)
+ *   Section:  https://ecode360.com/{numericGuid}     (e.g., /15244465)
+ *   Search:   https://ecode360.com/{custId}/search?query={term}
+ *   Library:  https://www.generalcode.com/source-library/?state={ST}
  *
- * Since eCode360 blocks scraping with 403s for basic requests, we use
- * the print view endpoint which returns cleaner HTML.
+ * IMPORTANT: eCode360 blocks requests without browser-like headers.
+ * The HttpClient must send Accept and Accept-Language headers.
+ * The /print/ endpoint is blocked even with browser headers — use regular pages.
+ *
+ * Customer IDs follow the pattern: 2 uppercase letters + 4 digits (e.g., HO0741).
+ * Section GUIDs are numeric strings of 7-8 digits (e.g., 15244465).
+ *
+ * The sourceId for this adapter is the customer ID (e.g., "HO0741").
  */
 export class Ecode360Crawler implements CrawlerAdapter {
   readonly publisherName = 'ecode360' as const;
@@ -28,16 +37,71 @@ export class Ecode360Crawler implements CrawlerAdapter {
 
   constructor(http?: HttpClient) {
     this.http = http ?? new HttpClient({
-      minDelayMs: 2000, // Be respectful with rate limiting
-      userAgent: 'Mozilla/5.0 (compatible; OpenLegalCodes/0.1; +https://openlegalcodes.org)',
+      minDelayMs: 2000,
+      headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
     });
   }
 
-  async *listJurisdictions(_state?: string): AsyncIterable<Jurisdiction> {
-    // eCode360 doesn't have a public listing API.
-    // Jurisdictions must be added manually to jurisdictions.json.
-    // Visit https://www.generalcode.com/library/ to browse available codes.
-    console.warn('[ecode360] listJurisdictions requires manual entry. Visit generalcode.com/library/ to find codes.');
+  async *listJurisdictions(state?: string): AsyncIterable<Jurisdiction> {
+    const states = state ? [state.toUpperCase()] : [];
+
+    if (states.length === 0) {
+      console.warn('[ecode360] listJurisdictions requires a --state filter. Visit generalcode.com/source-library/ to browse.');
+      return;
+    }
+
+    for (const abbr of states) {
+      console.log(`[ecode360] Fetching jurisdictions for ${abbr}`);
+      let html: string;
+      try {
+        html = await this.http.getHtml(`${LIBRARY_BASE}/source-library/`, { state: abbr });
+      } catch (err) {
+        console.warn(`[ecode360] Failed to fetch library for ${abbr}: ${err}`);
+        continue;
+      }
+
+      const $ = cheerio.load(html);
+
+      // Library page lists jurisdictions as links to ecode360.com/{custId}
+      $('a[href*="ecode360.com/"]').each((_i, el) => {
+        // This is inside the async generator, so we collect and yield below
+      });
+
+      // Collect all jurisdiction links
+      const links: Array<{ custId: string; name: string }> = [];
+      $('a[href*="ecode360.com/"]').each((_i, el) => {
+        const href = $(el).attr('href') || '';
+        const custIdMatch = href.match(/ecode360\.com\/([A-Z]{2}\d{4})/);
+        if (!custIdMatch) return;
+
+        const name = $(el).text().trim();
+        if (!name) return;
+
+        links.push({ custId: custIdMatch[1], name });
+      });
+
+      for (const { custId, name } of links) {
+        const slug = custId.toLowerCase();
+        yield {
+          id: `${abbr.toLowerCase()}-ecode360-${slug}`,
+          name: `${name}`,
+          type: 'city' as const,
+          state: abbr,
+          parentId: abbr.toLowerCase(),
+          fips: null,
+          publisher: {
+            name: 'ecode360' as const,
+            sourceId: custId,
+            url: `${SITE_BASE}/${custId}`,
+          },
+          lastCrawled: '',
+          lastUpdated: '',
+        };
+      }
+    }
   }
 
   async fetchToc(sourceId: string): Promise<RawTocNode[]> {
@@ -47,52 +111,35 @@ export class Ecode360Crawler implements CrawlerAdapter {
     const html = await this.http.getHtml(url);
     const $ = cheerio.load(html);
 
-    const result: RawTocNode[] = [];
+    // Extract structured TOC from data-toc-nodes attribute
+    const tocWidget = $('section#code-toc-widget, [data-toc-nodes]').first();
+    const tocJson = tocWidget.attr('data-toc-nodes');
 
-    // eCode360 uses a tree structure with nested lists
-    // Look for TOC links with numeric IDs
-    const tocContainer = $('#genTOC, .toc, #codeTOC, [class*="toc"]').first();
-    if (tocContainer.length === 0) {
-      // Fall back to parsing all links that look like section IDs
-      return this.parseTocFromLinks($);
+    if (tocJson) {
+      try {
+        const tocNodes: Ecode360TocNode[] = JSON.parse(tocJson);
+        return tocNodes.map(node => this.transformTocNode(node));
+      } catch (err) {
+        console.warn(`[ecode360] Failed to parse data-toc-nodes JSON: ${err}`);
+      }
     }
 
-    // Parse hierarchical TOC from nested lists
-    const topItems = tocContainer.children('ul, ol').first().children('li');
-    topItems.each((_i, el) => {
-      const node = this.parseTocNode($, $(el), 0);
-      if (node) result.push(node);
-    });
-
-    return result;
+    // Fallback: parse TOC from HTML links
+    console.warn('[ecode360] No data-toc-nodes found, falling back to HTML parsing');
+    return this.parseTocFromLinks($);
   }
 
-  private parseTocNode($: cheerio.CheerioAPI, li: cheerio.Cheerio<any>, depth: number): RawTocNode | null {
-    const link = li.children('a').first();
-    if (!link.length) return null;
-
-    const href = link.attr('href') || '';
-    const idMatch = href.match(/\/(\d+)/);
-    const id = idMatch ? idMatch[1] : href;
-    const title = link.text().trim();
-
-    if (!title) return null;
-
-    const children: RawTocNode[] = [];
-    const childList = li.children('ul, ol').first();
-    if (childList.length) {
-      childList.children('li').each((_i, el) => {
-        const child = this.parseTocNode($, $(el), depth + 1);
-        if (child) children.push(child);
-      });
-    }
+  private transformTocNode(node: Ecode360TocNode): RawTocNode {
+    const title = node.indexNum && node.tocName
+      ? `${node.indexNum} - ${node.tocName}`
+      : node.tocName || node.title || node.prefix || '';
 
     return {
-      id,
+      id: node.guid,
       title,
-      level: guessLevel(title, depth),
-      hasContent: children.length === 0,
-      children,
+      level: mapEcode360Level(node.type || node.label || ''),
+      hasContent: node.type === 'section' || (!node.children?.length && node.type !== 'code'),
+      children: (node.children || []).map(c => this.transformTocNode(c)),
     };
   }
 
@@ -100,7 +147,6 @@ export class Ecode360Crawler implements CrawlerAdapter {
     const result: RawTocNode[] = [];
     const seen = new Set<string>();
 
-    // Find all links that point to numeric IDs (section pages)
     $('a[href]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       const match = href.match(/^\/(\d{5,})$/);
@@ -116,7 +162,7 @@ export class Ecode360Crawler implements CrawlerAdapter {
       result.push({
         id,
         title,
-        level: guessLevel(title, 0),
+        level: guessLevel(title),
         hasContent: true,
         children: [],
       });
@@ -126,43 +172,79 @@ export class Ecode360Crawler implements CrawlerAdapter {
   }
 
   async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    // Try the print view first — cleaner HTML without navigation chrome
-    const printUrl = `${SITE_BASE}/print/${sectionId}`;
+    // Fetch the page for this GUID (returns the full chapter content)
+    const url = `${SITE_BASE}/${sectionId}`;
     console.log(`[ecode360] Fetching section ${sectionId}`);
 
-    let html: string;
-    try {
-      html = await this.http.getHtml(printUrl);
-    } catch {
-      // Fall back to regular page
-      const regularUrl = `${SITE_BASE}/${sectionId}`;
-      html = await this.http.getHtml(regularUrl);
+    const html = await this.http.getHtml(url);
+    const $ = cheerio.load(html);
+
+    // Try to extract just the section content by GUID
+    const sectionContent = $(`#${sectionId}_content, .section_content#${sectionId}_content`).first();
+    if (sectionContent.length) {
+      // Include the section title
+      const sectionTitle = $(`.contentTitle[data-guid="${sectionId}"]`).first();
+      const titleHtml = sectionTitle.length ? sectionTitle.toString() : '';
+      return {
+        html: titleHtml + sectionContent.html(),
+        fetchedAt: new Date().toISOString(),
+        sourceUrl: url,
+      };
     }
 
-    // Extract just the code content from the page
-    const $ = cheerio.load(html);
-    const content = $('#codebody, .codebody, #codeText, .codeText, [class*="code-content"]').first();
+    // Fall back to extracting all content from the page
+    const content = $('#codebody, .codebody, #codeText, .content-area').first();
     const cleanHtml = content.length ? content.html() || html : html;
 
     return {
       html: cleanHtml,
       fetchedAt: new Date().toISOString(),
-      sourceUrl: `${SITE_BASE}/${sectionId}`,
+      sourceUrl: url,
     };
   }
 }
 
+// --- eCode360 embedded data types ---
+
+interface Ecode360TocNode {
+  prefix?: string;
+  tocName?: string;
+  guid: string;
+  parent?: string;
+  href?: string;
+  title?: string;
+  number?: string;
+  indexNum?: string;
+  type?: string;       // "code", "division", "chapter", "article", "section"
+  label?: string;      // "Chapter", "Article", "Section"
+  hideNumber?: boolean;
+  children?: Ecode360TocNode[];
+}
+
 // --- Helpers ---
 
-function guessLevel(title: string, depth: number): string {
+function mapEcode360Level(type: string): string {
+  const t = type.toLowerCase();
+  const map: Record<string, string> = {
+    'code': 'title',
+    'division': 'division',
+    'chapter': 'chapter',
+    'article': 'article',
+    'section': 'section',
+    'part': 'part',
+    'subpart': 'subpart',
+    'appendix': 'part',
+  };
+  return map[t] || guessLevel(type);
+}
+
+function guessLevel(title: string): string {
   const t = title.toLowerCase();
   if (t.startsWith('part ')) return 'part';
   if (t.startsWith('title ')) return 'title';
-  if (t.startsWith('chapter ') || t.startsWith('ch. ')) return 'chapter';
+  if (t.startsWith('chapter ') || t.startsWith('ch ') || t.startsWith('ch. ')) return 'chapter';
   if (t.startsWith('article ') || t.startsWith('art. ')) return 'article';
   if (t.startsWith('division ') || t.startsWith('div. ')) return 'division';
   if (t.startsWith('section ') || t.startsWith('§') || /^\d+[\.\-]/.test(t)) return 'section';
-  if (depth <= 1) return 'part';
-  if (depth === 2) return 'chapter';
   return 'section';
 }
