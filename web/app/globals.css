@@ -411,3 +411,35 @@ code {
 .entry-status.cached {
   color: #16a34a;
 }
+
+/* Cached badge (inline) */
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Copy link button */
+.copy-link-btn {
+  font-size: 12px;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.copy-link-btn:hover {
+  color: var(--fg);
+  border-color: var(--fg-muted);
+}

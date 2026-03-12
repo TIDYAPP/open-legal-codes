@@ -10,6 +10,9 @@ interface JurisdictionData {
   children?: any[];
   progress?: { phase: string; total: number; completed: number };
   urlBase?: string;
+  lastCrawled?: string | null;
+  publisher?: string | null;
+  publisherUrl?: string | null;
 }
 
 const JurisdictionContext = createContext<JurisdictionData>({ status: 'loading' });

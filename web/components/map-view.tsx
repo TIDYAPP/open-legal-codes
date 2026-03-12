@@ -5,6 +5,18 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip } from 'react-leaflet';
 import type { GeoEntry } from '../lib/api';
 import 'leaflet/dist/leaflet.css';
 
+function stripPrefix(name: string): string {
+  return name.replace(/^(City of|Town of|Village of|County of|Borough of)\s+/i, '');
+}
+
+function stripStateSuffix(name: string): string {
+  return name.replace(/,\s*[A-Z]{2}$/, '');
+}
+
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 const STATUS_COLORS: Record<string, string> = {
   cached: '#22c55e',
   available: '#3b82f6',
@@ -50,28 +62,38 @@ export default function MapView({ data }: MapViewProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {data.map((d) => (
-          <CircleMarker
-            key={d.id}
-            center={[d.lat, d.lng]}
-            radius={getRadius(d)}
-            pathOptions={{
-              fillColor: getColor(d),
-              fillOpacity: 0.8,
-              color: '#fff',
-              weight: 1,
-              opacity: 0.6,
-            }}
-          >
-            <Tooltip>
-              <div style={{ fontWeight: 600 }}>{d.n}</div>
-              <div style={{ color: '#6b7280', fontSize: '0.8125rem' }}>
-                {d.p} &middot; {d.s}
-                {d.pop ? ` · pop. ${d.pop.toLocaleString()}` : ''}
-              </div>
-            </Tooltip>
-          </CircleMarker>
-        ))}
+        {data.map((d) => {
+          const url = d.t === 'federal'
+            ? `/federal/${d.id.replace(/^us-/, '')}`
+            : d.st
+              ? `/${d.st.toLowerCase()}/${slugify(stripStateSuffix(stripPrefix(d.n)))}`
+              : `/${d.id}`;
+          return (
+            <CircleMarker
+              key={d.id}
+              center={[d.lat, d.lng]}
+              radius={getRadius(d)}
+              pathOptions={{
+                fillColor: getColor(d),
+                fillOpacity: 0.8,
+                color: '#fff',
+                weight: 1,
+                opacity: 0.6,
+              }}
+              eventHandlers={{
+                click: () => { window.location.href = url; },
+              }}
+            >
+              <Tooltip>
+                <div style={{ fontWeight: 600 }}>{d.n}</div>
+                <div style={{ color: '#6b7280', fontSize: '0.8125rem' }}>
+                  {d.p} &middot; {d.s}
+                  {d.pop ? ` · pop. ${d.pop.toLocaleString()}` : ''}
+                </div>
+              </Tooltip>
+            </CircleMarker>
+          );
+        })}
       </MapContainer>
 
       {/* Legend */}

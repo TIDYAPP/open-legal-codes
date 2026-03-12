@@ -74,9 +74,12 @@ export default function StatePage() {
             <div className="list">
               {grouped.byType[type].map((entry) => (
                 <a key={entry.id} href={jurisdictionUrl(entry)}>
-                  <div className="card-title">{entry.name}</div>
+                  <div className="card-title">
+                    {entry.name}
+                    {entry.status === 'cached' && <span className="badge">cached</span>}
+                  </div>
                   <div className="card-meta">
-                    {entry.type}
+                    {entry.population ? `pop. ${entry.population.toLocaleString()}` : entry.type}
                   </div>
                 </a>
               ))}

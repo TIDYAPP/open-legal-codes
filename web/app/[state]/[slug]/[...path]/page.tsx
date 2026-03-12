@@ -14,8 +14,9 @@ export default function CodePage({
   const codePath = path.join('/');
   const { id, name, urlBase } = useJurisdiction();
 
-  const [code, setCode] = useState<{ text: string; num: string | null; heading: string | null } | null>(null);
+  const [code, setCode] = useState<{ text: string; num: string | null; heading: string | null; url?: string } | null>(null);
   const [error, setError] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -24,6 +25,14 @@ export default function CodePage({
       .then(data => setCode(data.data))
       .catch(() => setError(true));
   }, [id, codePath]);
+
+  const copyLink = () => {
+    const url = code?.url || window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   if (error) {
     return (
@@ -48,7 +57,16 @@ export default function CodePage({
       </div>
 
       {code.num && (
-        <h1>{code.num}{code.heading ? ` \u2014 ${code.heading}` : ''}</h1>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+          <h1 style={{ margin: 0 }}>{code.num}{code.heading ? ` \u2014 ${code.heading}` : ''}</h1>
+          <button
+            onClick={copyLink}
+            className="copy-link-btn"
+            title="Copy permalink"
+          >
+            {copied ? 'Copied!' : 'Copy link'}
+          </button>
+        </div>
       )}
 
       <div className="section-text">{code.text}</div>

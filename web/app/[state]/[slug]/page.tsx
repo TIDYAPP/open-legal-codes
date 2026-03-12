@@ -51,7 +51,7 @@ function TocTree({ nodes, baseUrl }: { nodes: TocNode[]; baseUrl: string }) {
 }
 
 export default function JurisdictionPage() {
-  const { id, name, state, children, urlBase } = useJurisdiction();
+  const { id, name, state, children, urlBase, lastCrawled, publisher, publisherUrl } = useJurisdiction();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [searching, setSearching] = useState(false);
@@ -85,6 +85,20 @@ export default function JurisdictionPage() {
       </div>
 
       <h1>{name}</h1>
+
+      {(publisher || lastCrawled) && (
+        <p className="text-sm text-muted" style={{ marginTop: -8 }}>
+          {publisher && publisherUrl ? (
+            <a href={publisherUrl} target="_blank" rel="noopener noreferrer">View on {publisher}</a>
+          ) : publisher ? (
+            <span>Source: {publisher}</span>
+          ) : null}
+          {publisher && lastCrawled && <span> &middot; </span>}
+          {lastCrawled && (
+            <span>Updated {new Date(lastCrawled).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          )}
+        </p>
+      )}
 
       <form onSubmit={doSearch} className="search-bar">
         <input

@@ -59,6 +59,9 @@ export interface LookupResult {
   children?: TocNode[];
   progress?: { phase: string; total: number; completed: number };
   retryAfter?: number;
+  lastCrawled?: string | null;
+  publisher?: string | null;
+  publisherUrl?: string | null;
 }
 
 export async function lookupJurisdiction(state: string, slug: string): Promise<LookupResult> {
