@@ -13,6 +13,10 @@ function stripPrefix(name: string): string {
   return name.replace(/^(City of|Town of|Village of|County of|Borough of)\s+/i, '');
 }
 
+function stripStateSuffix(name: string): string {
+  return name.replace(/,\s*[A-Z]{2}$/, '');
+}
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -58,7 +62,7 @@ export class RegistryStore {
 
       // bySlug index — keyed as "{state}-{slugified-name}"
       if (entry.state) {
-        const slug = slugify(stripPrefix(entry.name));
+        const slug = slugify(stripStateSuffix(stripPrefix(entry.name)));
         const slugKey = `${entry.state.toLowerCase()}-${slug}`;
         const existing = this.bySlug.get(slugKey);
         if (!existing) {

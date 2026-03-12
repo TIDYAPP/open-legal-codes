@@ -36,12 +36,12 @@ export default function JurisdictionLayout({
   }, [data.status, doLookup]);
 
   if (data.status === 'loading') {
-    return <div className="page"><p className="text-muted">Loading...</p></div>;
+    return <div><p className="text-muted">Loading...</p></div>;
   }
 
   if (data.status === 'not_found') {
     return (
-      <div className="page">
+      <div>
         <p>Jurisdiction not found. <a href="/">Back to home</a></p>
       </div>
     );
@@ -52,7 +52,7 @@ export default function JurisdictionLayout({
       ? Math.round((data.progress.completed / data.progress.total) * 100)
       : 0;
     return (
-      <div className="page">
+      <div>
         <h1>{data.name || 'Loading...'}</h1>
         <p className="text-muted">
           Fetching legal codes... This may take a few minutes.

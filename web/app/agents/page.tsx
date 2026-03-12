@@ -5,7 +5,7 @@ export const metadata = {
 
 export default function AgentsPage() {
   return (
-    <div className="page">
+    <div>
       <h1>Agents</h1>
       <p className="subtitle">
         Built for AI agents that need to verify claims against actual law.

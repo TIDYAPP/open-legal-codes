@@ -24,11 +24,20 @@ registryRoutes.get('/', (c) => {
     }
   }
 
-  const data = registryStore.query({
-    state, publisher, status, type,
-    hasGeo: hasGeo || undefined,
-    bbox,
-  });
+  const search = c.req.query('search');
+  const limit = parseInt(c.req.query('limit') || '0', 10);
+
+  let data;
+  if (search) {
+    data = registryStore.findByName(search, state || undefined);
+    if (limit > 0) data = data.slice(0, limit);
+  } else {
+    data = registryStore.query({
+      state, publisher, status, type,
+      hasGeo: hasGeo || undefined,
+      bbox,
+    });
+  }
 
   return c.json({
     data,
