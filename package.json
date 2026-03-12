@@ -41,6 +41,7 @@
     "cheerio": "^1.0.0",
     "fast-xml-parser": "^4.0.0",
     "hono": "^4.0.0",
+    "pdf-parse": "^2.4.5",
     "playwright-core": "^1.58.2",
     "zod": "^4.3.6"
   },

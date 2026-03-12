@@ -7,6 +7,7 @@ import { codeRoutes } from './routes/code.js';
 import { searchRoutes } from './routes/search.js';
 import { lookupRoutes } from './routes/lookup.js';
 import { registryRoutes } from './routes/registry.js';
+import { jurisdictionsRoutes } from './routes/jurisdictions.js';
 
 import { store } from './store/index.js';
 import { registryStore } from './registry/store.js';
@@ -47,6 +48,7 @@ app.get('/', (c) =>
 
 // Mount API routes
 const api = new Hono();
+api.route('/jurisdictions', jurisdictionsRoutes);
 api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);
 api.route('/jurisdictions', searchRoutes);
