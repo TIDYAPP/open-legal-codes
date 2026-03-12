@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useJurisdiction } from '@/lib/jurisdiction-context';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
@@ -14,25 +15,37 @@ interface SearchResult {
 
 export default function SearchPage() {
   const { id, name, urlBase } = useJurisdiction();
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get('q') || '';
+  const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (!query.trim() || !id) return;
-
+  const doSearch = useCallback(async (q: string) => {
+    if (!q.trim() || !id) return;
     setLoading(true);
     setSearched(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/jurisdictions/${id}/search?q=${encodeURIComponent(query)}&limit=50`);
+      const res = await fetch(`${API_BASE}/api/v1/jurisdictions/${id}/search?q=${encodeURIComponent(q)}&limit=50`);
       const data = await res.json();
       setResults(data.data?.results || []);
     } catch {
       setResults([]);
     }
     setLoading(false);
+  }, [id]);
+
+  // Auto-search if ?q= is present in URL
+  useEffect(() => {
+    if (initialQuery && id) {
+      doSearch(initialQuery);
+    }
+  }, [initialQuery, id, doSearch]);
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    doSearch(query);
   }
 
   return (

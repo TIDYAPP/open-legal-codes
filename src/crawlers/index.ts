@@ -18,7 +18,7 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
     case 'amlegal':
       return new AmlegalCrawler(createFallbackClient({ minDelayMs: 1000 }) as any);
     case 'ecode360':
-      return new Ecode360Crawler(createFallbackClient({ minDelayMs: 2000 }) as any);
+      return new Ecode360Crawler(createFallbackClient({ minDelayMs: 500 }) as any);
     case 'ecfr':
       return new EcfrCrawler();
     case 'ca-leginfo':

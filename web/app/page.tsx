@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import type { RegistryEntry } from '@/lib/api';
+import type { RegistryEntry, RegistryStats } from '@/lib/api';
 import { jurisdictionUrl } from '@/lib/urls';
 
 const STATE_NAMES: Record<string, string> = {
@@ -23,48 +23,42 @@ const ALL_STATES = Object.entries(STATE_NAMES).sort((a, b) => a[1].localeCompare
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function CodesPage() {
-  const [entries, setEntries] = useState<RegistryEntry[]>([]);
+  const [stats, setStats] = useState<RegistryStats | null>(null);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [searchResults, setSearchResults] = useState<RegistryEntry[] | null>(null);
+  const [searching, setSearching] = useState(false);
 
+  // Fetch lightweight stats on mount (< 1KB vs 300KB+ for full registry)
   useEffect(() => {
-    fetch(`${API_BASE}/api/v1/registry`)
+    fetch(`${API_BASE}/api/v1/registry/stats`)
       .then((r) => r.json())
-      .then((data) => setEntries(data.data || []))
-      .catch(() => setEntries([]))
-      .finally(() => setLoading(false));
+      .then((data) => setStats(data.data))
+      .catch(() => {});
   }, []);
 
-  // Count jurisdictions per state + federal
-  const counts = useMemo(() => {
-    const m: Record<string, number> = {};
-    let federal = 0;
-    for (const e of entries) {
-      if (e.type === 'federal') federal++;
-      else if (e.state) m[e.state] = (m[e.state] || 0) + 1;
+  // Debounced search — only fetches entries when user types
+  useEffect(() => {
+    if (!search) {
+      setSearchResults(null);
+      return;
     }
-    return { byState: m, federal };
-  }, [entries]);
-
-  // Search: filter entries by name, show direct results
-  const searchResults = useMemo(() => {
-    if (!search) return null;
-    const q = search.toLowerCase();
-    return entries
-      .filter((e) => e.name.toLowerCase().includes(q))
-      .slice(0, 50);
-  }, [entries, search]);
-
-  const totalCount = entries.length;
+    setSearching(true);
+    const timer = setTimeout(() => {
+      fetch(`${API_BASE}/api/v1/registry?search=${encodeURIComponent(search)}&limit=50`)
+        .then((r) => r.json())
+        .then((data) => setSearchResults(data.data || []))
+        .catch(() => setSearchResults([]))
+        .finally(() => setSearching(false));
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   return (
-    <div className="page">
+    <div>
       <h1>Codes</h1>
       <p className="subtitle">
         Browse and search US legal codes.
-        {!loading && totalCount > 0 && (
-          <span> {totalCount.toLocaleString()} jurisdictions available.</span>
-        )}
+        {stats && <span> {stats.total.toLocaleString()} jurisdictions available.</span>}
       </p>
 
       <div className="search-bar">
@@ -76,15 +70,13 @@ export default function CodesPage() {
         />
       </div>
 
-      {loading ? (
-        <p className="text-muted">Loading...</p>
-      ) : searchResults ? (
-        // Search results mode
+      {searchResults ? (
         <div>
           <div className="text-sm text-muted mb-16">
-            {searchResults.length === 0
-              ? `No jurisdictions match "${search}"`
-              : `${searchResults.length}${searchResults.length === 50 ? '+' : ''} results`}
+            {searching ? 'Searching...' :
+              searchResults.length === 0
+                ? `No jurisdictions match "${search}"`
+                : `${searchResults.length}${searchResults.length === 50 ? '+' : ''} results`}
           </div>
           <div className="list">
             {searchResults.map((entry) => (
@@ -98,20 +90,19 @@ export default function CodesPage() {
           </div>
         </div>
       ) : (
-        // Browse mode: Federal + 50 states
         <>
-          {counts.federal > 0 && (
+          {stats && stats.byType.federal > 0 && (
             <a href="/browse/federal" className="browse-card">
               <span className="browse-card-name">Federal</span>
-              <span className="browse-card-count">{counts.federal}</span>
+              <span className="browse-card-count">{stats.byType.federal}</span>
             </a>
           )}
           <div className="browse-grid">
             {ALL_STATES.map(([code, name]) => (
               <a key={code} href={`/browse/${code}`} className="browse-card">
                 <span className="browse-card-name">{name}</span>
-                {counts.byState[code] && (
-                  <span className="browse-card-count">{counts.byState[code]}</span>
+                {stats?.byState[code] && (
+                  <span className="browse-card-count">{stats.byState[code]}</span>
                 )}
               </a>
             ))}

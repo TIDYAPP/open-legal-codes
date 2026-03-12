@@ -27,14 +27,14 @@ export default function CodePage({
 
   if (error) {
     return (
-      <div className="page">
+      <div>
         <p>Section not found. <a href={urlBase || '/'}>Back to table of contents</a></p>
       </div>
     );
   }
 
   if (!code) {
-    return <div className="page"><p className="text-muted">Loading...</p></div>;
+    return <div><p className="text-muted">Loading...</p></div>;
   }
 
   return (

@@ -37,7 +37,7 @@ export class Ecode360Crawler implements CrawlerAdapter {
 
   constructor(http?: HttpClient) {
     this.http = http ?? new HttpClient({
-      minDelayMs: 2000,
+      minDelayMs: 500,
       headers: {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',

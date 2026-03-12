@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { compress } from 'hono/compress';
 import { serve } from '@hono/node-server';
 import { tocRoutes } from './routes/toc.js';
 import { codeRoutes } from './routes/code.js';
@@ -14,6 +15,9 @@ store.initialize();
 registryStore.initialize();
 
 const app = new Hono();
+
+// Gzip compression for all responses
+app.use('*', compress());
 
 // CORS for cross-origin API access
 const allowedOrigins = process.env.CORS_ORIGINS

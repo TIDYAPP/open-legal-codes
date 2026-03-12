@@ -33,7 +33,7 @@ export default function RootLayout({
             </div>
           </div>
         </nav>
-        <main>{children}</main>
+        <main className="page">{children}</main>
       </body>
     </html>
   );

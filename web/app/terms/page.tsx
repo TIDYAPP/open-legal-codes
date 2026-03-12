@@ -5,7 +5,7 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="page">
+    <div>
       <h1>Terms</h1>
       <p className="subtitle">Terms of use.</p>
 

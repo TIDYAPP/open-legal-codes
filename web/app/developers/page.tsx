@@ -5,7 +5,7 @@ export const metadata = {
 
 export default function DevelopersPage() {
   return (
-    <div className="page">
+    <div>
       <h1>Developers</h1>
       <p className="subtitle">
         No signup. No API key. No rate limits.

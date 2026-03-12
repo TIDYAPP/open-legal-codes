@@ -21,7 +21,7 @@ export default function FederalPage() {
   const sorted = useMemo(() => [...entries].sort((a, b) => a.name.localeCompare(b.name)), [entries]);
 
   return (
-    <div className="page">
+    <div>
       <div className="breadcrumbs">
         <a href="/">Codes</a>
         <span className="sep">/</span>
