@@ -23,7 +23,8 @@ export class CodeStore {
     this.searchIndex = new SearchIndex(this.codesDir);
   }
 
-  /** Load jurisdictions, TOC trees, and search index into memory */
+  /** Load jurisdictions, TOC trees, and search index into memory.
+   *  Builds into temp variables then swaps atomically so readers never see partial state. */
   initialize(): void {
     const registryPath = join(this.codesDir, 'jurisdictions.json');
     if (!existsSync(registryPath)) {
@@ -34,18 +35,26 @@ export class CodeStore {
     const raw = readFileSync(registryPath, 'utf-8');
     const jurisdictions: Jurisdiction[] = JSON.parse(raw);
 
+    const newJurisdictions = new Map<string, Jurisdiction>();
+    const newTocTrees = new Map<string, TocTree>();
+
     for (const j of jurisdictions) {
-      this.jurisdictions.set(j.id, j);
+      newJurisdictions.set(j.id, j);
 
       const tocPath = join(this.codesDir, j.id, '_toc.json');
       if (existsSync(tocPath)) {
-        const tocRaw = readFileSync(tocPath, 'utf-8');
-        this.tocTrees.set(j.id, JSON.parse(tocRaw));
+        newTocTrees.set(j.id, JSON.parse(readFileSync(tocPath, 'utf-8')));
       }
     }
 
-    // Build in-memory search index from cached content
-    this.searchIndex.buildAll(this.tocTrees);
+    // Atomic swap
+    this.jurisdictions = newJurisdictions;
+    this.tocTrees = newTocTrees;
+
+    // Build new search index
+    const newIndex = new SearchIndex(this.codesDir);
+    newIndex.buildAll(this.tocTrees);
+    this.searchIndex = newIndex;
 
     console.log(`[CodeStore] Loaded ${this.jurisdictions.size} jurisdictions`);
   }

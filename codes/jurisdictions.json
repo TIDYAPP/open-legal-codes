@@ -163,5 +163,35 @@
     },
     "lastCrawled": "",
     "lastUpdated": ""
+  },
+  {
+    "id": "ca-ecode360-co4918",
+    "name": "City of Costa Mesa",
+    "type": "city",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "0616532",
+    "publisher": {
+      "name": "ecode360",
+      "sourceId": "CO4918",
+      "url": "https://ecode360.com/CO4918"
+    },
+    "lastCrawled": "2026-03-09T20:25:30.015Z",
+    "lastUpdated": "2026-03-09T20:25:30.015Z"
+  },
+  {
+    "id": "ca-ecode360-pa4981",
+    "name": "City of Palm Desert",
+    "type": "city",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": "0655184",
+    "publisher": {
+      "name": "ecode360",
+      "sourceId": "PA4981",
+      "url": "https://ecode360.com/PA4981"
+    },
+    "lastCrawled": "2026-03-09T20:34:17.014Z",
+    "lastUpdated": "2026-03-09T20:34:17.014Z"
   }
 ]

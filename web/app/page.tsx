@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import type { RegistryEntry } from '@/lib/api';
+import { jurisdictionUrl } from '@/lib/urls';
 
 const STATE_NAMES: Record<string, string> = {
   AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
@@ -19,7 +20,7 @@ const STATE_NAMES: Record<string, string> = {
 
 const ALL_STATES = Object.entries(STATE_NAMES).sort((a, b) => a[1].localeCompare(b[1]));
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3100';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function CodesPage() {
   const [entries, setEntries] = useState<RegistryEntry[]>([]);
@@ -87,11 +88,10 @@ export default function CodesPage() {
           </div>
           <div className="list">
             {searchResults.map((entry) => (
-              <a key={entry.id} href={`/${entry.id}`}>
+              <a key={entry.id} href={jurisdictionUrl(entry)}>
                 <div className="card-title">{entry.name}</div>
                 <div className="card-meta">
-                  {entry.type} &middot; {entry.publisher}
-                  {entry.status === 'cached' && <span className="entry-status cached"> &middot; cached</span>}
+                  {entry.type} &middot; {entry.state || 'Federal'}
                 </div>
               </a>
             ))}

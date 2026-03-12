@@ -15,7 +15,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Jurisdiction, TocNode } from './types.js';
 import { getCrawler, PUBLISHERS } from './crawlers/index.js';
-import { runCrawl } from './crawlers/pipeline.js';
+import { crawlQueue } from './crawl-queue.js';
 import { CodeStore } from './store/index.js';
 import { buildCatalog } from './registry/catalog-builder.js';
 import { loadCensusData } from './registry/census-loader.js';
@@ -164,7 +164,7 @@ async function main() {
       console.log(`Crawling ${jurisdiction.name} (${jurisdiction.publisher.name}, sourceId: ${jurisdiction.publisher.sourceId})`);
 
       const crawler = getCrawler(jurisdiction.publisher.name);
-      const progress = await runCrawl(crawler, { jurisdiction }, (p) => {
+      const progress = await crawlQueue.enqueue(crawler, { jurisdiction }, (p) => {
         if (p.phase === 'sections' && p.total > 0) {
           const pct = Math.round((p.completed / p.total) * 100);
           process.stdout.write(

@@ -1,0 +1,49 @@
+import type { RegistryEntry } from './registry/types.js';
+import type { Jurisdiction, PublisherInfo } from './types.js';
+import { getCrawler } from './crawlers/index.js';
+import { runCrawl } from './crawlers/pipeline.js';
+import { crawlTracker } from './crawl-tracker.js';
+import { store } from './store/index.js';
+
+function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
+  return {
+    id: entry.id,
+    name: entry.name,
+    type: entry.type,
+    state: entry.state,
+    parentId: entry.state ? entry.state.toLowerCase() : null,
+    fips: entry.fips,
+    publisher: {
+      name: entry.publisher as PublisherInfo['name'],
+      sourceId: entry.sourceId,
+      url: entry.sourceUrl,
+    },
+    lastCrawled: '',
+    lastUpdated: '',
+  };
+}
+
+export function triggerAutoCrawl(entry: RegistryEntry): void {
+  if (crawlTracker.isActive(entry.id)) return;
+
+  const jurisdiction = registryEntryToJurisdiction(entry);
+  let crawler;
+  try {
+    crawler = getCrawler(entry.publisher);
+  } catch (err: any) {
+    console.error(`[auto-crawl] Failed to get crawler for ${entry.publisher}: ${err.message}`);
+    return;
+  }
+
+  console.log(`[auto-crawl] Starting crawl for ${entry.name} (${entry.id})`);
+
+  runCrawl(crawler, { jurisdiction })
+    .then(() => {
+      console.log(`[auto-crawl] Completed crawl for ${entry.name}`);
+      store.initialize();
+    })
+    .catch((err: any) => {
+      console.error(`[auto-crawl] Failed crawl for ${entry.name}: ${err.message}`);
+      crawlTracker.finish(entry.id);
+    });
+}

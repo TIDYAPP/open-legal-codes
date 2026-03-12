@@ -11,5 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev --ignore-scripts --workspaces=false
 COPY --from=builder /app/dist ./dist
+# Registry data (jurisdiction catalog for auto-crawl discovery)
+COPY data/ data/
 EXPOSE 3100
 CMD ["node", "dist/server.js"]

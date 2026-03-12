@@ -1,33 +1,309 @@
 import { Hono } from 'hono';
 import { store } from '../store/index.js';
+import { registryStore } from '../registry/store.js';
+import { crawlTracker } from '../crawl-tracker.js';
+import { triggerAutoCrawl } from '../auto-crawl.js';
 
 export const lookupRoutes = new Hono();
 
-/**
- * GET /lookup?city=Mountain+View&state=CA
- * Find a jurisdiction by city/state without knowing the slug.
- */
 lookupRoutes.get('/', (c) => {
-  const city = c.req.query('city');
-  const state = c.req.query('state');
-  const county = c.req.query('county');
+  const slug = c.req.query('slug');
+  let city = c.req.query('city');
+  let state = c.req.query('state');
+  const address = c.req.query('address');
 
-  if (!city && !state && !county) {
-    return c.json(
-      { error: { code: 'BAD_REQUEST', message: 'At least one of city, state, or county is required' } },
-      400
-    );
+  // Parse address to extract city + state if provided
+  if (address && !city && !slug) {
+    const parsed = parseAddress(address);
+    if (parsed) {
+      city = parsed.city;
+      state = state || parsed.state;
+    }
   }
 
-  let results = store.listJurisdictions({ state: state || undefined });
+  if (!state) {
+    return c.json({ error: { code: 'BAD_REQUEST', message: 'state parameter is required (or provide a full address)' } }, 400);
+  }
+  if (!slug && !city) {
+    return c.json({ error: { code: 'BAD_REQUEST', message: 'slug, city, or address parameter is required' } }, 400);
+  }
 
+  // --- Resolve the jurisdiction ---
+
+  // Try slug-based lookup first (from frontend URLs like /ca/palm-desert)
+  if (slug) {
+    // Check if cached in store (try to find by slug match)
+    const storeResults = store.listJurisdictions({ state });
+    const cachedMatch = storeResults.find(j => toSlug(j.name) === slug);
+
+    if (cachedMatch) {
+      const toc = store.getToc(cachedMatch.id);
+      return c.json({
+        data: {
+          status: 'ready',
+          id: cachedMatch.id,
+          name: cachedMatch.name,
+          state: cachedMatch.state,
+          type: cachedMatch.type,
+          children: toc?.children || [],
+        },
+      });
+    }
+
+    // Check if crawl is active for any matching entry
+    const registryEntry = registryStore.getBySlug(state, slug);
+    if (registryEntry) {
+      const crawlStatus = crawlTracker.getStatus(registryEntry.id);
+      if (crawlStatus) {
+        return c.json({
+          data: {
+            status: 'crawling',
+            name: registryEntry.name,
+            progress: {
+              phase: crawlStatus.progress.phase,
+              total: crawlStatus.progress.total,
+              completed: crawlStatus.progress.completed,
+            },
+            retryAfter: 15,
+          },
+        }, 202);
+      }
+
+      // Also check if it became cached since server start (store was reloaded)
+      const freshCached = store.getJurisdiction(registryEntry.id);
+      if (freshCached) {
+        const toc = store.getToc(freshCached.id);
+        return c.json({
+          data: {
+            status: 'ready',
+            id: freshCached.id,
+            name: freshCached.name,
+            state: freshCached.state,
+            type: freshCached.type,
+            children: toc?.children || [],
+          },
+        });
+      }
+
+      // Trigger auto-crawl
+      triggerAutoCrawl(registryEntry);
+      return c.json({
+        data: {
+          status: 'crawling',
+          name: registryEntry.name,
+          progress: { phase: 'toc', total: 0, completed: 0 },
+          retryAfter: 15,
+        },
+      }, 202);
+    }
+
+    return c.json({ data: { status: 'not_found' } });
+  }
+
+  // City-based lookup (for API/agent consumers)
   if (city) {
     const cityLower = city.toLowerCase();
-    results = results.filter((j) => j.name.toLowerCase().includes(cityLower));
+
+    // Check cached store first
+    const storeResults = store.listJurisdictions({ state });
+    const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(cityLower));
+
+    if (cachedMatch) {
+      const toc = store.getToc(cachedMatch.id);
+      return c.json({
+        data: {
+          status: 'ready',
+          id: cachedMatch.id,
+          name: cachedMatch.name,
+          state: cachedMatch.state,
+          type: cachedMatch.type,
+          children: toc?.children || [],
+        },
+      });
+    }
+
+    // Check registry
+    const registryResults = registryStore.findByName(city, state);
+    if (registryResults.length > 0) {
+      const entry = registryResults[0]; // Best match (sorted by publisher priority)
+
+      const crawlStatus = crawlTracker.getStatus(entry.id);
+      if (crawlStatus) {
+        return c.json({
+          data: {
+            status: 'crawling',
+            name: entry.name,
+            progress: {
+              phase: crawlStatus.progress.phase,
+              total: crawlStatus.progress.total,
+              completed: crawlStatus.progress.completed,
+            },
+            retryAfter: 15,
+          },
+        }, 202);
+      }
+
+      triggerAutoCrawl(entry);
+      return c.json({
+        data: {
+          status: 'crawling',
+          name: entry.name,
+          progress: { phase: 'toc', total: 0, completed: 0 },
+          retryAfter: 15,
+        },
+      }, 202);
+    }
+
+    return c.json({ data: { status: 'not_found' } });
   }
 
-  return c.json({
-    data: { jurisdictions: results },
-    meta: { timestamp: new Date().toISOString() },
-  });
+  return c.json({ data: { status: 'not_found' } });
 });
+
+// --- Address parsing ---
+
+const STATE_ABBREVS: Record<string, string> = {
+  alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA',
+  colorado: 'CO', connecticut: 'CT', delaware: 'DE', florida: 'FL', georgia: 'GA',
+  hawaii: 'HI', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA',
+  kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD',
+  massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO',
+  montana: 'MT', nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+  'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH',
+  oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+  'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT', vermont: 'VT',
+  virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY',
+  'district of columbia': 'DC',
+};
+
+const VALID_STATE_CODES = new Set(Object.values(STATE_ABBREVS));
+
+/**
+ * Parse a US address string to extract city and state.
+ * Handles formats like:
+ *   "306 Desert Falls East, Palm Desert, CA"
+ *   "306 desert falls east palm desert ca 92260"
+ *   "2584 Fairway Dr, Costa Mesa, CA"
+ *   "Palm Desert, California"
+ */
+function parseAddress(address: string): { city: string; state: string } | null {
+  const trimmed = address.trim();
+
+  // Try comma-separated: "..., City, ST [zip]"
+  const parts = trimmed.split(',').map(p => p.trim());
+  if (parts.length >= 2) {
+    // Last part should contain state (and possibly zip)
+    const lastPart = parts[parts.length - 1];
+    const stateFromLast = extractState(lastPart);
+    if (stateFromLast) {
+      // City is the second-to-last part
+      const city = parts[parts.length - 2];
+      if (city) return { city, state: stateFromLast };
+    }
+  }
+
+  // No commas or commas didn't work — try to find state at end of string
+  // Remove zip code if present
+  const noZip = trimmed.replace(/\s+\d{5}(-\d{4})?$/, '');
+  const words = noZip.split(/\s+/);
+
+  // Check last 1-2 words for state
+  if (words.length >= 2) {
+    // Try last word as state abbreviation
+    const lastWord = words[words.length - 1];
+    if (lastWord.length === 2 && VALID_STATE_CODES.has(lastWord.toUpperCase())) {
+      // Everything between the street number and state is potential city
+      // Try to extract city: skip leading numbers/street parts, take remaining words before state
+      const city = extractCityFromWords(words.slice(0, -1));
+      if (city) return { city, state: lastWord.toUpperCase() };
+    }
+
+    // Try last two words as state name (e.g., "new york", "north carolina")
+    if (words.length >= 3) {
+      const twoWordState = `${words[words.length - 2]} ${words[words.length - 1]}`.toLowerCase();
+      const stateCode = STATE_ABBREVS[twoWordState];
+      if (stateCode) {
+        const city = extractCityFromWords(words.slice(0, -2));
+        if (city) return { city, state: stateCode };
+      }
+    }
+
+    // Try last word as full state name
+    const oneWordState = STATE_ABBREVS[lastWord.toLowerCase()];
+    if (oneWordState) {
+      const city = extractCityFromWords(words.slice(0, -1));
+      if (city) return { city, state: oneWordState };
+    }
+  }
+
+  return null;
+}
+
+/** Extract a state abbreviation from a string like "CA 92260" or "California" */
+function extractState(s: string): string | null {
+  const clean = s.trim().replace(/\s+\d{5}(-\d{4})?$/, ''); // strip zip
+  if (clean.length === 2 && VALID_STATE_CODES.has(clean.toUpperCase())) {
+    return clean.toUpperCase();
+  }
+  return STATE_ABBREVS[clean.toLowerCase()] || null;
+}
+
+/**
+ * Given words from an address (minus state), try to guess the city.
+ * Strategy: skip the leading street number + street name, take the rest.
+ * If that fails, just return the last 1-3 non-numeric words.
+ */
+function extractCityFromWords(words: string[]): string | null {
+  if (words.length === 0) return null;
+
+  // If first word is a number (street address), skip it and common street words
+  const STREET_SUFFIXES = new Set([
+    'st', 'street', 'ave', 'avenue', 'blvd', 'boulevard', 'dr', 'drive',
+    'ln', 'lane', 'rd', 'road', 'ct', 'court', 'pl', 'place', 'way',
+    'cir', 'circle', 'pkwy', 'parkway', 'hwy', 'highway', 'tr', 'trail',
+    'east', 'west', 'north', 'south', 'e', 'w', 'n', 's',
+  ]);
+
+  if (/^\d+$/.test(words[0])) {
+    // Find where the street name ends (after a street suffix or directional)
+    let streetEnd = 1; // at least skip the number
+    for (let i = 1; i < words.length; i++) {
+      if (STREET_SUFFIXES.has(words[i].toLowerCase())) {
+        streetEnd = i + 1;
+        break;
+      }
+    }
+    // If no suffix found, assume street is just the number + next word
+    if (streetEnd === 1 && words.length > 2) {
+      streetEnd = 2;
+    }
+    const cityWords = words.slice(streetEnd);
+    if (cityWords.length > 0) {
+      return cityWords.join(' ');
+    }
+  }
+
+  // No street number — just return all words as the city
+  return words.join(' ');
+}
+
+// Helper functions
+function stripPrefix(name: string): string {
+  return name.replace(/^(City of|Town of|Village of|County of|Borough of)\s+/i, '');
+}
+
+function stripStateSuffix(name: string): string {
+  // Remove ", CA" or ", NJ" etc. from end of name
+  return name.replace(/,\s*[A-Z]{2}$/, '');
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function toSlug(name: string): string {
+  return slugify(stripStateSuffix(stripPrefix(name)));
+}

@@ -1,4 +1,6 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3100';
+// Server-side: use API_URL env var (set in Vercel) or fall back to localhost.
+// Client-side: use relative URLs so Next.js rewrites proxy to the backend.
+const API_BASE = typeof window !== 'undefined' ? '' : (process.env.API_URL || 'http://localhost:3100');
 
 async function apiFetch(path: string) {
   const res = await fetch(`${API_BASE}${path}`, { next: { revalidate: 3600 } });
@@ -48,9 +50,21 @@ export async function getJurisdictions(state?: string): Promise<Jurisdiction[]> 
   return data.data;
 }
 
-export async function getJurisdiction(id: string): Promise<Jurisdiction> {
-  const data = await apiFetch(`/api/v1/jurisdictions/${id}`);
-  return data.data;
+export interface LookupResult {
+  status: 'ready' | 'crawling' | 'not_found';
+  id?: string;
+  name?: string;
+  state?: string;
+  type?: string;
+  children?: TocNode[];
+  progress?: { phase: string; total: number; completed: number };
+  retryAfter?: number;
+}
+
+export async function lookupJurisdiction(state: string, slug: string): Promise<LookupResult> {
+  const res = await fetch(`${API_BASE}/api/v1/lookup?slug=${encodeURIComponent(slug)}&state=${encodeURIComponent(state.toUpperCase())}`, { cache: 'no-store' });
+  const json = await res.json();
+  return json.data;
 }
 
 export async function getToc(id: string, depth?: number): Promise<TocTree> {
