@@ -46,6 +46,9 @@ lookupRoutes.get('/', (c) => {
           state: cachedMatch.state,
           type: cachedMatch.type,
           children: toc?.children || [],
+          lastCrawled: cachedMatch.lastCrawled || null,
+          publisher: cachedMatch.publisher?.name || null,
+          publisherUrl: cachedMatch.publisher?.url || null,
         },
       });
     }
@@ -81,6 +84,9 @@ lookupRoutes.get('/', (c) => {
             state: freshCached.state,
             type: freshCached.type,
             children: toc?.children || [],
+            lastCrawled: freshCached.lastCrawled || null,
+            publisher: freshCached.publisher?.name || null,
+            publisherUrl: freshCached.publisher?.url || null,
           },
         });
       }
@@ -118,6 +124,9 @@ lookupRoutes.get('/', (c) => {
           state: cachedMatch.state,
           type: cachedMatch.type,
           children: toc?.children || [],
+          lastCrawled: cachedMatch.lastCrawled || null,
+          publisher: cachedMatch.publisher?.name || null,
+          publisherUrl: cachedMatch.publisher?.url || null,
         },
       });
     }
