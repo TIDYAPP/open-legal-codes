@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
-import { jurisdictionsRoutes } from './routes/jurisdictions.js';
 import { tocRoutes } from './routes/toc.js';
 import { codeRoutes } from './routes/code.js';
 import { searchRoutes } from './routes/search.js';
@@ -34,8 +33,7 @@ app.get('/', (c) =>
       jurisdictions: store.listJurisdictions().length,
     },
     endpoints: {
-      jurisdictions: '/api/v1/jurisdictions',
-      lookup: '/api/v1/lookup?city=Mountain+View&state=CA',
+      lookup: '/api/v1/lookup?slug=mountain-view&state=CA',
       toc: '/api/v1/jurisdictions/:id/toc',
       code: '/api/v1/jurisdictions/:id/code/*path',
       search: '/api/v1/jurisdictions/:id/search?q=keyword',
@@ -45,7 +43,6 @@ app.get('/', (c) =>
 
 // Mount API routes
 const api = new Hono();
-api.route('/jurisdictions', jurisdictionsRoutes);
 api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);
 api.route('/jurisdictions', searchRoutes);

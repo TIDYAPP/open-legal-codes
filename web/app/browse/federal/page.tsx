@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import type { RegistryEntry } from '@/lib/api';
+import { jurisdictionUrl } from '@/lib/urls';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3100';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function FederalPage() {
   const [entries, setEntries] = useState<RegistryEntry[]>([]);
@@ -37,11 +38,10 @@ export default function FederalPage() {
       ) : (
         <div className="list">
           {sorted.map((entry) => (
-            <a key={entry.id} href={`/${entry.id}`}>
+            <a key={entry.id} href={jurisdictionUrl(entry)}>
               <div className="card-title">{entry.name}</div>
               <div className="card-meta">
-                {entry.publisher}
-                {entry.status === 'cached' && <span className="entry-status cached"> &middot; cached</span>}
+                federal
               </div>
             </a>
           ))}

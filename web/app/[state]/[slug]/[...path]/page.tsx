@@ -1,0 +1,57 @@
+'use client';
+
+import { use, useState, useEffect } from 'react';
+import { useJurisdiction } from '@/lib/jurisdiction-context';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
+export default function CodePage({
+  params,
+}: {
+  params: Promise<{ state: string; slug: string; path: string[] }>;
+}) {
+  const { path } = use(params);
+  const codePath = path.join('/');
+  const { id, name, urlBase } = useJurisdiction();
+
+  const [code, setCode] = useState<{ text: string; num: string | null; heading: string | null } | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`${API_BASE}/api/v1/jurisdictions/${id}/code/${codePath}`)
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(data => setCode(data.data))
+      .catch(() => setError(true));
+  }, [id, codePath]);
+
+  if (error) {
+    return (
+      <div className="page">
+        <p>Section not found. <a href={urlBase || '/'}>Back to table of contents</a></p>
+      </div>
+    );
+  }
+
+  if (!code) {
+    return <div className="page"><p className="text-muted">Loading...</p></div>;
+  }
+
+  return (
+    <div>
+      <div className="breadcrumbs">
+        <a href="/">Codes</a>
+        <span className="sep">/</span>
+        <a href={urlBase || '/'}>{name}</a>
+        <span className="sep">/</span>
+        <span>{codePath}</span>
+      </div>
+
+      {code.num && (
+        <h1>{code.num}{code.heading ? ` \u2014 ${code.heading}` : ''}</h1>
+      )}
+
+      <div className="section-text">{code.text}</div>
+    </div>
+  );
+}

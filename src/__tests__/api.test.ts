@@ -163,8 +163,8 @@ describe('GET /api/v1/lookup', () => {
     const res = await fetch('/api/v1/lookup?city=Mountain+View&state=CA');
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.data.jurisdictions.length).toBeGreaterThanOrEqual(1);
-    expect(body.data.jurisdictions[0].id).toBe('ca-mountain-view');
+    expect(body.data.status).toBe('ready');
+    expect(body.data.id).toBe('ca-mountain-view');
   });
 
   it('returns 400 with no params', async () => {

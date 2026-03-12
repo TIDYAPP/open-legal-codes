@@ -2,6 +2,8 @@ import { Hono } from 'hono';
 import type { TocNode } from '../types.js';
 import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
+import { registryStore } from '../registry/store.js';
+import { triggerAutoCrawl } from '../auto-crawl.js';
 
 export const tocRoutes = new Hono();
 
@@ -38,6 +40,22 @@ tocRoutes.get('/:id/toc', (c) => {
   if (!toc) {
     const jurisdiction = store.getJurisdiction(id);
     if (!jurisdiction) {
+      // Check registry and trigger auto-crawl if known
+      const entry = registryStore.getById(id);
+      if (entry) {
+        triggerAutoCrawl(entry);
+        const status = crawlTracker.getStatus(id);
+        return c.json(
+          {
+            status: 'CRAWL_IN_PROGRESS',
+            message: `Data for '${id}' is being fetched.`,
+            progress: status ? { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed } : { phase: 'toc', total: 0, completed: 0 },
+            startedAt: status?.startedAt || new Date().toISOString(),
+            retryAfter: 30,
+          },
+          202
+        );
+      }
       return c.json(
         { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
         404
@@ -80,6 +98,22 @@ tocRoutes.get('/:id/toc/*', (c) => {
 
   const jurisdiction = store.getJurisdiction(id);
   if (!jurisdiction) {
+    // Check registry and trigger auto-crawl if known
+    const entry = registryStore.getById(id);
+    if (entry) {
+      triggerAutoCrawl(entry);
+      const status = crawlTracker.getStatus(id);
+      return c.json(
+        {
+          status: 'CRAWL_IN_PROGRESS',
+          message: `Data for '${id}' is being fetched.`,
+          progress: status ? { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed } : { phase: 'toc', total: 0, completed: 0 },
+          startedAt: status?.startedAt || new Date().toISOString(),
+          retryAfter: 30,
+        },
+        202
+      );
+    }
     return c.json(
       { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
       404

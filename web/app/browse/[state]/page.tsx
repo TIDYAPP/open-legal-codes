@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import type { RegistryEntry } from '@/lib/api';
+import { jurisdictionUrl } from '@/lib/urls';
 
 const STATE_NAMES: Record<string, string> = {
   AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
@@ -21,7 +22,7 @@ const STATE_NAMES: Record<string, string> = {
 const TYPE_ORDER: Record<string, number> = { state: 0, county: 1, city: 2, hoa: 3 };
 const TYPE_LABELS: Record<string, string> = { state: 'State Codes', county: 'Counties', city: 'Cities', hoa: 'HOAs' };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3100';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function StatePage() {
   const params = useParams();
@@ -72,11 +73,10 @@ export default function StatePage() {
             <div className="state-label">{TYPE_LABELS[type] || type}</div>
             <div className="list">
               {grouped.byType[type].map((entry) => (
-                <a key={entry.id} href={`/${entry.id}`}>
+                <a key={entry.id} href={jurisdictionUrl(entry)}>
                   <div className="card-title">{entry.name}</div>
                   <div className="card-meta">
-                    {entry.publisher}
-                    {entry.status === 'cached' && <span className="entry-status cached"> &middot; cached</span>}
+                    {entry.type}
                   </div>
                 </a>
               ))}

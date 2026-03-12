@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useJurisdiction } from '@/lib/jurisdiction-context';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 interface SearchResult {
   path: string;
@@ -9,30 +12,21 @@ interface SearchResult {
   snippet: string;
 }
 
-export default function SearchPage({
-  params,
-}: {
-  params: Promise<{ jurisdiction: string }>;
-}) {
-  const [jurisdiction, setJurisdiction] = useState<string | null>(null);
+export default function SearchPage() {
+  const { id, name, urlBase } = useJurisdiction();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  if (!jurisdiction) {
-    params.then((p) => setJurisdiction(p.jurisdiction));
-    return null;
-  }
-
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || !id) return;
 
     setLoading(true);
     setSearched(true);
     try {
-      const res = await fetch(`/api/v1/jurisdictions/${jurisdiction}/search?q=${encodeURIComponent(query)}&limit=50`);
+      const res = await fetch(`${API_BASE}/api/v1/jurisdictions/${id}/search?q=${encodeURIComponent(query)}&limit=50`);
       const data = await res.json();
       setResults(data.data?.results || []);
     } catch {
@@ -42,11 +36,11 @@ export default function SearchPage({
   }
 
   return (
-    <div className="page">
+    <div>
       <div className="breadcrumbs">
         <a href="/">Codes</a>
         <span className="sep">/</span>
-        <a href={`/${jurisdiction}`}>{jurisdiction}</a>
+        <a href={urlBase || '/'}>{name}</a>
         <span className="sep">/</span>
         <span>Search</span>
       </div>
@@ -75,9 +69,9 @@ export default function SearchPage({
               <p className="text-xs text-faint mb-8">{results.length} results</p>
               <div className="list">
                 {results.map((r) => (
-                  <a key={r.path} href={`/${jurisdiction}/${r.path}`}>
+                  <a key={r.path} href={`${urlBase}/${r.path}`}>
                     <div style={{ fontWeight: 500, fontSize: 14 }}>
-                      {r.num}{r.heading ? ` — ${r.heading}` : ''}
+                      {r.num}{r.heading ? ` \u2014 ${r.heading}` : ''}
                     </div>
                     <div className="text-xs text-faint mt-8">{r.path}</div>
                     {r.snippet && <div className="text-sm text-muted mt-8">{r.snippet}</div>}
