@@ -193,5 +193,20 @@
     },
     "lastCrawled": "2026-03-09T20:34:17.014Z",
     "lastUpdated": "2026-03-09T20:34:17.014Z"
+  },
+  {
+    "id": "il-hoffman-estates-independence-place-west",
+    "name": "Independence Place West COA",
+    "type": "hoa",
+    "state": "IL",
+    "parentId": null,
+    "fips": null,
+    "publisher": {
+      "name": "manual",
+      "sourceId": "il-hoffman-estates-independence-place-west",
+      "url": "https://karecondo.com/wp-content/uploads/2019/05/IPW_Rulebook_2019.pdf"
+    },
+    "lastCrawled": "2026-03-12T20:27:50.315Z",
+    "lastUpdated": "2026-03-12T20:27:50.315Z"
   }
 ]

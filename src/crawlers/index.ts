@@ -4,6 +4,7 @@ import { AmlegalCrawler } from './amlegal.js';
 import { Ecode360Crawler } from './ecode360.js';
 import { EcfrCrawler } from './ecfr.js';
 import { CaliforniaLeginfoCrawler } from './ca-leginfo.js';
+import { ManualCrawler } from './manual.js';
 import { createFallbackClient } from './browserbase-client.js';
 
 /**
@@ -23,12 +24,14 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
       return new EcfrCrawler();
     case 'ca-leginfo':
       return new CaliforniaLeginfoCrawler();
+    case 'manual':
+      return new ManualCrawler();
     default:
-      throw new Error(`Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo`);
+      throw new Error(`Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, manual`);
   }
 }
 
 /**
  * List all available publisher names.
  */
-export const PUBLISHERS = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo'] as const;
+export const PUBLISHERS = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'manual'] as const;

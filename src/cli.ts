@@ -30,10 +30,42 @@ function getArg(name: string): string | undefined {
 }
 
 function loadJurisdiction(id: string): Jurisdiction | null {
+  // Check cached jurisdictions first
   const registryPath = join(process.cwd(), 'codes', 'jurisdictions.json');
-  if (!existsSync(registryPath)) return null;
-  const jurisdictions: Jurisdiction[] = JSON.parse(readFileSync(registryPath, 'utf-8'));
-  return jurisdictions.find(j => j.id === id) ?? null;
+  if (existsSync(registryPath)) {
+    const jurisdictions: Jurisdiction[] = JSON.parse(readFileSync(registryPath, 'utf-8'));
+    const found = jurisdictions.find(j => j.id === id);
+    if (found) return found;
+  }
+
+  // Fall back to manual sources (for HOAs and other manually-configured jurisdictions)
+  const manualPath = join(process.cwd(), 'data', 'manual-sources.json');
+  if (existsSync(manualPath)) {
+    const sources = JSON.parse(readFileSync(manualPath, 'utf-8')) as Array<{
+      id: string; name: string; type: string; state: string | null;
+      parentId: string | null; sourceUrl: string;
+    }>;
+    const source = sources.find(s => s.id === id);
+    if (source) {
+      return {
+        id: source.id,
+        name: source.name,
+        type: source.type as Jurisdiction['type'],
+        state: source.state,
+        parentId: source.parentId,
+        fips: null,
+        publisher: {
+          name: 'manual' as const,
+          sourceId: source.id,
+          url: source.sourceUrl,
+        },
+        lastCrawled: '',
+        lastUpdated: '',
+      };
+    }
+  }
+
+  return null;
 }
 
 function printUsage() {

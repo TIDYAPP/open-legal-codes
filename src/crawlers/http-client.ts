@@ -103,4 +103,10 @@ export class HttpClient {
     const res = await this.get(url, params);
     return res.text();
   }
+
+  async getBuffer(url: string, params?: Record<string, string>): Promise<Buffer> {
+    const res = await this.get(url, params);
+    const arrayBuffer = await res.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  }
 }
