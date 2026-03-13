@@ -1,19 +1,17 @@
 /**
- * Browserbase + Stagehand HTTP client for crawling publisher sites
- * that block simple HTTP requests.
+ * Browserbase HTTP client for crawling publisher sites that block plain HTTP.
  *
- * Uses Stagehand (Browserbase's AI browser automation framework) to:
- * - Navigate pages with a real Chrome browser (bypasses Cloudflare, etc.)
- * - Extract structured content using AI when CSS selectors fail
+ * Uses Browserbase's cloud browsers via their REST API + Playwright connect.
+ * No LLM key needed — just BROWSERBASE_API_KEY and BROWSERBASE_PROJECT_ID.
  *
- * Implements the same interface as HttpClient so adapters can use it
- * as a drop-in replacement.
- *
- * Requires env vars: BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID
- * Optional: ANTHROPIC_API_KEY (for AI-powered extract())
+ * Flow:
+ * 1. Create a session via Browserbase REST API
+ * 2. Connect Playwright to the session via CDP
+ * 3. Navigate and extract HTML
+ * 4. Reuse the session for subsequent requests
  */
 
-import { Stagehand } from '@browserbasehq/stagehand';
+import { chromium, type Browser, type BrowserContext, type Page } from 'playwright-core';
 import { HttpClient } from './http-client.js';
 
 function sleep(ms: number): Promise<void> {
@@ -22,9 +20,12 @@ function sleep(ms: number): Promise<void> {
 
 export class BrowserbaseHttpClient {
   private minDelayMs: number;
-  private stagehand: Stagehand | null = null;
-  private page: any = null;
+  private browser: Browser | null = null;
+  private context: BrowserContext | null = null;
+  private page: Page | null = null;
+  private sessionId: string | null = null;
   private lastRequestTime = 0;
+  private connecting: Promise<void> | null = null;
 
   constructor(options?: { minDelayMs?: number }) {
     this.minDelayMs = options?.minDelayMs ?? 2000;
@@ -44,29 +45,54 @@ export class BrowserbaseHttpClient {
     this.lastRequestTime = Date.now();
   }
 
-  private async ensureSession(): Promise<{ page: any; stagehand: Stagehand }> {
-    if (this.page && this.stagehand) return { page: this.page, stagehand: this.stagehand };
+  private async ensureSession(): Promise<Page> {
+    if (this.page) return this.page;
 
-    console.log('[stagehand] Creating new session...');
-    const stagehand = new Stagehand({
-      env: 'BROWSERBASE',
-      apiKey: process.env.BROWSERBASE_API_KEY,
-      projectId: process.env.BROWSERBASE_PROJECT_ID,
-      model: {
-        modelName: 'claude-sonnet-4-5-20250929',
-        apiKey: process.env.ANTHROPIC_API_KEY,
-      },
-    });
-    await stagehand.init();
-    console.log('[stagehand] Session initialized');
-
-    this.stagehand = stagehand;
-    const activePage = stagehand.context.activePage();
-    if (!activePage) {
-      throw new Error('Stagehand session has no active page');
+    // Prevent concurrent session creation
+    if (this.connecting) {
+      await this.connecting;
+      return this.page!;
     }
-    this.page = activePage;
-    return { page: this.page, stagehand: this.stagehand };
+
+    this.connecting = (async () => {
+      const apiKey = process.env.BROWSERBASE_API_KEY!;
+      const projectId = process.env.BROWSERBASE_PROJECT_ID!;
+
+      // Step 1: Create a Browserbase session
+      console.log('[browserbase] Creating session...');
+      const createRes = await fetch('https://api.browserbase.com/v1/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-bb-api-key': apiKey,
+        },
+        body: JSON.stringify({ projectId }),
+      });
+
+      if (!createRes.ok) {
+        const errText = await createRes.text();
+        throw new Error(`Browserbase session creation failed (${createRes.status}): ${errText}`);
+      }
+
+      const session = await createRes.json() as { id: string; connectUrl?: string };
+      this.sessionId = session.id;
+      console.log(`[browserbase] Session created: ${session.id}`);
+
+      // Step 2: Connect Playwright via CDP
+      const connectUrl = `wss://connect.browserbase.com?apiKey=${apiKey}&sessionId=${session.id}`;
+      this.browser = await chromium.connectOverCDP(connectUrl);
+      console.log('[browserbase] Connected via CDP');
+
+      // Get the default context and page
+      const contexts = this.browser.contexts();
+      this.context = contexts[0] || await this.browser.newContext();
+      const pages = this.context.pages();
+      this.page = pages[0] || await this.context.newPage();
+    })();
+
+    await this.connecting;
+    this.connecting = null;
+    return this.page!;
   }
 
   private buildUrl(url: string, params?: Record<string, string>): string {
@@ -76,17 +102,22 @@ export class BrowserbaseHttpClient {
 
   async getHtml(url: string, params?: Record<string, string>): Promise<string> {
     const fullUrl = this.buildUrl(url, params);
-    const { page } = await this.ensureSession();
+    const page = await this.ensureSession();
     await this.throttle();
 
-    console.log(`[stagehand] Navigating to ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeoutMs: 60_000 });
+    console.log(`[browserbase] Navigating to ${fullUrl}`);
+    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
+
+    // Brief wait for any post-load JS
+    await sleep(2000);
+
     const html = await page.evaluate(() => document.documentElement.outerHTML);
 
     if (!html || html.length < 100) {
       throw new Error(`Empty or blocked response from ${fullUrl}`);
     }
 
+    console.log(`[browserbase] Got ${html.length} chars from ${fullUrl}`);
     return html;
   }
 
@@ -100,31 +131,27 @@ export class BrowserbaseHttpClient {
 
   async getJson<T>(url: string, params?: Record<string, string>): Promise<T> {
     const fullUrl = this.buildUrl(url, params);
-    const { page } = await this.ensureSession();
+    const page = await this.ensureSession();
     await this.throttle();
 
-    console.log(`[stagehand] Fetching JSON from ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeoutMs: 60_000 });
+    console.log(`[browserbase] Fetching JSON from ${fullUrl}`);
+    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
     const text = await page.evaluate(() => document.body.innerText);
     return JSON.parse(text) as T;
   }
 
-  /**
-   * Get the Stagehand instance for AI-powered extraction.
-   * Use this when CSS selectors aren't reliable enough.
-   */
-  async getStagehand(): Promise<Stagehand> {
-    const { stagehand } = await this.ensureSession();
-    return stagehand;
-  }
-
   async dispose(): Promise<void> {
-    if (this.stagehand) {
-      try { await this.stagehand.close(); } catch { /* ignore */ }
-      this.stagehand = null;
+    if (this.page) {
+      try { await this.page.close(); } catch { /* ignore */ }
       this.page = null;
     }
-    console.log('[stagehand] Session closed');
+    if (this.browser) {
+      try { await this.browser.close(); } catch { /* ignore */ }
+      this.browser = null;
+    }
+    this.context = null;
+    this.connecting = null;
+    console.log('[browserbase] Session closed');
   }
 }
 
@@ -144,6 +171,9 @@ export class FallbackHttpClient {
     this.plainHttp = new HttpClient({ minDelayMs: options?.minDelayMs ?? 500 });
     this.bbAvailable = !!(process.env.BROWSERBASE_API_KEY && process.env.BROWSERBASE_PROJECT_ID);
     this.bbOptions = options ?? {};
+    if (this.bbAvailable) {
+      console.log('[fallback] Browserbase available for Cloudflare bypass');
+    }
   }
 
   private getBrowserbase(): BrowserbaseHttpClient {
@@ -207,10 +237,6 @@ export class FallbackHttpClient {
       }
       throw err;
     }
-  }
-
-  async getStagehand(): Promise<Stagehand> {
-    return this.getBrowserbase().getStagehand();
   }
 
   async dispose(): Promise<void> {
