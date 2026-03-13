@@ -42,7 +42,7 @@ export default function JurisdictionLayout({
   if (data.status === 'not_found') {
     return (
       <div>
-        <p>Jurisdiction not found. <a href="/">Back to home</a></p>
+        <p>{data.message || 'Jurisdiction not found.'} <a href="/">Back to home</a></p>
       </div>
     );
   }

@@ -3,10 +3,11 @@ import { store } from '../store/index.js';
 import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { discoverPublisher } from '../registry/publisher-discovery.js';
 
 export const lookupRoutes = new Hono();
 
-lookupRoutes.get('/', (c) => {
+lookupRoutes.get('/', async (c) => {
   const slug = c.req.query('slug');
   let city = c.req.query('city');
   let state = c.req.query('state');
@@ -54,7 +55,24 @@ lookupRoutes.get('/', (c) => {
     }
 
     // Check if crawl is active for any matching entry
-    const registryEntry = registryStore.getBySlug(state, slug);
+    let registryEntry = registryStore.getBySlug(state, slug);
+
+    // If this is a census-only entry, try to discover the publisher
+    if (registryEntry && registryEntry.status === 'discoverable') {
+      const cityName = registryEntry.name.replace(/,\s*[A-Z]{2}$/, '');
+      const discovered = await discoverPublisher(cityName, state, {
+        fips: registryEntry.fips || undefined,
+        lat: registryEntry.lat || undefined,
+        lng: registryEntry.lng || undefined,
+        population: registryEntry.population || undefined,
+      });
+      if (discovered) {
+        registryEntry = discovered;
+      } else {
+        return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
+      }
+    }
+
     if (registryEntry) {
       const crawlStatus = crawlTracker.getStatus(registryEntry.id);
       if (crawlStatus) {
@@ -131,10 +149,26 @@ lookupRoutes.get('/', (c) => {
       });
     }
 
-    // Check registry
+    // Check registry (includes census fallback)
     const registryResults = registryStore.findByName(city, state);
     if (registryResults.length > 0) {
-      const entry = registryResults[0]; // Best match (sorted by publisher priority)
+      let entry = registryResults[0]; // Best match (sorted by publisher priority)
+
+      // If best match is census-only, try to discover the publisher
+      if (entry.status === 'discoverable') {
+        const cityName = entry.name.replace(/,\s*[A-Z]{2}$/, '');
+        const discovered = await discoverPublisher(cityName, state, {
+          fips: entry.fips || undefined,
+          lat: entry.lat || undefined,
+          lng: entry.lng || undefined,
+          population: entry.population || undefined,
+        });
+        if (discovered) {
+          entry = discovered;
+        } else {
+          return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
+        }
+      }
 
       const crawlStatus = crawlTracker.getStatus(entry.id);
       if (crawlStatus) {

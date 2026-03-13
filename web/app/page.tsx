@@ -80,10 +80,11 @@ export default function CodesPage() {
           </div>
           <div className="list">
             {searchResults.map((entry) => (
-              <a key={entry.id} href={jurisdictionUrl(entry)}>
+              <a key={entry.id} href={jurisdictionUrl(entry)} style={entry.status === 'discoverable' ? { opacity: 0.6 } : undefined}>
                 <div className="card-title">{entry.name}</div>
                 <div className="card-meta">
                   {entry.type} &middot; {entry.state || 'Federal'}
+                  {entry.status === 'discoverable' && <span> &middot; not yet indexed</span>}
                 </div>
               </a>
             ))}

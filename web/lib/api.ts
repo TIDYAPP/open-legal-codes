@@ -62,6 +62,7 @@ export interface LookupResult {
   lastCrawled?: string | null;
   publisher?: string | null;
   publisherUrl?: string | null;
+  message?: string;
 }
 
 export async function lookupJurisdiction(state: string, slug: string): Promise<LookupResult> {
@@ -140,7 +141,7 @@ export interface RegistryEntry {
   state: string | null;
   publisher: string;
   sourceUrl: string;
-  status: 'available' | 'cached';
+  status: 'available' | 'cached' | 'discoverable';
   population: number | null;
 }
 
