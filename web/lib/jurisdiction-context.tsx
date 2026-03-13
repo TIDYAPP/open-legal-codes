@@ -13,6 +13,7 @@ interface JurisdictionData {
   lastCrawled?: string | null;
   publisher?: string | null;
   publisherUrl?: string | null;
+  message?: string;
 }
 
 const JurisdictionContext = createContext<JurisdictionData>({ status: 'loading' });

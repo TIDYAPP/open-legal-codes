@@ -25,7 +25,7 @@ export interface RegistryEntry {
   /** Canonical URL on publisher site */
   sourceUrl: string;
   /** Whether we've cached content for this jurisdiction */
-  status: 'available' | 'cached';
+  status: 'available' | 'cached' | 'discoverable';
   /** FIPS or Census ID that was matched */
   censusMatch: string | null;
   /** ISO timestamp when publisher catalog was scanned */

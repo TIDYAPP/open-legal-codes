@@ -1,11 +1,14 @@
 /**
  * RegistryStore — in-memory store for the comprehensive jurisdiction registry.
  * Loads data/registry.json on initialization and provides filtered queries.
+ * Also loads Census places as fallback search results for jurisdictions
+ * not yet matched to a publisher.
  */
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RegistryEntry, RegistryStats } from './types.js';
+import type { CensusPlace } from './census-loader.js';
 
 const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo'];
 
@@ -24,6 +27,27 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, '');
 }
 
+/** Convert a CensusPlace to a synthetic RegistryEntry */
+function censusToEntry(place: CensusPlace): RegistryEntry {
+  const id = `${place.state.toLowerCase()}-${slugify(place.name)}`;
+  return {
+    id,
+    name: `${place.name}, ${place.state}`,
+    type: place.type === 'county' ? 'county' : 'city',
+    state: place.state,
+    fips: place.fips,
+    lat: place.lat,
+    lng: place.lng,
+    population: place.pop,
+    publisher: 'unknown',
+    sourceId: '',
+    sourceUrl: '',
+    status: 'discoverable',
+    censusMatch: place.fips,
+    lastScanned: '',
+  };
+}
+
 export class RegistryStore {
   private entries: RegistryEntry[] = [];
   private byState = new Map<string, RegistryEntry[]>();
@@ -31,6 +55,11 @@ export class RegistryStore {
   private byId = new Map<string, RegistryEntry>();
   private bySlug = new Map<string, RegistryEntry>();
   private dataDir: string;
+
+  // Census fallback data
+  private censusPlaces: CensusPlace[] = [];
+  private censusByState = new Map<string, CensusPlace[]>();
+  private registryFips = new Set<string>();
 
   constructor(dataDir?: string) {
     this.dataDir = dataDir || join(process.cwd(), 'data');
@@ -45,10 +74,49 @@ export class RegistryStore {
 
     this.entries = JSON.parse(readFileSync(registryPath, 'utf-8'));
 
+    // Load known AMLegal jurisdictions (major cities not discoverable via API)
+    const amlegalPath = join(this.dataDir, 'amlegal-known.json');
+    if (existsSync(amlegalPath)) {
+      const knownIds = new Set(this.entries.map(e => e.id));
+      const amlegalKnown: Array<{ name: string; state: string; slug: string; fips: string }> =
+        JSON.parse(readFileSync(amlegalPath, 'utf-8'));
+
+      for (const known of amlegalKnown) {
+        const id = `${known.state.toLowerCase()}-${slugify(known.name)}`;
+        if (knownIds.has(id)) continue;
+        this.entries.push({
+          id,
+          name: `${known.name}, ${known.state}`,
+          type: 'city',
+          state: known.state,
+          fips: known.fips,
+          lat: null,
+          lng: null,
+          population: null,
+          publisher: 'amlegal',
+          sourceId: known.slug,
+          sourceUrl: `https://codelibrary.amlegal.com/codes/${known.slug}/latest/overview`,
+          status: 'available',
+          censusMatch: known.fips,
+          lastScanned: new Date().toISOString(),
+        });
+      }
+      console.log(`[RegistryStore] Added ${amlegalKnown.length} known AMLegal jurisdictions`);
+    }
+
     // Build indexes
+    this.byState.clear();
+    this.byPublisher.clear();
+    this.byId.clear();
+    this.bySlug.clear();
+    this.registryFips.clear();
+
     for (const entry of this.entries) {
-      // byId index
       this.byId.set(entry.id, entry);
+
+      if (entry.fips) {
+        this.registryFips.add(entry.fips);
+      }
 
       if (entry.state) {
         const list = this.byState.get(entry.state) || [];
@@ -76,6 +144,19 @@ export class RegistryStore {
           }
         }
       }
+    }
+
+    // Load census places for fallback search
+    const censusPath = join(this.dataDir, 'census-places.json');
+    if (existsSync(censusPath)) {
+      this.censusPlaces = JSON.parse(readFileSync(censusPath, 'utf-8'));
+      this.censusByState.clear();
+      for (const place of this.censusPlaces) {
+        const list = this.censusByState.get(place.state) || [];
+        list.push(place);
+        this.censusByState.set(place.state, list);
+      }
+      console.log(`[RegistryStore] Loaded ${this.censusPlaces.length} census places`);
     }
 
     console.log(`[RegistryStore] Loaded ${this.entries.length} registry entries`);
@@ -155,10 +236,10 @@ export class RegistryStore {
       }));
   }
 
-  /** Aggregate statistics */
+  /** Aggregate statistics including census places */
   getStats(): RegistryStats {
     const stats: RegistryStats = {
-      total: this.entries.length,
+      total: this.entries.length + this.censusPlaces.filter(p => !this.registryFips.has(p.fips)).length,
       byPublisher: {},
       byStatus: {},
       byType: {},
@@ -182,14 +263,24 @@ export class RegistryStore {
     return this.byId.get(id);
   }
 
-  /** Look up by state + slug (e.g., "ca", "palm-desert") */
+  /** Look up by state + slug (e.g., "ca", "palm-desert").
+   *  Falls back to census data if no registry match. */
   getBySlug(state: string, slug: string): RegistryEntry | undefined {
     const key = `${state.toLowerCase()}-${slug}`;
-    return this.bySlug.get(key);
+    const entry = this.bySlug.get(key);
+    if (entry) return entry;
+
+    // Fallback: search census places by slug match
+    const statePlaces = this.censusByState.get(state.toUpperCase()) || [];
+    const match = statePlaces.find(p => slugify(p.name) === slug);
+    if (match && !this.registryFips.has(match.fips)) {
+      return censusToEntry(match);
+    }
+    return undefined;
   }
 
   /** Case-insensitive substring match on name, stripping common prefixes.
-   *  Results sorted by publisher priority. */
+   *  Results sorted by: exact match first, then known publishers, then by population. */
   findByName(name: string, state?: string): RegistryEntry[] {
     const needle = stripPrefix(name).toLowerCase();
     let candidates = state
@@ -201,18 +292,76 @@ export class RegistryStore {
       return stripped.includes(needle);
     });
 
-    // Sort by publisher priority
-    matches.sort((a, b) => {
-      const pa = PUBLISHER_PRIORITY.indexOf(a.publisher);
-      const pb = PUBLISHER_PRIORITY.indexOf(b.publisher);
-      return (pa < 0 ? 999 : pa) - (pb < 0 ? 999 : pb);
+    // Collect FIPS codes already in registry matches to deduplicate
+    const matchedFips = new Set(matches.map(e => e.fips).filter(Boolean));
+
+    // Search census places for additional matches
+    const censusPool = state
+      ? (this.censusByState.get(state.toUpperCase()) || [])
+      : this.censusPlaces;
+
+    const censusMatches = censusPool.filter(p => {
+      if (this.registryFips.has(p.fips) || matchedFips.has(p.fips)) return false;
+      return p.name.toLowerCase().includes(needle);
     });
 
-    return matches;
+    // Convert census matches to RegistryEntry and merge
+    const censusEntries = censusMatches.map(censusToEntry);
+    const all = [...matches, ...censusEntries];
+
+    // Sort: exact name matches first, then known publishers, then by population
+    all.sort((a, b) => {
+      const aName = stripPrefix(a.name).toLowerCase().replace(/,\s*[a-z]{2}$/i, '');
+      const bName = stripPrefix(b.name).toLowerCase().replace(/,\s*[a-z]{2}$/i, '');
+      const aExact = aName === needle ? 1 : 0;
+      const bExact = bName === needle ? 1 : 0;
+      if (aExact !== bExact) return bExact - aExact;
+
+      // Known publisher beats unknown
+      const aKnown = a.publisher !== 'unknown' ? 1 : 0;
+      const bKnown = b.publisher !== 'unknown' ? 1 : 0;
+      if (aKnown !== bKnown) return bKnown - aKnown;
+
+      // Within same source type, sort by publisher priority or population
+      if (aKnown && bKnown) {
+        const pa = PUBLISHER_PRIORITY.indexOf(a.publisher);
+        const pb = PUBLISHER_PRIORITY.indexOf(b.publisher);
+        return (pa < 0 ? 999 : pa) - (pb < 0 ? 999 : pb);
+      }
+
+      // Census entries: sort by population descending
+      return (b.population || 0) - (a.population || 0);
+    });
+
+    return all;
+  }
+
+  /** Add a discovered entry to the in-memory index */
+  addEntry(entry: RegistryEntry): void {
+    this.entries.push(entry);
+    this.byId.set(entry.id, entry);
+    if (entry.fips) this.registryFips.add(entry.fips);
+    if (entry.state) {
+      const list = this.byState.get(entry.state) || [];
+      list.push(entry);
+      this.byState.set(entry.state, list);
+
+      const slug = slugify(stripStateSuffix(stripPrefix(entry.name)));
+      const slugKey = `${entry.state.toLowerCase()}-${slug}`;
+      this.bySlug.set(slugKey, entry);
+    }
+    const pubList = this.byPublisher.get(entry.publisher) || [];
+    pubList.push(entry);
+    this.byPublisher.set(entry.publisher, pubList);
   }
 
   get size(): number {
     return this.entries.length;
+  }
+
+  get totalSearchable(): number {
+    const extraCensus = this.censusPlaces.filter(p => !this.registryFips.has(p.fips)).length;
+    return this.entries.length + extraCensus;
   }
 }
 
