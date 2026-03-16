@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Developers — Open Legal Codes',
-  description: 'REST API, MCP server, CLI, and Claude Code integration.',
+  description: 'REST API, MCP server, and CLI for US legal codes.',
 };
 
 export default function DevelopersPage() {
@@ -25,14 +25,23 @@ GET /lookup?city=Mountain+View&state=CA         # Find by name`}</div>
 
       <h2>MCP Server</h2>
       <p className="text-sm text-muted mb-8">
-        Add to your Claude Desktop config for direct tool access:
+        Add to your Claude Desktop or Claude Code config for direct tool access:
+      </p>
+      <div className="code-block">{`{
+  "mcpServers": {
+    "legal-codes": {
+      "url": "https://openlegalcodes.org/mcp"
+    }
+  }
+}`}</div>
+      <p className="text-sm text-muted mt-16 mb-8">
+        If your MCP client requires a local process instead of a URL:
       </p>
       <div className="code-block">{`{
   "mcpServers": {
     "legal-codes": {
       "command": "npx",
-      "args": ["tsx", "src/mcp.ts"],
-      "cwd": "/path/to/open-legal-codes"
+      "args": ["-y", "open-legal-codes-mcp"]
     }
   }
 }`}</div>
@@ -41,24 +50,11 @@ GET /lookup?city=Mountain+View&state=CA         # Find by name`}</div>
       </p>
 
       <h2>CLI</h2>
-      <div className="code-block">{`npx tsx src/cli.ts query  --jurisdiction ca-mountain-view --path part-i/article-i/section-100
-npx tsx src/cli.ts toc    --jurisdiction ca-mountain-view --depth 2
-npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "parking"
-npx tsx src/cli.ts crawl  --jurisdiction ca-mountain-view
-npx tsx src/cli.ts list   --state CA`}</div>
-
-      <h2>Claude Code</h2>
-      <p className="text-sm text-muted mb-8">
-        Clone the repo and use built-in slash commands:
-      </p>
-      <div className="code-block">{`/query-code ca-mountain-view part-i/article-i/section-100
-/search-codes ca-mountain-view "parking"
-/crawl-jurisdiction ca-mountain-view`}</div>
-
-      <h2>GitHub</h2>
-      <p className="text-sm text-muted">
-        Source code: <a href="https://github.com/mchusma/open-legal-codes" target="_blank" rel="noopener noreferrer">github.com/mchusma/open-legal-codes</a>
-      </p>
+      <div className="code-block">{`npx open-legal-codes query  --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+npx open-legal-codes toc    --jurisdiction ca-mountain-view --depth 2
+npx open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
+npx open-legal-codes list   --state CA
+npx open-legal-codes lookup --city "Mountain View" --state CA`}</div>
     </div>
   );
 }

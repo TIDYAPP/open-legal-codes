@@ -443,3 +443,63 @@ code {
   color: var(--fg);
   border-color: var(--fg-muted);
 }
+
+/* Hero (landing page) */
+.hero {
+  margin-bottom: 32px;
+}
+
+.hero-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  color: var(--fg-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 540px;
+  margin-bottom: 20px;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 8px;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--sans);
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cta-btn:hover {
+  text-decoration: none;
+}
+
+.cta-btn-primary {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.cta-btn-primary:hover {
+  opacity: 0.85;
+}
+
+.cta-btn-secondary {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.cta-btn-secondary:hover {
+  border-color: var(--fg-muted);
+}

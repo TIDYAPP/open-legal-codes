@@ -1,115 +1,88 @@
-'use client';
-
-import { useState, useEffect, useMemo } from 'react';
-import type { RegistryEntry, RegistryStats } from '@/lib/api';
-import { jurisdictionUrl } from '@/lib/urls';
-
-const STATE_NAMES: Record<string, string> = {
-  AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
-  CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
-  HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
-  KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
-  MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
-  MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
-  NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio',
-  OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
-  SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
-  VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
-  DC: 'District of Columbia',
+export const metadata = {
+  title: 'Open Legal Codes — Free API for US Legal Codes',
+  description: 'Free API and MCP server for AI agents to look up real municipal, state, and federal legal codes. No signup, no API key.',
 };
 
-const ALL_STATES = Object.entries(STATE_NAMES).sort((a, b) => a[1].localeCompare(b[1]));
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
-
-export default function CodesPage() {
-  const [stats, setStats] = useState<RegistryStats | null>(null);
-  const [search, setSearch] = useState('');
-  const [searchResults, setSearchResults] = useState<RegistryEntry[] | null>(null);
-  const [searching, setSearching] = useState(false);
-
-  // Fetch lightweight stats on mount (< 1KB vs 300KB+ for full registry)
-  useEffect(() => {
-    fetch(`${API_BASE}/api/v1/registry/stats`)
-      .then((r) => r.json())
-      .then((data) => setStats(data.data))
-      .catch(() => {});
-  }, []);
-
-  // Debounced search — only fetches entries when user types
-  useEffect(() => {
-    if (!search) {
-      setSearchResults(null);
-      return;
-    }
-    setSearching(true);
-    const timer = setTimeout(() => {
-      fetch(`${API_BASE}/api/v1/registry?search=${encodeURIComponent(search)}&limit=50`)
-        .then((r) => r.json())
-        .then((data) => setSearchResults(data.data || []))
-        .catch(() => setSearchResults([]))
-        .finally(() => setSearching(false));
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [search]);
-
+export default function HomePage() {
   return (
     <div>
-      <h1>Codes</h1>
-      <p className="subtitle">
-        Browse and search US legal codes.
-        {stats && <span> {stats.total.toLocaleString()} jurisdictions available.</span>}
-      </p>
-
-      <div className="search-bar">
-        <input
-          type="search"
-          placeholder="Search jurisdictions..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="hero">
+        <h1 className="hero-title">Know what US law actually says</h1>
+        <p className="hero-subtitle">
+          Free API and MCP server for looking up real municipal, state, and federal legal codes.
+          No signup. No API key. 37,000+ jurisdictions.
+        </p>
+        <div className="hero-ctas">
+          <a href="/codes" className="cta-btn cta-btn-primary">Browse Codes</a>
+          <a href="/developers" className="cta-btn cta-btn-secondary">View Docs</a>
+        </div>
       </div>
 
-      {searchResults ? (
-        <div>
-          <div className="text-sm text-muted mb-16">
-            {searching ? 'Searching...' :
-              searchResults.length === 0
-                ? `No jurisdictions match "${search}"`
-                : `${searchResults.length}${searchResults.length === 50 ? '+' : ''} results`}
-          </div>
-          <div className="list">
-            {searchResults.map((entry) => (
-              <a key={entry.id} href={jurisdictionUrl(entry)} style={entry.status === 'discoverable' ? { opacity: 0.6 } : undefined}>
-                <div className="card-title">{entry.name}</div>
-                <div className="card-meta">
-                  {entry.type} &middot; {entry.state || 'Federal'}
-                  {entry.status === 'discoverable' && <span> &middot; not yet indexed</span>}
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <>
-          {stats && stats.byType.federal > 0 && (
-            <a href="/browse/federal" className="browse-card">
-              <span className="browse-card-name">Federal</span>
-              <span className="browse-card-count">{stats.byType.federal}</span>
-            </a>
-          )}
-          <div className="browse-grid">
-            {ALL_STATES.map(([code, name]) => (
-              <a key={code} href={`/browse/${code}`} className="browse-card">
-                <span className="browse-card-name">{name}</span>
-                {stats?.byState[code] && (
-                  <span className="browse-card-count">{stats.byState[code]}</span>
-                )}
-              </a>
-            ))}
-          </div>
-        </>
-      )}
+      <h2>The problem</h2>
+      <div className="prose">
+        <p>
+          AI agents regularly make claims about the law. &quot;You can&apos;t park there overnight.&quot;
+          &quot;Your landlord must give 60 days notice.&quot; These claims are often wrong, and
+          users have no way to check. Open Legal Codes gives agents access to the actual text of the
+          law, so they can cite real statutes with permalink URLs that users can verify themselves.
+        </p>
+      </div>
+
+      <h2>How it works</h2>
+      <div className="prose">
+        <ol>
+          <li>User asks: <em>&quot;Can I have a dog in Mountain View?&quot;</em></li>
+          <li>Agent searches: <code>search_code(&quot;ca-mountain-view&quot;, &quot;dog&quot;)</code></li>
+          <li>Agent reads the actual section with <code>get_code_text</code></li>
+          <li>Agent answers based on real law text, with a link to the statute</li>
+          <li>User clicks the link to verify &mdash; no trust required</li>
+        </ol>
+      </div>
+
+      <h2>Integration</h2>
+      <div className="prose">
+        <p>Add the MCP server to Claude Desktop or Claude Code:</p>
+      </div>
+      <div className="code-block">{`{
+  "mcpServers": {
+    "legal-codes": {
+      "url": "https://openlegalcodes.org/mcp"
+    }
+  }
+}`}</div>
+
+      <div className="prose mt-24">
+        <p>Or use the REST API directly:</p>
+      </div>
+      <div className="code-block">{`GET /api/v1/jurisdictions?state=CA          # List jurisdictions
+GET /api/v1/jurisdictions/:id/toc           # Table of contents
+GET /api/v1/jurisdictions/:id/code/:path    # Section text + permalink
+GET /api/v1/jurisdictions/:id/search?q=dog  # Keyword search`}</div>
+
+      <p className="text-sm text-muted mt-16">
+        <a href="/developers">Full API docs, CLI, and MCP tool reference &rarr;</a>
+      </p>
+
+      <h2>Coverage</h2>
+      <div className="prose">
+        <p>
+          37,000+ jurisdictions across five publishers: Municode, American Legal, eCode360,
+          eCFR (federal regulations), and California Leginfo. Content is fetched on first request
+          and cached &mdash; subsequent lookups are instant.
+          See the <a href="/codes">full directory</a> or <a href="/map">coverage map</a>.
+        </p>
+      </div>
+
+      <h2>About</h2>
+      <div className="prose">
+        <p>
+          Legal codes are public domain &mdash; the Supreme Court confirmed this
+          in <em>Georgia v. Public.Resource.Org</em> (2020). Publishers host them but
+          don&apos;t make them easy for agents to access. Open Legal Codes is offered free
+          of charge by <a href="https://tidy.com" target="_blank" rel="noopener noreferrer">TIDY</a>,
+          an AI property management company that needed this and decided to open it up.
+        </p>
+      </div>
     </div>
   );
 }

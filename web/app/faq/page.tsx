@@ -29,25 +29,10 @@ export default function FAQPage() {
           service that cities pay for. We are not replacing or competing with that service.
         </p>
 
-        <h2>Why Open Legal Codes?</h2>
-        <p>
-          We like publishers — but they don&apos;t make it easy to get codes to humans or
-          AI agents. We believe being able to access what the law actually says is critical
-          to our society. Open Legal Codes makes that access simple and free.
-        </p>
-
-        <h2>Who made this?</h2>
-        <p>
-          This is offered free of charge by{' '}
-          <a href="https://tidy.com" target="_blank" rel="noopener noreferrer">TIDY</a>,
-          an AI property management company. We saw firsthand how hard it was to just get
-          the text of regulations, so we built a solution and decided to open it up to the world.
-        </p>
-
         <h2>How current is the data?</h2>
         <p>
           Content is fetched on first request and cached. The cache records when each
-          section was last retrieved. We don&apos;t do full versioning — we show the
+          section was last retrieved. We don&apos;t do full versioning &mdash; we show the
           current text as of the last fetch.
         </p>
 
@@ -56,12 +41,6 @@ export default function FAQPage() {
           See the <a href="/map">coverage map</a>. We support any jurisdiction published through
           Municode (~4,000), American Legal (~3,500), eCode360 (~4,400), plus federal
           regulations and California state statutes.
-        </p>
-
-        <h2>Is there an API?</h2>
-        <p>
-          Yes. No signup required. See the <a href="/developers">Developers</a> page for REST API,
-          MCP server, CLI, and Claude Code integration.
         </p>
       </div>
     </div>

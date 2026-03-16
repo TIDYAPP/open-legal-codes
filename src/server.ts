@@ -8,6 +8,7 @@ import { searchRoutes } from './routes/search.js';
 import { lookupRoutes } from './routes/lookup.js';
 import { registryRoutes } from './routes/registry.js';
 import { jurisdictionsRoutes } from './routes/jurisdictions.js';
+import { createMcpRoutes } from './mcp-http.js';
 
 import { store } from './store/index.js';
 import { registryStore } from './registry/store.js';
@@ -56,6 +57,9 @@ api.route('/lookup', lookupRoutes);
 api.route('/registry', registryRoutes);
 
 app.route('/api/v1', api);
+
+// MCP Streamable HTTP endpoint (zero-install MCP access)
+app.route('/mcp', createMcpRoutes(store));
 
 // 404 fallback
 app.notFound((c) =>

@@ -7,9 +7,8 @@ export const metadata: Metadata = {
 };
 
 const NAV = [
-  { href: '/', label: 'Codes' },
+  { href: '/codes', label: 'Codes' },
   { href: '/map', label: 'Map' },
-  { href: '/agents', label: 'Agents' },
   { href: '/developers', label: 'Developers' },
   { href: '/faq', label: 'FAQ' },
   { href: '/terms', label: 'Terms' },
