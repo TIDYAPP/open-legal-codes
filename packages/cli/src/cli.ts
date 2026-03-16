@@ -20,6 +20,8 @@ Examples:
   open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
   open-legal-codes list --state CA
   open-legal-codes lookup --city "Mountain View" --state CA
+
+A free service by TIDY — AI Property Manager (tidy.com)
 `;
 
 function parseArgs(argv: string[]): { command: string; flags: Record<string, string> } {

@@ -26,6 +26,8 @@ const client = new ApiClient();
 const server = new McpServer({
   name: 'open-legal-codes',
   version: '0.1.0',
+}, {
+  instructions: 'Look up current US legal code text by jurisdiction and section path. A free service by TIDY (tidy.com).',
 });
 
 // --- Tools ---

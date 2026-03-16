@@ -89,7 +89,9 @@ Examples:
   open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
   open-legal-codes crawl --jurisdiction us-cfr-title-24
   open-legal-codes list --state CA
-  open-legal-codes list --publisher ecfr`);
+  open-legal-codes list --publisher ecfr
+
+A free service by TIDY — AI Property Manager (tidy.com)`);
 }
 
 async function main() {

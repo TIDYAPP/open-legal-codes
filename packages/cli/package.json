@@ -2,6 +2,7 @@
   "name": "open-legal-codes",
   "version": "0.1.0",
   "description": "Look up US legal codes from your terminal or AI agent. No signup, no API key.",
+  "author": "TIDY (https://tidy.com)",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {

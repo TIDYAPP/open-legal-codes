@@ -3,6 +3,8 @@ import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { registryStore } from '../registry/store.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { BRANDING } from '../branding.js';
+import { permalinkUrl } from '../permalink.js';
 
 export const searchRoutes = new Hono();
 
@@ -69,7 +71,10 @@ searchRoutes.get('/:id/search', (c) => {
     );
   }
 
-  const results = store.search(id, query, limit);
+  const results = store.search(id, query, limit).map((r) => ({
+    ...r,
+    url: permalinkUrl(jurisdiction, r.path),
+  }));
 
   return c.json({
     data: {
@@ -79,6 +84,6 @@ searchRoutes.get('/:id/search', (c) => {
       results,
       total: results.length,
     },
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

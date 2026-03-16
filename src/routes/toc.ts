@@ -4,6 +4,7 @@ import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { registryStore } from '../registry/store.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { BRANDING } from '../branding.js';
 
 export const tocRoutes = new Hono();
 
@@ -84,7 +85,7 @@ tocRoutes.get('/:id/toc', (c) => {
 
   return c.json({
     data: { ...toc, children },
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });
 
@@ -151,6 +152,6 @@ tocRoutes.get('/:id/toc/*', (c) => {
 
   return c.json({
     data: node,
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

@@ -4,6 +4,8 @@ import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { registryStore } from '../registry/store.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { BRANDING } from '../branding.js';
+import { permalinkUrl } from '../permalink.js';
 
 export const codeRoutes = new Hono();
 
@@ -91,9 +93,9 @@ codeRoutes.get('/:id/code/*', (c) => {
       num: tocInfo?.num ?? null,
       heading: tocInfo?.heading ?? null,
       text,
-      url: `https://openlegalcodes.org/${id}/${path}`,
+      url: permalinkUrl(jurisdiction, path),
       lastCrawled: jurisdiction.lastCrawled || null,
     },
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

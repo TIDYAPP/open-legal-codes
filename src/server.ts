@@ -12,6 +12,7 @@ import { createMcpRoutes } from './mcp-http.js';
 
 import { store } from './store/index.js';
 import { registryStore } from './registry/store.js';
+import { BRANDING } from './branding.js';
 
 store.initialize();
 registryStore.initialize();
@@ -34,6 +35,7 @@ app.get('/', (c) =>
     name: 'Open Legal Codes',
     version: '0.1.0',
     status: 'ok',
+    poweredBy: BRANDING.poweredBy,
     uptime_seconds: Math.floor((Date.now() - startTime) / 1000),
     cache: {
       jurisdictions: store.listJurisdictions().length,
