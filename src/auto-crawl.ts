@@ -23,8 +23,8 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
   };
 }
 
-/** 10-minute timeout for auto-crawls */
-const AUTO_CRAWL_TIMEOUT_MS = 10 * 60 * 1000;
+/** 30-minute timeout for auto-crawls (large codes like New Orleans ~5700 sections can take 20+ min) */
+const AUTO_CRAWL_TIMEOUT_MS = 30 * 60 * 1000;
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -38,6 +38,13 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 
 export function triggerAutoCrawl(entry: RegistryEntry): void {
   if (crawlTracker.isActive(entry.id)) return;
+
+  const recentFailure = crawlTracker.getRecentFailure(entry.id);
+  if (recentFailure) {
+    const cooldownRemaining = Math.round((10 * 60 * 1000 - (Date.now() - recentFailure.failedAt)) / 1000);
+    console.log(`[auto-crawl] Skipping ${entry.id} — failed recently (${recentFailure.error}), cooldown ${cooldownRemaining}s remaining`);
+    return;
+  }
 
   const jurisdiction = registryEntryToJurisdiction(entry);
   let crawler;
@@ -57,6 +64,6 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
     })
     .catch((err: any) => {
       console.error(`[auto-crawl] Failed crawl for ${entry.name}: ${err.message}`);
-      crawlTracker.finish(entry.id);
+      crawlTracker.markFailed(entry.id, err.message);
     });
 }

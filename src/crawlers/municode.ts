@@ -149,12 +149,7 @@ export class MunicodeCrawler implements CrawlerAdapter {
       { ...params, nodeId: String(productId) },
     );
 
-    const result: RawTocNode[] = [];
-    for (const node of rootNodes) {
-      result.push(await this.expandNode(node, params, 0));
-    }
-
-    return result;
+    return Promise.all(rootNodes.map(node => this.expandNode(node, params, 0)));
   }
 
   private async expandNode(
@@ -177,9 +172,7 @@ export class MunicodeCrawler implements CrawlerAdapter {
         { ...params, nodeId: node.Id },
       );
 
-      for (const child of children) {
-        raw.children.push(await this.expandNode(child, params, depth + 1));
-      }
+      raw.children = await Promise.all(children.map(child => this.expandNode(child, params, depth + 1)));
     }
 
     return raw;
