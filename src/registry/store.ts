@@ -84,10 +84,12 @@ export class RegistryStore {
       for (const known of amlegalKnown) {
         const id = `${known.state.toLowerCase()}-${slugify(known.name)}`;
         if (knownIds.has(id)) continue;
+        const nameLC = known.name.toLowerCase();
+        const isCounty = nameLC.includes('county') && !nameLC.includes('city and county') && !nameLC.includes('city & county');
         this.entries.push({
           id,
           name: `${known.name}, ${known.state}`,
-          type: 'city',
+          type: isCounty ? 'county' : 'city',
           state: known.state,
           fips: known.fips,
           lat: null,

@@ -102,11 +102,12 @@ export async function matchRegistryToCensus(options: MatcherOptions = {}): Promi
 
     // Strategy 2: Exact normalized name + state
     const normalizedName = extractCityName(entry.name);
+    const entryIsCounty = normalizedName.toLowerCase().includes('county');
+    const preferredType = entryIsCounty ? 'county' : 'place';
     const nameKey = `${entry.state}:${normalize(normalizedName)}`;
     const exactMatches = byStateAndName.get(nameKey);
     if (exactMatches && exactMatches.length > 0) {
-      // Prefer "place" type over "county"
-      const best = exactMatches.find(p => p.type === 'place') || exactMatches[0];
+      const best = exactMatches.find(p => p.type === preferredType) || exactMatches[0];
       applyMatch(entry, best, 'exact_name');
       result.matched++;
       result.byStrategy['exact_name']++;
@@ -124,7 +125,7 @@ export async function matchRegistryToCensus(options: MatcherOptions = {}): Promi
       const score = tokenSimilarity(normalize(normalizedName), censusName);
       if (score > bestScore && score >= 0.85) {
         bestScore = score;
-        bestMatch = places.find(p => p.type === 'place') || places[0];
+        bestMatch = places.find(p => p.type === preferredType) || places[0];
       }
     }
 
