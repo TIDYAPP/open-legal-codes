@@ -10,6 +10,7 @@ export const lookupRoutes = new Hono();
 lookupRoutes.get('/', async (c) => {
   const slug = c.req.query('slug');
   let city = c.req.query('city');
+  const county = c.req.query('county');
   let state = c.req.query('state');
   const address = c.req.query('address');
 
@@ -25,8 +26,8 @@ lookupRoutes.get('/', async (c) => {
   if (!state) {
     return c.json({ error: { code: 'BAD_REQUEST', message: 'state parameter is required (or provide a full address)' } }, 400);
   }
-  if (!slug && !city) {
-    return c.json({ error: { code: 'BAD_REQUEST', message: 'slug, city, or address parameter is required' } }, 400);
+  if (!slug && !city && !county) {
+    return c.json({ error: { code: 'BAD_REQUEST', message: 'slug, city, county, or address parameter is required' } }, 400);
   }
 
   // --- Resolve the jurisdiction ---
@@ -80,6 +81,7 @@ lookupRoutes.get('/', async (c) => {
           data: {
             status: 'crawling',
             name: registryEntry.name,
+            type: registryEntry.type,
             progress: {
               phase: crawlStatus.progress.phase,
               total: crawlStatus.progress.total,
@@ -115,6 +117,7 @@ lookupRoutes.get('/', async (c) => {
         data: {
           status: 'crawling',
           name: registryEntry.name,
+          type: registryEntry.type,
           progress: { phase: 'toc', total: 0, completed: 0 },
           retryAfter: 15,
         },
@@ -176,6 +179,7 @@ lookupRoutes.get('/', async (c) => {
           data: {
             status: 'crawling',
             name: entry.name,
+            type: entry.type,
             progress: {
               phase: crawlStatus.progress.phase,
               total: crawlStatus.progress.total,
@@ -191,6 +195,86 @@ lookupRoutes.get('/', async (c) => {
         data: {
           status: 'crawling',
           name: entry.name,
+          type: entry.type,
+          progress: { phase: 'toc', total: 0, completed: 0 },
+          retryAfter: 15,
+        },
+      }, 202);
+    }
+
+    return c.json({ data: { status: 'not_found' } });
+  }
+
+  // County-based lookup
+  if (county) {
+    const countyLower = county.toLowerCase();
+
+    // Check cached store first
+    const storeResults = store.listJurisdictions({ state, type: 'county' });
+    const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(countyLower));
+
+    if (cachedMatch) {
+      const toc = store.getToc(cachedMatch.id);
+      return c.json({
+        data: {
+          status: 'ready',
+          id: cachedMatch.id,
+          name: cachedMatch.name,
+          state: cachedMatch.state,
+          type: cachedMatch.type,
+          children: toc?.children || [],
+          lastCrawled: cachedMatch.lastCrawled || null,
+          publisher: cachedMatch.publisher?.name || null,
+          publisherUrl: cachedMatch.publisher?.url || null,
+        },
+      });
+    }
+
+    // Check registry — search for county name, filter to county type
+    const registryResults = registryStore.findByName(county, state)
+      .filter(e => e.type === 'county');
+    if (registryResults.length > 0) {
+      let entry = registryResults[0];
+
+      if (entry.status === 'discoverable') {
+        const countyName = entry.name.replace(/,\s*[A-Z]{2}$/, '');
+        const discovered = await discoverPublisher(countyName, state, {
+          fips: entry.fips || undefined,
+          lat: entry.lat || undefined,
+          lng: entry.lng || undefined,
+          population: entry.population || undefined,
+          type: 'county',
+        });
+        if (discovered) {
+          entry = discovered;
+        } else {
+          return c.json({ data: { status: 'not_found', message: 'No online legal code found for this county' } });
+        }
+      }
+
+      const crawlStatus = crawlTracker.getStatus(entry.id);
+      if (crawlStatus) {
+        return c.json({
+          data: {
+            status: 'crawling',
+            name: entry.name,
+            type: entry.type,
+            progress: {
+              phase: crawlStatus.progress.phase,
+              total: crawlStatus.progress.total,
+              completed: crawlStatus.progress.completed,
+            },
+            retryAfter: 15,
+          },
+        }, 202);
+      }
+
+      triggerAutoCrawl(entry);
+      return c.json({
+        data: {
+          status: 'crawling',
+          name: entry.name,
+          type: entry.type,
           progress: { phase: 'toc', total: 0, completed: 0 },
           retryAfter: 15,
         },

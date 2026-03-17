@@ -94,7 +94,7 @@ export class Ecode360Crawler implements CrawlerAdapter {
         yield {
           id: `${abbr.toLowerCase()}-ecode360-${slug}`,
           name: `${name}`,
-          type: 'city' as const,
+          type: inferEcode360Type(name),
           state: abbr,
           parentId: abbr.toLowerCase(),
           fips: null,
@@ -261,6 +261,13 @@ interface Ecode360TocNode {
 }
 
 // --- Helpers ---
+
+function inferEcode360Type(name: string): 'city' | 'county' {
+  const lower = name.toLowerCase();
+  if (lower.includes('city and county') || lower.includes('city & county')) return 'city';
+  if (lower.includes('county')) return 'county';
+  return 'city';
+}
 
 function mapEcode360Level(type: string): string {
   const t = type.toLowerCase();

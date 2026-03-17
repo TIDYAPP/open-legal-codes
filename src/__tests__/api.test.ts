@@ -8,6 +8,7 @@ import { codeRoutes } from '../routes/code.js';
 import { searchRoutes } from '../routes/search.js';
 import { lookupRoutes } from '../routes/lookup.js';
 import { store } from '../store/index.js';
+import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 
 const hasCachedData = existsSync(join(process.cwd(), 'codes', 'ca-mountain-view', '_toc.json'));
@@ -15,6 +16,7 @@ const hasCachedData = existsSync(join(process.cwd(), 'codes', 'ca-mountain-view'
 // Initialize store before tests
 beforeAll(() => {
   store.initialize();
+  registryStore.initialize();
 });
 
 // Build a test app matching server.ts
@@ -39,6 +41,9 @@ describe('GET /api/v1/jurisdictions', () => {
     expect(body.data).toBeInstanceOf(Array);
     expect(body.data.length).toBeGreaterThanOrEqual(1);
     expect(body.meta.timestamp).toBeDefined();
+    expect(body.meta.total).toBeGreaterThanOrEqual(1);
+    expect(body.meta.limit).toBeDefined();
+    expect(body.meta.offset).toBeDefined();
   });
 
   it('filters by state', async () => {

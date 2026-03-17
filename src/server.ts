@@ -4,7 +4,7 @@ import { compress } from 'hono/compress';
 import { serve } from '@hono/node-server';
 import { tocRoutes } from './routes/toc.js';
 import { codeRoutes } from './routes/code.js';
-import { searchRoutes } from './routes/search.js';
+import { searchRoutes, globalSearchRoutes } from './routes/search.js';
 import { lookupRoutes } from './routes/lookup.js';
 import { registryRoutes } from './routes/registry.js';
 import { jurisdictionsRoutes } from './routes/jurisdictions.js';
@@ -42,9 +42,11 @@ app.get('/', (c) =>
     },
     endpoints: {
       lookup: '/api/v1/lookup?slug=mountain-view&state=CA',
+      jurisdictions: '/api/v1/jurisdictions?state=CA&type=city&limit=100&offset=0',
       toc: '/api/v1/jurisdictions/:id/toc',
       code: '/api/v1/jurisdictions/:id/code/*path',
       search: '/api/v1/jurisdictions/:id/search?q=keyword',
+      globalSearch: '/api/v1/search?q=rental&state=CA',
     },
   })
 );
@@ -56,6 +58,7 @@ api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);
 api.route('/jurisdictions', searchRoutes);
 api.route('/lookup', lookupRoutes);
+api.route('/search', globalSearchRoutes);
 api.route('/registry', registryRoutes);
 
 app.route('/api/v1', api);

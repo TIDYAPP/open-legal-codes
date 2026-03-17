@@ -95,7 +95,7 @@ export class MunicodeCrawler implements CrawlerAdapter {
         yield {
           id: `${abbr.toLowerCase()}-${slug}`,
           name: `${client.ClientName}, ${abbr}`,
-          type: 'city',
+          type: inferJurisdictionType(client.ClientName),
           state: abbr,
           parentId: abbr.toLowerCase(),
           fips: null,
@@ -229,7 +229,7 @@ export class MunicodeCrawler implements CrawlerAdapter {
       return {
         id: `${abbr.toLowerCase()}-${slug}`,
         name: `${client.ClientName}, ${abbr}`,
-        type: 'city',
+        type: inferJurisdictionType(client.ClientName),
         state: abbr,
         parentId: abbr.toLowerCase(),
         fips: null,
@@ -286,6 +286,16 @@ export class MunicodeCrawler implements CrawlerAdapter {
       return [];
     }
   }
+}
+
+/** Infer jurisdiction type from the client name. Counties include "County" in the name. */
+function inferJurisdictionType(name: string): 'city' | 'county' {
+  // "Autauga County" → county, but "County of San Diego" is also county
+  // "City and County of San Francisco" → city (it's a consolidated city-county)
+  const lower = name.toLowerCase();
+  if (lower.includes('city and county') || lower.includes('city & county')) return 'city';
+  if (lower.includes('county')) return 'county';
+  return 'city';
 }
 
 function guessLevel(node: MunicodeTocNode): string {

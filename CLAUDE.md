@@ -74,6 +74,7 @@ Each publisher gets its own adapter implementing `CrawlerAdapter` (defined in `s
 **Adapter built**: eCFR (`ecfr.ts`) — free REST API for all 50 CFR titles (federal regulations)
 **Adapter built**: eCode360 (`ecode360.ts`) — HTML scraper for ~4,400 municipal/county codes
 **Adapter built**: CA Leginfo (`ca-leginfo.ts`) — scrapes California's 30 state statute codes
+**Adapter built**: NY Open Legislation (`ny-openleg.ts`) — JSON API for all New York state laws (requires free API key via `NY_OPENLEG_API_KEY`)
 
 The crawl pipeline (`pipeline.ts`) orchestrates: fetch TOC → transform → fetch all sections → write to cache.
 
@@ -97,12 +98,14 @@ Filesystem-based. Each jurisdiction gets a directory under `codes/`:
 
 Base URL: `https://openlegalcodes.org/api/v1`
 
-- `GET /jurisdictions` — list jurisdictions (filter by type, state, publisher)
+- `GET /jurisdictions` — list jurisdictions from registry (37k+ catalog, paginated with `?limit=&offset=`; filter by `?type=&state=&publisher=&q=`; use `?cached=true` for ready-only)
 - `GET /jurisdictions/:id` — single jurisdiction metadata
 - `GET /jurisdictions/:id/toc` — table of contents (with `?depth=N`)
 - `GET /jurisdictions/:id/code/*path` — code content (includes `url` permalink)
 - `GET /jurisdictions/:id/search?q=keyword` — keyword search (results include `url` links)
+- `GET /search?q=keyword&state=CA` — cross-jurisdiction keyword search (searches all cached jurisdictions)
 - `GET /lookup?city=X&state=Y` — find jurisdiction by name
+- `GET /lookup?county=X&state=Y` — find county jurisdiction by name
 
 ### Converter (`src/converter/`)
 
@@ -121,16 +124,17 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 ## Current State
 
 ### Publisher Adapters
-- Municode crawler: **working** — can crawl full municipal codes
+- Municode crawler: **working** — can crawl full municipal codes (cities + counties)
 - American Legal crawler: **adapter built** — Redux state extraction from HTML
 - eCFR crawler: **adapter built** — free REST API, all 50 CFR titles, no key needed
-- eCode360 crawler: **adapter built** — HTML scraper with cheerio
+- eCode360 crawler: **adapter built** — HTML scraper with cheerio (cities + counties)
 - CA Leginfo crawler: **adapter built** — scrapes all 30 CA codes, public domain data
+- NY Open Legislation crawler: **adapter built** — JSON API for all NY state laws (free API key required)
 
 ### Coverage by Jurisdiction Type
-- **Federal**: CFR via eCFR API (Titles 12, 24, 26 pre-registered for property law)
-- **State**: California statutes via leginfo (Civil, Government, Health & Safety, Revenue & Taxation pre-registered)
-- **County**: Covered by Municode adapter (same platform as cities)
+- **Federal**: CFR via eCFR API (all 49 titles available, 3 pre-cached)
+- **State**: California statutes via leginfo, New York statutes via Open Legislation API
+- **County**: Detected from Municode/eCode360 client names, county lookup via `/lookup?county=X&state=Y`
 - **City/Municipal**: Municode + American Legal + eCode360
 
 ### Infrastructure
@@ -141,5 +145,5 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - Web app: **working** — Next.js in `web/`, browse/search/view codes
 - Claude Code skills: **working** — `.claude/skills/` for query, search, crawl
 - Tests: **working** — 118 tests across 12 test files (vitest)
-- Search: **working** — in-memory index, exact keyword matching
+- Search: **working** — in-memory index, exact keyword matching, cross-jurisdiction search via `/search?q=&state=`
 - Deployment: **ready** — Dockerfile, docker-compose, Caddy, GitHub Actions CI/CD
