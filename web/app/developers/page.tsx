@@ -70,7 +70,7 @@ GET /lookup?address=306+Desert+Falls+East,+Palm+Desert,+CA  # Address lookup`}</
   "mcpServers": {
     "legal-codes": {
       "command": "npx",
-      "args": ["-y", "open-legal-codes-mcp"]
+      "args": ["-y", "-p", "open-legal-codes", "open-legal-codes-mcp"]
     }
   }
 }`}</div>
