@@ -56,6 +56,8 @@ interface MunicodeContentResponse {
   Docs: MunicodeContentDoc[];
 }
 
+type MunicodeClientLookupResponse = MunicodeClient | MunicodeClient[];
+
 /**
  * Municode Crawler Adapter
  *
@@ -209,31 +211,32 @@ export class MunicodeCrawler implements CrawlerAdapter {
    */
   async lookupByName(name: string, state: string): Promise<Jurisdiction | null> {
     try {
-      const clients = await this.http.getJson<MunicodeClient[]>(
+      const exactRes = await this.http.get(
         `${API_BASE}/Clients/name`,
         { clientName: name, stateAbbr: state.toUpperCase() },
       );
-      if (clients.length === 0) return null;
 
-      const client = clients[0];
-      const abbr = client.State.StateAbbreviation;
-      const slug = slugify(client.ClientName);
+      let exactClients: MunicodeClient[] = [];
+      if (exactRes.status !== 204) {
+        const payload = await exactRes.json() as MunicodeClientLookupResponse;
+        exactClients = normalizeLookupResponse(payload);
+      }
 
-      return {
-        id: `${abbr.toLowerCase()}-${slug}`,
-        name: `${client.ClientName}, ${abbr}`,
-        type: inferJurisdictionType(client.ClientName),
-        state: abbr,
-        parentId: abbr.toLowerCase(),
-        fips: null,
-        publisher: {
-          name: 'municode',
-          sourceId: String(client.ClientID),
-          url: `https://library.municode.com/${abbr.toLowerCase()}/${slug}/codes/code_of_ordinances`,
-        },
-        lastCrawled: '',
-        lastUpdated: '',
-      };
+      const exactMatch = pickBestClientMatch(exactClients, name);
+      if (exactMatch) {
+        return jurisdictionFromClient(exactMatch);
+      }
+    } catch {
+      // Fall through to the state-wide fallback below.
+    }
+
+    try {
+      const clients = await this.http.getJson<MunicodeClient[]>(
+        `${API_BASE}/Clients/stateAbbr`,
+        { stateAbbr: state.toUpperCase() },
+      );
+      const match = pickBestClientMatch(clients, name);
+      return match ? jurisdictionFromClient(match) : null;
     } catch {
       return null;
     }
@@ -279,6 +282,55 @@ export class MunicodeCrawler implements CrawlerAdapter {
       return [];
     }
   }
+}
+
+function normalizeLookupResponse(payload: MunicodeClientLookupResponse): MunicodeClient[] {
+  return Array.isArray(payload) ? payload : [payload];
+}
+
+function jurisdictionFromClient(client: MunicodeClient): Jurisdiction {
+  const abbr = client.State.StateAbbreviation;
+  const slug = slugify(client.ClientName);
+
+  return {
+    id: `${abbr.toLowerCase()}-${slug}`,
+    name: `${client.ClientName}, ${abbr}`,
+    type: inferJurisdictionType(client.ClientName),
+    state: abbr,
+    parentId: abbr.toLowerCase(),
+    fips: null,
+    publisher: {
+      name: 'municode',
+      sourceId: String(client.ClientID),
+      url: `https://library.municode.com/${abbr.toLowerCase()}/${slug}/codes/code_of_ordinances`,
+    },
+    lastCrawled: '',
+    lastUpdated: '',
+  };
+}
+
+function pickBestClientMatch(clients: MunicodeClient[], query: string): MunicodeClient | null {
+  if (clients.length === 0) return null;
+
+  const normalizedQuery = normalizeName(query);
+
+  const exact = clients.find((client) => normalizeName(client.ClientName) === normalizedQuery);
+  if (exact) return exact;
+
+  const startsWith = clients.find((client) => normalizeName(client.ClientName).startsWith(normalizedQuery));
+  if (startsWith) return startsWith;
+
+  const includes = clients.find((client) => normalizeName(client.ClientName).includes(normalizedQuery));
+  return includes || null;
+}
+
+function normalizeName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/^(city|town|village|county)\s+of\s+/i, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /** Infer jurisdiction type from the client name. Counties include "County" in the name. */

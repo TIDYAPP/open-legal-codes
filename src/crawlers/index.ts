@@ -19,6 +19,7 @@ import { PaStatutesCrawler } from './pa-statutes.js';
 import { NjStatutesCrawler } from './nj-statutes.js';
 import { GaStatutesCrawler } from './ga-statutes.js';
 import { CoStatutesCrawler } from './co-statutes.js';
+import { ArizonaStatutesCrawler } from './az-statutes.js';
 import { createFallbackClient } from './browserbase-client.js';
 
 /**
@@ -68,9 +69,11 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
       return new GaStatutesCrawler();
     case 'co-statutes':
       return new CoStatutesCrawler();
+    case 'az-statutes':
+      return new ArizonaStatutesCrawler();
     default:
       throw new Error(
-        `Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual, nc-statutes, va-statutes, wa-statutes, oh-statutes, ma-statutes, il-statutes, pa-statutes, nj-statutes, ga-statutes, co-statutes`,
+        `Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual, nc-statutes, va-statutes, wa-statutes, oh-statutes, ma-statutes, il-statutes, pa-statutes, nj-statutes, ga-statutes, co-statutes, az-statutes`,
       );
   }
 }
@@ -99,4 +102,5 @@ export const PUBLISHERS = [
   'nj-statutes',
   'ga-statutes',
   'co-statutes',
+  'az-statutes',
 ] as const;

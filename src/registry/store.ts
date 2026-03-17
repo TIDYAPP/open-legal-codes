@@ -9,6 +9,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RegistryEntry, RegistryStats } from './types.js';
 import type { CensusPlace } from './census-loader.js';
+import { AZ_TITLES } from '../crawlers/az-statutes.js';
 
 const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc'];
 
@@ -105,6 +106,30 @@ export class RegistryStore {
         });
       }
       console.log(`[RegistryStore] Added ${amlegalKnown.length} known AMLegal jurisdictions`);
+    }
+
+    // Add Arizona state-local-government statutes so production can expose them
+    // without rebuilding the full registry catalog.
+    const knownIds = new Set(this.entries.map(e => e.id));
+    for (const title of AZ_TITLES) {
+      const id = `az-${title.slug}`;
+      if (knownIds.has(id)) continue;
+      this.entries.push({
+        id,
+        name: `Arizona Title ${title.number} - ${title.name}`,
+        type: 'state',
+        state: 'AZ',
+        fips: '04',
+        lat: null,
+        lng: null,
+        population: null,
+        publisher: 'az-statutes',
+        sourceId: title.number,
+        sourceUrl: `https://www.azleg.gov/arsDetail?title=${title.number}`,
+        status: 'available',
+        censusMatch: '04',
+        lastScanned: new Date().toISOString(),
+      });
     }
 
     // Build indexes
