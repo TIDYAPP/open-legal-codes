@@ -35,6 +35,7 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
     return c.json({
       data: {
         status: 'crawling',
+        id: entry.id,
         name: entry.name,
         type: entry.type,
         progress: {
@@ -57,6 +58,7 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   return c.json({
     data: {
       status: 'crawling',
+      id: entry.id,
       name: entry.name,
       type: entry.type,
       progress: { phase: 'toc', total: 0, completed: 0 },
