@@ -33,7 +33,14 @@ export class CodeStore {
     }
 
     const raw = readFileSync(registryPath, 'utf-8');
-    const jurisdictions: Jurisdiction[] = JSON.parse(raw);
+    let jurisdictions: Jurisdiction[];
+    try {
+      jurisdictions = JSON.parse(raw);
+    } catch (err: any) {
+      console.error(`[CodeStore] Failed to parse jurisdictions.json: ${err.message}`);
+      console.error(`[CodeStore] File may be corrupt — skipping load. Fix or regenerate the file.`);
+      return;
+    }
 
     const newJurisdictions = new Map<string, Jurisdiction>();
     const newTocTrees = new Map<string, TocTree>();
@@ -41,8 +48,12 @@ export class CodeStore {
     for (const j of jurisdictions) {
       const tocPath = join(this.codesDir, j.id, '_toc.json');
       if (existsSync(tocPath)) {
-        newJurisdictions.set(j.id, j);
-        newTocTrees.set(j.id, JSON.parse(readFileSync(tocPath, 'utf-8')));
+        try {
+          newTocTrees.set(j.id, JSON.parse(readFileSync(tocPath, 'utf-8')));
+          newJurisdictions.set(j.id, j);
+        } catch (err: any) {
+          console.error(`[CodeStore] Skipping ${j.id}: corrupt _toc.json (${err.message})`);
+        }
       }
     }
 
