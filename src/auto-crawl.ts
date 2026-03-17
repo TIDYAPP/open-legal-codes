@@ -27,7 +27,7 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
 const AUTO_CRAWL_TIMEOUT_MS = 30 * 60 * 1000;
 
 /** Max concurrent auto-crawls — keeps memory spike from parallel store.initialize() calls in check */
-const MAX_CONCURRENT_CRAWLS = 10;
+const MAX_CONCURRENT_CRAWLS = 3;
 let activeCrawlCount = 0;
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
@@ -61,6 +61,11 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
     crawler = getCrawler(entry.publisher);
   } catch (err: any) {
     console.error(`[auto-crawl] Failed to get crawler for ${entry.publisher}: ${err.message}`);
+    // Mark as failed only for known-but-unimplemented publishers (not generic 'unknown')
+    // so the lookup route can return not_found instead of looping forever.
+    if (entry.publisher !== 'unknown') {
+      crawlTracker.markFailed(entry.id, `No crawler for publisher: ${entry.publisher}`);
+    }
     return;
   }
 

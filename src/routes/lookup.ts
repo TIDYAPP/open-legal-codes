@@ -109,6 +109,13 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   }
 
   triggerAutoCrawl(entry);
+
+  // If triggerAutoCrawl immediately failed (e.g. unknown publisher), return not_found
+  const postTriggerFailure = crawlTracker.getRecentFailure(entry.id);
+  if (postTriggerFailure) {
+    return c.json({ data: { status: 'not_found', id: entry.id, name: entry.name } });
+  }
+
   return c.json({
     data: {
       status: 'crawling',

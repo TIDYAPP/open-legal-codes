@@ -175,6 +175,44 @@ export class RegistryStore {
       console.log(`[RegistryStore] Added ${azAdded} Arizona local-government statute entries`);
     }
 
+    // Bootstrap state statute crawlers that exist but aren't in the registry catalog
+    const STATE_STATUTES: Array<{ id: string; name: string; state: string; fips: string; publisher: string; sourceId: string; sourceUrl: string }> = [
+      { id: 'wa-statutes', name: 'Revised Code of Washington', state: 'WA', fips: '53', publisher: 'wa-statutes', sourceId: 'wa-statutes', sourceUrl: 'https://apps.leg.wa.gov/rcw/default.aspx' },
+      { id: 'nc-statutes', name: 'North Carolina General Statutes', state: 'NC', fips: '37', publisher: 'nc-statutes', sourceId: 'nc-statutes', sourceUrl: 'https://www.ncleg.gov/Laws/GeneralStatutesTOC' },
+      { id: 'va-statutes', name: 'Code of Virginia', state: 'VA', fips: '51', publisher: 'va-statutes', sourceId: 'va-statutes', sourceUrl: 'https://law.lis.virginia.gov/vacode/' },
+      { id: 'oh-statutes', name: 'Ohio Revised Code', state: 'OH', fips: '39', publisher: 'oh-statutes', sourceId: 'oh-statutes', sourceUrl: 'https://codes.ohio.gov/ohio-revised-code' },
+      { id: 'ma-statutes', name: 'Massachusetts General Laws', state: 'MA', fips: '25', publisher: 'ma-statutes', sourceId: 'ma-statutes', sourceUrl: 'https://malegislature.gov/Laws/GeneralLaws' },
+      { id: 'pa-statutes', name: 'Pennsylvania Consolidated Statutes', state: 'PA', fips: '42', publisher: 'pa-statutes', sourceId: 'pa-statutes', sourceUrl: 'https://www.legis.state.pa.us/cfdocs/legis/LI/Public/cons_index.cfm' },
+      { id: 'nj-statutes', name: 'New Jersey Statutes', state: 'NJ', fips: '34', publisher: 'nj-statutes', sourceId: 'nj-statutes', sourceUrl: 'https://lis.njleg.state.nj.us/nxt/gateway.dll?f=templates&fn=default.htm&vid=Publish:10.1048/Enu' },
+      { id: 'ga-statutes', name: 'Official Code of Georgia', state: 'GA', fips: '13', publisher: 'ga-statutes', sourceId: 'ga-statutes', sourceUrl: 'https://www.legis.ga.gov/laws/en-US' },
+      { id: 'co-statutes', name: 'Colorado Revised Statutes', state: 'CO', fips: '08', publisher: 'co-statutes', sourceId: 'co-statutes', sourceUrl: 'https://colorado.public.law/statutes' },
+    ];
+    let stateStatutesAdded = 0;
+    for (const s of STATE_STATUTES) {
+      if (knownIds.has(s.id)) continue;
+      this.entries.push({
+        id: s.id,
+        name: s.name,
+        type: 'state',
+        state: s.state,
+        fips: s.fips,
+        lat: null,
+        lng: null,
+        population: null,
+        publisher: s.publisher,
+        sourceId: s.sourceId,
+        sourceUrl: s.sourceUrl,
+        status: 'available',
+        censusMatch: s.fips,
+        lastScanned: new Date().toISOString(),
+      });
+      knownIds.add(s.id);
+      stateStatutesAdded += 1;
+    }
+    if (stateStatutesAdded > 0) {
+      console.log(`[RegistryStore] Added ${stateStatutesAdded} state statute entries`);
+    }
+
     // Load official manual sources (counties, HOAs, and other sources without a
     // standard publisher API) so production lookup can resolve them without a
     // full registry rebuild.
@@ -421,6 +459,7 @@ export class RegistryStore {
       : this.getAllCensusPlaces();
 
     const censusMatches = censusPool.filter(p => {
+      if (p.type === 'state') return false; // State-level census entries shouldn't appear as city/county lookup candidates
       if (this.registryFips.has(p.fips) || matchedFips.has(p.fips)) return false;
       return p.name.toLowerCase().includes(needle);
     });
