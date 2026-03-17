@@ -56,9 +56,10 @@ export class RegistryStore {
   private bySlug = new Map<string, RegistryEntry>();
   private dataDir: string;
 
-  // Census fallback data
-  private censusPlaces: CensusPlace[] = [];
-  private censusByState = new Map<string, CensusPlace[]>();
+  // Census fallback: loaded from disk on demand, cached per-state
+  private censusByStateCache = new Map<string, CensusPlace[]>();
+  private censusLoaded = false;
+  private censusTotal = 0;
   private registryFips = new Set<string>();
 
   constructor(dataDir?: string) {
@@ -151,20 +152,46 @@ export class RegistryStore {
       }
     }
 
-    // Load census places for fallback search
-    const censusPath = join(this.dataDir, 'census-places.json');
-    if (existsSync(censusPath)) {
-      this.censusPlaces = JSON.parse(readFileSync(censusPath, 'utf-8'));
-      this.censusByState.clear();
-      for (const place of this.censusPlaces) {
-        const list = this.censusByState.get(place.state) || [];
-        list.push(place);
-        this.censusByState.set(place.state, list);
-      }
-      console.log(`[RegistryStore] Loaded ${this.censusPlaces.length} census places`);
-    }
+    // Census places are loaded lazily from disk on first access
+    this.censusByStateCache.clear();
+    this.censusLoaded = false;
+    this.censusTotal = 0;
 
     console.log(`[RegistryStore] Loaded ${this.entries.length} registry entries`);
+  }
+
+  /** Load census places from disk and index by state (called once on first access) */
+  private ensureCensusLoaded(): void {
+    if (this.censusLoaded) return;
+    this.censusLoaded = true;
+
+    const censusPath = join(this.dataDir, 'census-places.json');
+    if (!existsSync(censusPath)) return;
+
+    const places: CensusPlace[] = JSON.parse(readFileSync(censusPath, 'utf-8'));
+    this.censusTotal = places.length;
+    for (const place of places) {
+      const list = this.censusByStateCache.get(place.state) || [];
+      list.push(place);
+      this.censusByStateCache.set(place.state, list);
+    }
+    console.log(`[RegistryStore] Loaded ${places.length} census places from disk`);
+  }
+
+  /** Get census places for a state (loads from disk on first access) */
+  private getCensusForState(state: string): CensusPlace[] {
+    this.ensureCensusLoaded();
+    return this.censusByStateCache.get(state.toUpperCase()) || [];
+  }
+
+  /** Get all census places (loads from disk on first access) */
+  private getAllCensusPlaces(): CensusPlace[] {
+    this.ensureCensusLoaded();
+    const all: CensusPlace[] = [];
+    for (const places of this.censusByStateCache.values()) {
+      all.push(...places);
+    }
+    return all;
   }
 
   /** Query registry entries with optional filters */
@@ -244,7 +271,7 @@ export class RegistryStore {
   /** Aggregate statistics including census places */
   getStats(): RegistryStats {
     const stats: RegistryStats = {
-      total: this.entries.length + this.censusPlaces.filter(p => !this.registryFips.has(p.fips)).length,
+      total: this.entries.length + this.getAllCensusPlaces().filter(p => !this.registryFips.has(p.fips)).length,
       byPublisher: {},
       byStatus: {},
       byType: {},
@@ -276,7 +303,7 @@ export class RegistryStore {
     if (entry) return entry;
 
     // Fallback: search census places by slug match
-    const statePlaces = this.censusByState.get(state.toUpperCase()) || [];
+    const statePlaces = this.getCensusForState(state);
     const match = statePlaces.find(p => slugify(p.name) === slug);
     if (match && !this.registryFips.has(match.fips)) {
       return censusToEntry(match);
@@ -302,8 +329,8 @@ export class RegistryStore {
 
     // Search census places for additional matches
     const censusPool = state
-      ? (this.censusByState.get(state.toUpperCase()) || [])
-      : this.censusPlaces;
+      ? this.getCensusForState(state)
+      : this.getAllCensusPlaces();
 
     const censusMatches = censusPool.filter(p => {
       if (this.registryFips.has(p.fips) || matchedFips.has(p.fips)) return false;
@@ -367,7 +394,7 @@ export class RegistryStore {
   }
 
   get totalSearchable(): number {
-    const extraCensus = this.censusPlaces.filter(p => !this.registryFips.has(p.fips)).length;
+    const extraCensus = this.getAllCensusPlaces().filter(p => !this.registryFips.has(p.fips)).length;
     return this.entries.length + extraCensus;
   }
 }
