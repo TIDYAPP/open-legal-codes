@@ -39,10 +39,9 @@ export class CodeStore {
     const newTocTrees = new Map<string, TocTree>();
 
     for (const j of jurisdictions) {
-      newJurisdictions.set(j.id, j);
-
       const tocPath = join(this.codesDir, j.id, '_toc.json');
       if (existsSync(tocPath)) {
+        newJurisdictions.set(j.id, j);
         newTocTrees.set(j.id, JSON.parse(readFileSync(tocPath, 'utf-8')));
       }
     }
