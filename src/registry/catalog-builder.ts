@@ -25,7 +25,7 @@ const STATE_ABBRS = [
 const NEEDS_STATE_FILTER = new Set(['ecode360']);
 
 /** Publishers that yield nothing from listJurisdictions */
-const SKIP_PUBLISHERS = new Set(['amlegal']);
+const SKIP_PUBLISHERS = new Set<string>([]);
 
 export interface CatalogOptions {
   /** Scan only this publisher */

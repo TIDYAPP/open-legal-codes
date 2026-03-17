@@ -1,6 +1,8 @@
 import type { CrawlerAdapter, RawTocNode, RawContent } from './types.js';
 import type { Jurisdiction } from '../types.js';
 import { HttpClient } from './http-client.js';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import * as cheerio from 'cheerio';
 
 const SITE_BASE = 'https://codelibrary.amlegal.com';
@@ -32,11 +34,39 @@ export class AmlegalCrawler implements CrawlerAdapter {
     }
   }
 
-  async *listJurisdictions(_state?: string): AsyncIterable<Jurisdiction> {
-    // AMLegal doesn't have a state-based listing API.
-    // The overview page lists jurisdictions but requires scraping the main library page.
-    // For now, jurisdictions must be added manually to jurisdictions.json.
-    console.warn('[amlegal] listJurisdictions requires manual entry. Visit codelibrary.amlegal.com to find slugs.');
+  async *listJurisdictions(state?: string): AsyncIterable<Jurisdiction> {
+    const dataDir = join(process.cwd(), 'data');
+    const knownPath = join(dataDir, 'amlegal-known.json');
+    let known: { name: string; state: string; slug: string; fips?: string; type?: 'city' | 'county' }[];
+    try {
+      known = JSON.parse(readFileSync(knownPath, 'utf-8'));
+    } catch {
+      console.warn('[amlegal] No amlegal-known.json found');
+      return;
+    }
+
+    if (state) {
+      known = known.filter(j => j.state.toUpperCase() === state.toUpperCase());
+    }
+
+    for (const j of known) {
+      const slug = j.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      yield {
+        id: `${j.state.toLowerCase()}-${slug}`,
+        name: `${j.name}, ${j.state}`,
+        type: j.type || 'city',
+        state: j.state.toUpperCase(),
+        parentId: j.state.toLowerCase(),
+        fips: j.fips || null,
+        publisher: {
+          name: 'amlegal' as const,
+          sourceId: j.slug,
+          url: `${SITE_BASE}/codes/${j.slug}/latest/overview`,
+        },
+        lastCrawled: '',
+        lastUpdated: '',
+      };
+    }
   }
 
   async fetchToc(sourceId: string): Promise<RawTocNode[]> {
