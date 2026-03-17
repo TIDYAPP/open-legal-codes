@@ -38,6 +38,50 @@ function listUsableCachedJurisdictions(filters?: {
   return store.listJurisdictions(filters).filter((j) => !isSuppressedCachedJurisdiction(j));
 }
 
+function normalizeLookupName(name: string): string {
+  return stripStateSuffix(stripPrefix(name))
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function scoreLookupMatch(
+  candidate: Pick<Jurisdiction | RegistryEntry, 'name' | 'type'>,
+  query: string,
+  preferredType?: 'city' | 'county'
+): number {
+  const normalizedQuery = normalizeLookupName(query);
+  const normalizedName = normalizeLookupName(candidate.name);
+
+  if (!normalizedName.includes(normalizedQuery)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  let score = 0;
+
+  if (toSlug(candidate.name) === slugify(normalizedQuery)) score += 8;
+  if (normalizedName === normalizedQuery) score += 6;
+  if (candidate.type === preferredType) score += 4;
+  if (normalizedName.startsWith(normalizedQuery)) score += 2;
+
+  // Prefer tighter textual matches once exact/type scoring is exhausted.
+  score -= Math.abs(normalizedName.length - normalizedQuery.length) / 100;
+
+  return score;
+}
+
+function findBestLookupMatch<T extends Pick<Jurisdiction | RegistryEntry, 'name' | 'type'>>(
+  candidates: T[],
+  query: string,
+  preferredType?: 'city' | 'county'
+): T | undefined {
+  return candidates
+    .map((candidate) => ({ candidate, score: scoreLookupMatch(candidate, query, preferredType) }))
+    .filter((entry) => Number.isFinite(entry.score))
+    .sort((a, b) => b.score - a.score)
+    .at(0)?.candidate;
+}
+
 /** Check crawl status, check fresh cache, or trigger auto-crawl. Returns a 202 response. */
 function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   c.header('Cache-Control', 'no-store');
@@ -139,17 +183,16 @@ lookupRoutes.get('/', async (c) => {
 
   // City-based lookup (for API/agent consumers)
   if (city) {
-    const cityLower = city.toLowerCase();
-
     // Check cached store first
     const storeResults = listUsableCachedJurisdictions({ state });
-    const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(cityLower));
+    const cachedMatch = findBestLookupMatch(storeResults, city, 'city');
     if (cachedMatch) return readyResponse(c, cachedMatch);
 
     // Check registry (includes census fallback)
     const registryResults = registryStore.findByName(city, state);
-    if (registryResults.length > 0) {
-      const resolved = await tryDiscover(registryResults[0], state);
+    const registryMatch = findBestLookupMatch(registryResults, city, 'city');
+    if (registryMatch) {
+      const resolved = await tryDiscover(registryMatch, state);
       if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
       }
@@ -161,18 +204,17 @@ lookupRoutes.get('/', async (c) => {
 
   // County-based lookup
   if (county) {
-    const countyLower = county.toLowerCase();
-
     // Check cached store first
     const storeResults = listUsableCachedJurisdictions({ state, type: 'county' });
-    const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(countyLower));
+    const cachedMatch = findBestLookupMatch(storeResults, county, 'county');
     if (cachedMatch) return readyResponse(c, cachedMatch);
 
     // Check registry — search for county name, filter to county type
     const registryResults = registryStore.findByName(county, state)
       .filter(e => e.type === 'county');
-    if (registryResults.length > 0) {
-      const resolved = await tryDiscover(registryResults[0], state, 'county');
+    const registryMatch = findBestLookupMatch(registryResults, county, 'county');
+    if (registryMatch) {
+      const resolved = await tryDiscover(registryMatch, state, 'county');
       if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this county' } });
       }

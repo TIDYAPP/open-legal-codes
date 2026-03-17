@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 import { Hono } from 'hono';
@@ -181,12 +181,42 @@ describe.skipIf(!hasCachedData)('GET /api/v1/jurisdictions/:id/search', () => {
 });
 
 describe('GET /api/v1/lookup', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it.skipIf(!hasCachedData)('finds jurisdiction by city and state', async () => {
     const res = await fetch('/api/v1/lookup?city=Mountain+View&state=CA');
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.data.status).toBe('ready');
     expect(body.data.id).toBe('ca-mountain-view');
+  });
+
+  it('prefers a cached city match over a county name that happens to contain the city', async () => {
+    vi.spyOn(store, 'listJurisdictions').mockReturnValue([
+      {
+        id: 'tn-metro-government-of-nashville-and-davidson-county',
+        name: 'Metro Government of Nashville and Davidson County, TN',
+        state: 'TN',
+        type: 'county',
+        publisher: { name: 'municode', url: 'https://example.com/county' },
+      } as any,
+      {
+        id: 'tn-nashville',
+        name: 'Nashville, TN',
+        state: 'TN',
+        type: 'city',
+        publisher: { name: 'municode', url: 'https://example.com/city' },
+      } as any,
+    ]);
+
+    const res = await fetch('/api/v1/lookup?city=Nashville&state=TN');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.status).toBe('ready');
+    expect(body.data.id).toBe('tn-nashville');
+    expect(body.data.type).toBe('city');
   });
 
   it('returns 400 with no params', async () => {
