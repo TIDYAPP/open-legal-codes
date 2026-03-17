@@ -8,6 +8,7 @@ const SITE_BASE = 'https://www.azleg.gov';
 export const AZ_TITLES = [
   { number: '9', slug: 'title-9', name: 'Cities and Towns' },
   { number: '11', slug: 'title-11', name: 'Counties' },
+  { number: '42', slug: 'title-42', name: 'Taxation' },
 ] as const;
 
 /**

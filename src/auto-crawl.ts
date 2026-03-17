@@ -1,7 +1,7 @@
 import type { RegistryEntry } from './registry/types.js';
 import type { Jurisdiction, PublisherInfo } from './types.js';
 import { getCrawler } from './crawlers/index.js';
-import { runCrawl } from './crawlers/pipeline.js';
+import { crawlQueue } from './crawl-queue.js';
 import { crawlTracker } from './crawl-tracker.js';
 import { store } from './store/index.js';
 
@@ -23,12 +23,8 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
   };
 }
 
-/** 30-minute timeout for auto-crawls (large codes like New Orleans ~5700 sections can take 20+ min) */
+/** 30-minute timeout per crawl (large codes like New Orleans ~5700 sections can take 20+ min) */
 const AUTO_CRAWL_TIMEOUT_MS = 30 * 60 * 1000;
-
-/** Max concurrent auto-crawls — keeps memory spike from parallel store.initialize() calls in check */
-const MAX_CONCURRENT_CRAWLS = 3;
-let activeCrawlCount = 0;
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -43,11 +39,6 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 export function triggerAutoCrawl(entry: RegistryEntry): void {
   if (crawlTracker.isActive(entry.id)) return;
 
-  if (activeCrawlCount >= MAX_CONCURRENT_CRAWLS) {
-    console.log(`[auto-crawl] Skipping ${entry.id} — ${activeCrawlCount} crawl(s) already in progress`);
-    return;
-  }
-
   const recentFailure = crawlTracker.getRecentFailure(entry.id);
   if (recentFailure) {
     const cooldownRemaining = Math.round((10 * 60 * 1000 - (Date.now() - recentFailure.failedAt)) / 1000);
@@ -55,7 +46,6 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
     return;
   }
 
-  const jurisdiction = registryEntryToJurisdiction(entry);
   let crawler;
   try {
     crawler = getCrawler(entry.publisher);
@@ -69,19 +59,20 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
     return;
   }
 
-  console.log(`[auto-crawl] Starting crawl for ${entry.name} (${entry.id})`);
-  activeCrawlCount++;
+  const jurisdiction = registryEntryToJurisdiction(entry);
+  console.log(`[auto-crawl] Queuing crawl for ${entry.name} (${entry.id})`);
 
-  withTimeout(runCrawl(crawler, { jurisdiction }), AUTO_CRAWL_TIMEOUT_MS, entry.id)
+  withTimeout(crawlQueue.enqueue(crawler, { jurisdiction }), AUTO_CRAWL_TIMEOUT_MS, entry.id)
     .then(() => {
       console.log(`[auto-crawl] Completed crawl for ${entry.name}`);
-      store.initialize();
+      store.loadOneJurisdiction(entry.id);
     })
     .catch((err: any) => {
-      console.error(`[auto-crawl] Failed crawl for ${entry.name}: ${err.message}`);
-      crawlTracker.markFailed(entry.id, err.message);
-    })
-    .finally(() => {
-      activeCrawlCount--;
+      if (/queue is full/i.test(err.message)) {
+        console.log(`[auto-crawl] Skipping ${entry.id} — crawl queue is full`);
+      } else {
+        console.error(`[auto-crawl] Failed crawl for ${entry.name}: ${err.message}`);
+        crawlTracker.markFailed(entry.id, err.message);
+      }
     });
 }

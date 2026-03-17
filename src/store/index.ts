@@ -74,6 +74,43 @@ export class CodeStore {
     console.log(`[CodeStore] Loaded ${this.jurisdictions.size} jurisdictions`);
   }
 
+  /**
+   * Incrementally load or reload a single jurisdiction after its crawl completes.
+   * Much faster than full initialize() — reads one _toc.json and rebuilds one
+   * jurisdiction's search index instead of reloading everything.
+   */
+  loadOneJurisdiction(id: string): void {
+    const registryPath = join(this.codesDir, 'jurisdictions.json');
+    if (!existsSync(registryPath)) return;
+
+    let jurisdictions: Jurisdiction[];
+    try {
+      jurisdictions = JSON.parse(readFileSync(registryPath, 'utf-8'));
+    } catch {
+      return;
+    }
+
+    const j = jurisdictions.find((x) => x.id === id);
+    if (!j) return;
+
+    const tocPath = join(this.codesDir, id, '_toc.json');
+    if (!existsSync(tocPath)) return;
+
+    try {
+      const toc = JSON.parse(readFileSync(tocPath, 'utf-8')) as TocTree;
+      if (!Array.isArray(toc.children) || toc.children.length === 0) {
+        console.warn(`[CodeStore] Skipping ${id}: empty _toc.json`);
+        return;
+      }
+      this.jurisdictions.set(id, j);
+      this.tocTrees.set(id, toc);
+      this.searchIndex.buildForJurisdiction(id, toc);
+      console.log(`[CodeStore] Loaded ${id}`);
+    } catch (err: any) {
+      console.error(`[CodeStore] Failed to load ${id}: ${err.message}`);
+    }
+  }
+
   getJurisdiction(id: string): Jurisdiction | undefined {
     return this.jurisdictions.get(id);
   }

@@ -186,6 +186,9 @@ export class RegistryStore {
       { id: 'nj-statutes', name: 'New Jersey Statutes', state: 'NJ', fips: '34', publisher: 'nj-statutes', sourceId: 'nj-statutes', sourceUrl: 'https://lis.njleg.state.nj.us/nxt/gateway.dll?f=templates&fn=default.htm&vid=Publish:10.1048/Enu' },
       { id: 'ga-statutes', name: 'Official Code of Georgia', state: 'GA', fips: '13', publisher: 'ga-statutes', sourceId: 'ga-statutes', sourceUrl: 'https://www.legis.ga.gov/laws/en-US' },
       { id: 'co-statutes', name: 'Colorado Revised Statutes', state: 'CO', fips: '08', publisher: 'co-statutes', sourceId: 'co-statutes', sourceUrl: 'https://colorado.public.law/statutes' },
+      { id: 'tn-statutes', name: 'Tennessee Code', state: 'TN', fips: '47', publisher: 'tn-statutes', sourceId: 'tn-statutes', sourceUrl: 'https://www.lexisnexis.com/hottopics/tncode/' },
+      { id: 'fl-statutes', name: 'Florida Statutes', state: 'FL', fips: '12', publisher: 'fl-statutes', sourceId: 'fl-statutes', sourceUrl: 'http://www.leg.state.fl.us/statutes/' },
+      { id: 'tx-tx-tax', name: 'Texas Tax Code', state: 'TX', fips: '48', publisher: 'tx-statutes', sourceId: 'TX', sourceUrl: 'https://statutes.capitol.texas.gov/Docs/TX/htm/toc.htm' },
     ];
     let stateStatutesAdded = 0;
     for (const s of STATE_STATUTES) {
