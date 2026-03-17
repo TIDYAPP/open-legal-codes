@@ -32,10 +32,11 @@ describe('ArizonaStatutesCrawler', () => {
       results.push(jurisdiction);
     }
 
-    expect(results.map((j) => j.id)).toEqual(['az-title-9', 'az-title-11']);
+    expect(results.map((j) => j.id)).toEqual(['az-title-9', 'az-title-11', 'az-title-42']);
     expect(results.map((j) => j.name)).toEqual([
       'Arizona Title 9 - Cities and Towns',
       'Arizona Title 11 - Counties',
+      'Arizona Title 42 - Taxation',
     ]);
   });
 
