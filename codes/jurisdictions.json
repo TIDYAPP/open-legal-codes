@@ -41,12 +41,12 @@
       "sourceId": "16935",
       "url": "https://library.municode.com/ca/amador_city/codes/code_of_ordinances"
     },
-    "lastCrawled": "",
-    "lastUpdated": ""
+    "lastCrawled": "2026-03-17T17:48:34.157Z",
+    "lastUpdated": "2026-03-17T17:48:34.157Z"
   },
   {
     "id": "us-cfr-title-24",
-    "name": "CFR Title 24 \u2014 Housing and Urban Development",
+    "name": "CFR Title 24 — Housing and Urban Development",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -61,7 +61,7 @@
   },
   {
     "id": "us-cfr-title-12",
-    "name": "CFR Title 12 \u2014 Banks and Banking",
+    "name": "CFR Title 12 — Banks and Banking",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -76,7 +76,7 @@
   },
   {
     "id": "us-cfr-title-26",
-    "name": "CFR Title 26 \u2014 Internal Revenue",
+    "name": "CFR Title 26 — Internal Revenue",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -176,8 +176,8 @@
       "sourceId": "PA4981",
       "url": "https://ecode360.com/PA4981"
     },
-    "lastCrawled": "2026-03-09T20:34:17.014Z",
-    "lastUpdated": "2026-03-09T20:34:17.014Z"
+    "lastCrawled": "2026-03-17T17:56:17.945Z",
+    "lastUpdated": "2026-03-17T17:56:17.945Z"
   },
   {
     "id": "il-hoffman-estates-independence-place-west",
@@ -191,7 +191,7 @@
       "sourceId": "il-hoffman-estates-independence-place-west",
       "url": "https://karecondo.com/wp-content/uploads/2019/05/IPW_Rulebook_2019.pdf"
     },
-    "lastCrawled": "2026-03-12T20:27:50.315Z",
-    "lastUpdated": "2026-03-12T20:27:50.315Z"
+    "lastCrawled": "2026-03-17T17:50:58.356Z",
+    "lastUpdated": "2026-03-17T17:50:58.356Z"
   }
 ]

@@ -80,6 +80,7 @@ Commands:
   catalog [--publisher NAME] [--state XX]           Scan publishers to build registry
   census                                            Download Census Bureau geographic data
   match                                             Cross-reference registry with Census data
+  logs    [recent|stats|errors] [--jurisdiction ID] [--since YYYY-MM-DD] [--limit N]
 
 Publishers: ${PUBLISHERS.join(', ')}
 
@@ -220,24 +221,16 @@ async function main() {
     case 'list': {
       const state = getArg('state');
       const publisher = getArg('publisher') || 'municode';
-
-      // Load cached jurisdiction IDs to show status
-      const cachedIds = new Set<string>();
-      const registryPath = join(process.cwd(), 'codes', 'jurisdictions.json');
-      if (existsSync(registryPath)) {
-        try {
-          const cached: Array<{ id: string }> = JSON.parse(readFileSync(registryPath, 'utf-8'));
-          for (const j of cached) cachedIds.add(j.id);
-        } catch { /* ignore parse errors */ }
-      }
+      const codesDir = join(process.cwd(), 'codes');
 
       const crawler = getCrawler(publisher);
       console.log(`Listing ${publisher} jurisdictions${state ? ` in ${state}` : ''}...`);
       let count = 0;
       let cachedCount = 0;
       for await (const j of crawler.listJurisdictions(state)) {
-        const status = cachedIds.has(j.id) ? '[cached]' : '[available]';
-        if (cachedIds.has(j.id)) cachedCount++;
+        const isCached = existsSync(join(codesDir, j.id, '_toc.json'));
+        const status = isCached ? '[cached]' : '[available]';
+        if (isCached) cachedCount++;
         console.log(`${status}\t${j.id}\t${j.name}\t${j.publisher.sourceId}`);
         count++;
       }
@@ -287,6 +280,63 @@ async function main() {
         onProgress: (msg) => console.log(msg),
       });
       console.log(`\nMatching complete: ${result.matched}/${result.total} matched (${Math.round(result.matched / result.total * 100)}%)`);
+      break;
+    }
+
+    case 'logs': {
+      const { requestLog } = await import('./request-log.js');
+      const sub = args[1];
+      const jurisdiction = getArg('jurisdiction');
+      const since = getArg('since') || undefined;
+      const limit = getArg('limit') ? parseInt(getArg('limit')!, 10) : 20;
+
+      if (sub === 'stats') {
+        const s = await requestLog.stats(since);
+        console.log(`Request Stats${since ? ` (since ${since})` : ''}:`);
+        console.log(`  Total: ${s.total}`);
+        console.log(
+          `  Errors: ${s.errors} (${s.total ? Math.round((s.errors / s.total) * 100) : 0}%)`
+        );
+        console.log(`  Avg Duration: ${s.avgDuration_ms}ms`);
+        console.log(`\nStatus Codes:`);
+        for (const [code, count] of Object.entries(s.statusCodes)) {
+          console.log(`  ${code}: ${count}`);
+        }
+        console.log(`\nTop Jurisdictions:`);
+        for (const j of s.topJurisdictions) {
+          console.log(`  ${j.id}: ${j.count}`);
+        }
+        console.log(`\nTop Routes:`);
+        for (const r of s.topRoutes) {
+          console.log(`  ${r.route}: ${r.count}`);
+        }
+      } else if (sub === 'errors') {
+        const entries = await requestLog.query({
+          jurisdiction,
+          status: 'error',
+          since,
+          limit,
+        });
+        for (const e of entries) {
+          console.log(
+            `${e.ts}  ${e.status}  ${e.method} ${e.path}  ${e.error || ''}`
+          );
+        }
+        console.log(`\n${entries.length} errors shown.`);
+      } else {
+        const entries = await requestLog.query({
+          jurisdiction,
+          since,
+          limit,
+        });
+        for (const e of entries) {
+          const dur = `${e.duration_ms}ms`.padStart(7);
+          console.log(
+            `${e.ts}  ${e.status}  ${dur}  ${e.method} ${e.path}`
+          );
+        }
+        console.log(`\n${entries.length} requests shown.`);
+      }
       break;
     }
 

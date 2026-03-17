@@ -21,6 +21,7 @@ import { createMcpRoutes } from './mcp-http.js';
 import { store } from './store/index.js';
 import { registryStore } from './registry/store.js';
 import { BRANDING } from './branding.js';
+import { requestLog } from './request-log.js';
 
 store.initialize();
 registryStore.initialize();
@@ -61,6 +62,45 @@ app.get('/', (c) =>
 
 // Mount API routes
 const api = new Hono();
+
+// Request logging middleware
+api.use('*', async (c, next) => {
+  const start = Date.now();
+  await next();
+
+  const segments = c.req.path.split('/');
+  const jIdx = segments.indexOf('jurisdictions');
+  const jurisdiction =
+    jIdx !== -1 && segments[jIdx + 1] ? segments[jIdx + 1] : null;
+
+  const query: Record<string, string> = {};
+  const url = new URL(c.req.url);
+  url.searchParams.forEach((v, k) => {
+    query[k] = v;
+  });
+
+  let error: string | null = null;
+  if (c.res.status >= 400) {
+    try {
+      const body = await c.res.clone().json();
+      error = body?.error?.message || body?.error || null;
+    } catch {
+      /* ignore */
+    }
+  }
+
+  requestLog.append({
+    ts: new Date().toISOString(),
+    method: c.req.method,
+    path: c.req.path,
+    jurisdiction,
+    query,
+    status: c.res.status,
+    duration_ms: Date.now() - start,
+    error,
+  });
+});
+
 api.route('/jurisdictions', jurisdictionsRoutes);
 api.route('/jurisdictions', tocRoutes);
 api.route('/jurisdictions', codeRoutes);

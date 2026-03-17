@@ -15,8 +15,6 @@ export class PlaywrightHttpClient {
   private lastRequestTime = 0;
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
-  private page: Page | null = null;
-  private launching = false;
   private launchPromise: Promise<void> | null = null;
 
   constructor(options?: { minDelayMs?: number }) {
@@ -32,13 +30,13 @@ export class PlaywrightHttpClient {
     this.lastRequestTime = Date.now();
   }
 
-  private async ensureBrowser(): Promise<Page> {
-    if (this.page) return this.page;
+  private async ensureContext(): Promise<BrowserContext> {
+    if (this.context) return this.context;
 
     // Prevent concurrent launches
     if (this.launchPromise) {
       await this.launchPromise;
-      return this.page!;
+      return this.context!;
     }
 
     this.launchPromise = (async () => {
@@ -57,12 +55,26 @@ export class PlaywrightHttpClient {
         viewport: { width: 1280, height: 720 },
         locale: 'en-US',
       });
-      this.page = await this.context.newPage();
       console.log('[playwright] Browser ready');
     })();
 
     await this.launchPromise;
-    return this.page!;
+    return this.context!;
+  }
+
+  private async withPage<T>(task: (page: Page) => Promise<T>): Promise<T> {
+    const context = await this.ensureContext();
+    const page = await context.newPage();
+
+    try {
+      return await task(page);
+    } finally {
+      try {
+        await page.close();
+      } catch {
+        // Ignore page teardown errors on shutdown/races.
+      }
+    }
   }
 
   async getHtml(url: string, params?: Record<string, string>): Promise<string> {
@@ -70,22 +82,23 @@ export class PlaywrightHttpClient {
       ? `${url}?${new URLSearchParams(params).toString()}`
       : url;
 
-    const page = await this.ensureBrowser();
     await this.throttle();
 
-    console.log(`[playwright] Navigating to ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
+    return this.withPage(async (page) => {
+      console.log(`[playwright] Navigating to ${fullUrl}`);
+      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
 
-    // Wait a bit for any JS to finish rendering
-    await sleep(1000);
+      // Wait a bit for any JS to finish rendering
+      await sleep(1000);
 
-    const html = await page.content();
+      const html = await page.content();
 
-    if (!html || html.length < 200) {
-      throw new Error(`Empty or blocked response from ${fullUrl}`);
-    }
+      if (!html || html.length < 200) {
+        throw new Error(`Empty or blocked response from ${fullUrl}`);
+      }
 
-    return html;
+      return html;
+    });
   }
 
   async get(url: string, params?: Record<string, string>): Promise<Response> {
@@ -101,20 +114,20 @@ export class PlaywrightHttpClient {
       ? `${url}?${new URLSearchParams(params).toString()}`
       : url;
 
-    const page = await this.ensureBrowser();
     await this.throttle();
 
-    console.log(`[playwright] Fetching JSON from ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
-    const text = await page.evaluate(() => document.body.innerText);
-    return JSON.parse(text) as T;
+    return this.withPage(async (page) => {
+      console.log(`[playwright] Fetching JSON from ${fullUrl}`);
+      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
+      const text = await page.evaluate(() => document.body.innerText);
+      return JSON.parse(text) as T;
+    });
   }
 
   async dispose(): Promise<void> {
     if (this.context) {
       try { await this.context.close(); } catch { /* ignore */ }
       this.context = null;
-      this.page = null;
     }
     if (this.browser) {
       try { await this.browser.close(); } catch { /* ignore */ }
