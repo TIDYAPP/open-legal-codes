@@ -51,8 +51,9 @@ export function resolveJurisdiction(id: string): ResolveResult {
   return { status: 'not_found' };
 }
 
-/** Return a 202 response for a crawling jurisdiction. */
+/** Return a 202 response for a crawling jurisdiction. Never cached by CDN/Vercel. */
 export function crawlingResponse(c: Context, result: Extract<ResolveResult, { status: 'crawling' }>) {
+  c.header('Cache-Control', 'no-store');
   return c.json(
     {
       status: 'CRAWL_IN_PROGRESS',

@@ -8,6 +8,7 @@ services:
     environment:
       - PORT=3100
       - CORS_ORIGINS=${CORS_ORIGINS:-https://openlegalcodes.org,http://localhost:3000}
+      - NODE_OPTIONS=--max-old-space-size=3072
 
   caddy:
     image: caddy:2-alpine

@@ -22,6 +22,9 @@ codeRoutes.get('/:id/code/*', (c) => {
 
   const { jurisdiction } = resolved;
 
+  // Legal text is stable once cached — cache aggressively at CDN/Vercel edge
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=86400');
+
   if (format === 'xml') {
     const xml = store.getCodeXml(id, path);
     if (!xml) return notFoundOrCrawling(c, id, `Path '${path}' not found in '${id}'`);

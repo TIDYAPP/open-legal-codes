@@ -26,6 +26,10 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
 /** 30-minute timeout for auto-crawls (large codes like New Orleans ~5700 sections can take 20+ min) */
 const AUTO_CRAWL_TIMEOUT_MS = 30 * 60 * 1000;
 
+/** Max concurrent auto-crawls — keeps memory spike from parallel store.initialize() calls in check */
+const MAX_CONCURRENT_CRAWLS = 10;
+let activeCrawlCount = 0;
+
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`Timeout after ${ms / 1000}s: ${label}`)), ms);
@@ -38,6 +42,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 
 export function triggerAutoCrawl(entry: RegistryEntry): void {
   if (crawlTracker.isActive(entry.id)) return;
+
+  if (activeCrawlCount >= MAX_CONCURRENT_CRAWLS) {
+    console.log(`[auto-crawl] Skipping ${entry.id} — ${activeCrawlCount} crawl(s) already in progress`);
+    return;
+  }
 
   const recentFailure = crawlTracker.getRecentFailure(entry.id);
   if (recentFailure) {
@@ -56,6 +65,7 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
   }
 
   console.log(`[auto-crawl] Starting crawl for ${entry.name} (${entry.id})`);
+  activeCrawlCount++;
 
   withTimeout(runCrawl(crawler, { jurisdiction }), AUTO_CRAWL_TIMEOUT_MS, entry.id)
     .then(() => {
@@ -65,5 +75,8 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
     .catch((err: any) => {
       console.error(`[auto-crawl] Failed crawl for ${entry.name}: ${err.message}`);
       crawlTracker.markFailed(entry.id, err.message);
+    })
+    .finally(() => {
+      activeCrawlCount--;
     });
 }
