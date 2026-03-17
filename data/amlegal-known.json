@@ -16,7 +16,6 @@
   { "name": "Seattle", "state": "WA", "slug": "seattle", "fips": "5363000" },
   { "name": "Denver", "state": "CO", "slug": "denver", "fips": "0820000" },
   { "name": "Washington", "state": "DC", "slug": "washington_dc", "fips": "1150000" },
-  { "name": "Nashville", "state": "TN", "slug": "nashville", "fips": "4752006" },
   { "name": "Oklahoma City", "state": "OK", "slug": "oklahoma_city", "fips": "4055000" },
   { "name": "Portland", "state": "OR", "slug": "portland", "fips": "4159000" },
   { "name": "Memphis", "state": "TN", "slug": "memphis", "fips": "4748000" },

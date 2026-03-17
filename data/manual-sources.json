@@ -1,5 +1,111 @@
 [
   {
+    "id": "tx-travis-county",
+    "name": "Travis County, TX",
+    "type": "county",
+    "state": "TX",
+    "parentId": "tx",
+    "fips": "48453",
+    "sourceUrl": "https://www.traviscountytx.gov/commissioners-court/county-code",
+    "documents": [
+      {
+        "id": "chapter-2-code-interpretation",
+        "title": "Chapter 2 Code Interpretation, Amendment, and Publication",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle1/Ch._2_Code_Interpretation_Amendment_and_Publication.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-201-fire-code",
+        "title": "Chapter 201 Fire Code",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle11/chap201.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-252-animal-control",
+        "title": "Chapter 252 Animal Control Regulations",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle13/Ch252_Animal_Control.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-261-public-nuisances",
+        "title": "Chapter 261 Abatement of Public Nuisances, Junked Vehicles, and Litter",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle13/Ch._261_Abatement_of_Nuisances_1.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-448-sewage-facilities",
+        "title": "Chapter 448 Rules for On-Site Sewage Facilities",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle19/Ch448_Rules_On-Site_Sewage_Facilities.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-464-flood-plain-management",
+        "title": "Chapter 464 Regulations for Flood Plain Management",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle19/Ch_464_Floodplain_Management.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-480-residential-construction",
+        "title": "Chapter 480 Residential Construction Standards",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle19/chap480.pdf",
+        "format": "pdf"
+      },
+      {
+        "id": "chapter-482-development-regulations",
+        "title": "Chapter 482 Development Regulations",
+        "url": "https://www.traviscountytx.gov/images/commissioners_court/Doc/county-code/subtitle19/Ch.482_Development_Regulations.pdf",
+        "format": "pdf"
+      }
+    ]
+  },
+  {
+    "id": "az-maricopa-county",
+    "name": "Maricopa County, AZ",
+    "type": "county",
+    "state": "AZ",
+    "parentId": "az",
+    "fips": "04013",
+    "sourceUrl": "https://www.maricopa.gov/2271/Ordinances-Regulations-and-Codes",
+    "documents": [
+      {
+        "id": "zoning-ordinance",
+        "title": "Maricopa County Zoning Ordinance",
+        "url": "https://www.maricopa.gov/DocumentCenter/View/4785/Maricopa-County-Zoning-Ordinance-PDF",
+        "format": "pdf"
+      },
+      {
+        "id": "addressing-regulations",
+        "title": "Addressing Regulations",
+        "url": "https://www.maricopa.gov/Archive.aspx?ADID=6303",
+        "format": "pdf"
+      },
+      {
+        "id": "subdivision-regulations",
+        "title": "Subdivision Regulations",
+        "url": "https://www.maricopa.gov/Archive.aspx?ADID=6308",
+        "format": "pdf"
+      },
+      {
+        "id": "abatement-ordinance",
+        "title": "Abatement Ordinance",
+        "url": "https://www.maricopa.gov/Archive.aspx?ADID=6302",
+        "format": "pdf"
+      },
+      {
+        "id": "hours-of-construction-ordinance",
+        "title": "Hours of Construction Ordinance",
+        "url": "https://www.maricopa.gov/Archive.aspx?ADID=6304",
+        "format": "pdf"
+      },
+      {
+        "id": "noise-ordinance",
+        "title": "Maricopa County Noise Ordinance",
+        "url": "https://www.maricopa.gov/Archive.aspx?ADID=6306",
+        "format": "pdf"
+      }
+    ]
+  },
+  {
     "id": "il-hoffman-estates-independence-place-west",
     "name": "Independence Place West COA",
     "type": "hoa",

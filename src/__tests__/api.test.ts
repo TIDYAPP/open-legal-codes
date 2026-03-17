@@ -189,9 +189,110 @@ describe('GET /api/v1/lookup', () => {
     expect(body.data.id).toBe('ca-mountain-view');
   });
 
+  it('resolves Travis County without falling through to not_found', async () => {
+    const res = await fetch('/api/v1/lookup?county=Travis+County&state=TX');
+    expect([200, 202]).toContain(res.status);
+    const body = await res.json();
+    expect(body.data.id).toBe('tx-travis-county');
+    expect(['ready', 'crawling']).toContain(body.data.status);
+  });
+
+  it('resolves Maricopa County without falling through to not_found', async () => {
+    const res = await fetch('/api/v1/lookup?county=Maricopa+County&state=AZ');
+    expect([200, 202]).toContain(res.status);
+    const body = await res.json();
+    expect(body.data.id).toBe('az-maricopa-county');
+    expect(['ready', 'crawling']).toContain(body.data.status);
+  });
+
   it('returns 400 with no params', async () => {
     const res = await fetch('/api/v1/lookup');
     expect(res.status).toBe(400);
+  });
+});
+
+describe('empty cached TOC auto-recovery', () => {
+  const testId = 'ts-auto-recrawl-city';
+  const testEntry = {
+    id: testId,
+    name: 'Auto Recrawl City, TS',
+    type: 'city' as const,
+    state: 'TS',
+    fips: '99999',
+    lat: null,
+    lng: null,
+    population: null,
+    publisher: 'unknown',
+    sourceId: 'auto-recrawl-city',
+    sourceUrl: 'https://example.com/auto-recrawl-city',
+    status: 'available' as const,
+    censusMatch: null,
+    lastScanned: '',
+  };
+  const cachedJurisdiction = {
+    id: testId,
+    name: testEntry.name,
+    type: testEntry.type,
+    state: testEntry.state,
+    parentId: null,
+    fips: testEntry.fips,
+    publisher: { name: 'manual' as const, sourceId: testId, url: testEntry.sourceUrl },
+    lastCrawled: '2026-03-17T00:00:00.000Z',
+    lastUpdated: '2026-03-17T00:00:00.000Z',
+  };
+
+  afterEach(() => {
+    crawlTracker.finish(testId);
+    const jurisdictions = (store as any).jurisdictions as Map<string, unknown>;
+    const tocTrees = (store as any).tocTrees as Map<string, unknown>;
+    const entries = (registryStore as any).entries as Array<{ id: string }>;
+    const byId = (registryStore as any).byId as Map<string, unknown>;
+    const byState = (registryStore as any).byState as Map<string, Array<{ id: string }>>;
+    const byPublisher = (registryStore as any).byPublisher as Map<string, Array<{ id: string }>>;
+    const bySlug = (registryStore as any).bySlug as Map<string, unknown>;
+
+    jurisdictions.delete(testId);
+    tocTrees.delete(testId);
+    (registryStore as any).entries = entries.filter((entry) => entry.id !== testId);
+    byId.delete(testId);
+    bySlug.delete('ts-auto-recrawl-city');
+    byState.set('TS', (byState.get('TS') || []).filter((entry) => entry.id !== testId));
+    byPublisher.set('unknown', (byPublisher.get('unknown') || []).filter((entry) => entry.id !== testId));
+  });
+
+  it('treats cached jurisdictions with empty TOCs as crawlable instead of ready', async () => {
+    const jurisdictions = (store as any).jurisdictions as Map<string, unknown>;
+    const tocTrees = (store as any).tocTrees as Map<string, unknown>;
+
+    jurisdictions.set(testId, cachedJurisdiction);
+    tocTrees.set(testId, {
+      jurisdiction: testId,
+      title: 'Auto Recrawl City Code',
+      children: [],
+    });
+    registryStore.addEntry(testEntry);
+
+    const lookupRes = await fetch('/api/v1/lookup?city=Auto+Recrawl+City&state=TS');
+    expect(lookupRes.status).toBe(202);
+    const lookupBody = await lookupRes.json();
+    expect(lookupBody.data.id).toBe(testId);
+    expect(lookupBody.data.status).toBe('crawling');
+
+    const metadataRes = await fetch(`/api/v1/jurisdictions/${testId}`);
+    expect(metadataRes.status).toBe(200);
+    const metadataBody = await metadataRes.json();
+    expect(['available', 'crawling']).toContain(metadataBody.data.status);
+    expect(metadataBody.data.status).not.toBe('cached');
+
+    const cachedListRes = await fetch('/api/v1/jurisdictions?cached=true&state=TS');
+    expect(cachedListRes.status).toBe(200);
+    const cachedListBody = await cachedListRes.json();
+    expect(cachedListBody.data.map((entry: any) => entry.id)).not.toContain(testId);
+
+    const tocRes = await fetch(`/api/v1/jurisdictions/${testId}/toc`);
+    expect(tocRes.status).toBe(202);
+    const tocBody = await tocRes.json();
+    expect(tocBody.status).toBe('CRAWL_IN_PROGRESS');
   });
 });
 

@@ -9,8 +9,9 @@ import * as cheerio from 'cheerio';
  *   https://www.lexisnexis.com/hottopics/tncode/
  * which redirects to advance.lexis.com.
  *
- * This adapter requires a browser (Browserbase) to render the JavaScript-heavy
- * LexisNexis pages. Pass a FallbackHttpClient via the constructor.
+ * This adapter requires a browser (Browserbase/Playwright) to render the
+ * JavaScript-heavy LexisNexis pages. For now we cache the rendered title TOC,
+ * which is enough to make the Tennessee state code browseable in production.
  *
  * sectionId format: "title-{n}" e.g. "title-1"
  */
@@ -95,38 +96,25 @@ function parseToc($: cheerio.CheerioAPI): RawTocNode[] {
   const nodes: RawTocNode[] = [];
   const seen = new Set<string>();
 
-  // LexisNexis pages use various link patterns for title navigation.
-  // Look for links containing "title" or numbered entries in the TOC tree.
-  $('a[href]').each((_i, el) => {
-    const href = $(el).attr('href') || '';
-    const text = $(el).text().trim();
-    if (!text || text.length < 3) return;
+  // Rendered Tennessee Code titles live on TOC tree <li> nodes instead of
+  // normal anchor links. The title text is exposed in data-title.
+  $('li[data-level="1"][data-title]').each((_i, el) => {
+    const text = ($(el).attr('data-title') || '').trim();
+    if (!text) return;
 
-    // Match links that reference Tennessee Code titles
     const titleMatch = text.match(/^Title\s+(\d+)/i);
     if (!titleMatch) return;
 
     const titleNum = titleMatch[1];
-    const nodeId = `title-${titleNum}`;
+    const nodeId = ($(el).attr('data-nodepath') || `title-${titleNum}`).trim();
     if (seen.has(nodeId)) return;
     seen.add(nodeId);
 
-    // Resolve the URL for this title
-    let titleUrl = href;
-    if (!titleUrl.startsWith('http')) {
-      // Relative URL — resolve against the base
-      try {
-        titleUrl = new URL(href, BASE_URL).toString();
-      } catch {
-        titleUrl = href;
-      }
-    }
-
     nodes.push({
-      id: titleUrl, // Use the full URL as the ID so fetchSection can navigate to it
+      id: nodeId,
       title: text.replace(/\s+/g, ' ').trim(),
       level: 'title',
-      hasContent: true,
+      hasContent: false,
       children: [],
     });
   });
@@ -141,12 +129,11 @@ function parseToc($: cheerio.CheerioAPI): RawTocNode[] {
   console.log(`[tn-statutes] Found ${nodes.length} titles in TOC`);
 
   if (nodes.length === 0) {
-    // Dump some page info for debugging
     const pageTitle = $('title').text();
     const bodyLen = $('body').text().length;
-    const linkCount = $('a[href]').length;
-    console.warn(`[tn-statutes] No titles found. Page title: "${pageTitle}", body length: ${bodyLen}, links: ${linkCount}`);
-    throw new Error(`[tn-statutes] Could not parse TOC — no title links found. Page may require additional JavaScript rendering or authentication.`);
+    const treeCount = $('li[data-level="1"][data-title]').length;
+    console.warn(`[tn-statutes] No titles found. Page title: "${pageTitle}", body length: ${bodyLen}, top-level tree nodes: ${treeCount}`);
+    throw new Error('[tn-statutes] Could not parse TOC — no rendered title nodes found.');
   }
 
   return nodes;

@@ -7,6 +7,7 @@ import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
 import { discoverPublisher } from '../registry/publisher-discovery.js';
+import { getUsableCachedJurisdiction, isUsableCachedJurisdiction } from '../cached-jurisdictions.js';
 
 export const lookupRoutes = new Hono();
 
@@ -27,6 +28,14 @@ function readyResponse(c: Context, jurisdiction: Jurisdiction) {
       publisherUrl: jurisdiction.publisher?.url || null,
     },
   });
+}
+
+function listUsableCachedJurisdictions(filters?: {
+  type?: string;
+  state?: string;
+  publisher?: string;
+}): Jurisdiction[] {
+  return store.listJurisdictions(filters).filter(isUsableCachedJurisdiction);
 }
 
 /** Check crawl status, check fresh cache, or trigger auto-crawl. Returns a 202 response. */
@@ -51,7 +60,7 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   }
 
   // Check if it became cached since server start
-  const freshCached = store.getJurisdiction(entry.id);
+  const freshCached = getUsableCachedJurisdiction(entry.id);
   if (freshCached) {
     return readyResponse(c, freshCached);
   }
@@ -111,7 +120,7 @@ lookupRoutes.get('/', async (c) => {
   // Try slug-based lookup first (from frontend URLs like /ca/palm-desert)
   if (slug) {
     // Check if cached in store (try to find by slug match)
-    const storeResults = store.listJurisdictions({ state });
+    const storeResults = listUsableCachedJurisdictions({ state });
     const cachedMatch = storeResults.find(j => toSlug(j.name) === slug);
     if (cachedMatch) return readyResponse(c, cachedMatch);
 
@@ -133,7 +142,7 @@ lookupRoutes.get('/', async (c) => {
     const cityLower = city.toLowerCase();
 
     // Check cached store first
-    const storeResults = store.listJurisdictions({ state });
+    const storeResults = listUsableCachedJurisdictions({ state });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(cityLower));
     if (cachedMatch) return readyResponse(c, cachedMatch);
 
@@ -155,7 +164,7 @@ lookupRoutes.get('/', async (c) => {
     const countyLower = county.toLowerCase();
 
     // Check cached store first
-    const storeResults = store.listJurisdictions({ state, type: 'county' });
+    const storeResults = listUsableCachedJurisdictions({ state, type: 'county' });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(countyLower));
     if (cachedMatch) return readyResponse(c, cachedMatch);
 

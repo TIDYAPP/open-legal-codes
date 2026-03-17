@@ -10,8 +10,23 @@ import { join } from 'node:path';
 import type { RegistryEntry, RegistryStats } from './types.js';
 import type { CensusPlace } from './census-loader.js';
 import { AZ_TITLES } from '../crawlers/az-statutes.js';
+import type { JurisdictionType } from '../types.js';
+import { applyRegistryOverrides } from '../jurisdiction-overrides.js';
 
 const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc'];
+
+interface ManualRegistrySource {
+  id: string;
+  name: string;
+  type: JurisdictionType;
+  state: string | null;
+  parentId: string | null;
+  fips?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  population?: number | null;
+  sourceUrl: string;
+}
 
 function stripPrefix(name: string): string {
   return name.replace(/^(City of|Town of|Village of|County of|Borough of)\s+/i, '');
@@ -49,6 +64,25 @@ function censusToEntry(place: CensusPlace): RegistryEntry {
   };
 }
 
+function manualSourceToEntry(source: ManualRegistrySource): RegistryEntry {
+  return {
+    id: source.id,
+    name: source.name,
+    type: source.type,
+    state: source.state,
+    fips: source.fips ?? null,
+    lat: source.lat ?? null,
+    lng: source.lng ?? null,
+    population: source.population ?? null,
+    publisher: 'manual',
+    sourceId: source.id,
+    sourceUrl: source.sourceUrl,
+    status: 'available',
+    censusMatch: source.fips ?? null,
+    lastScanned: new Date().toISOString(),
+  };
+}
+
 export class RegistryStore {
   private entries: RegistryEntry[] = [];
   private byState = new Map<string, RegistryEntry[]>();
@@ -74,15 +108,17 @@ export class RegistryStore {
       return;
     }
 
-    this.entries = JSON.parse(readFileSync(registryPath, 'utf-8'));
+    this.entries = JSON.parse(readFileSync(registryPath, 'utf-8')).map(applyRegistryOverrides);
+
+    const knownIds = new Set(this.entries.map(e => e.id));
 
     // Load known AMLegal jurisdictions (major cities not discoverable via API)
     const amlegalPath = join(this.dataDir, 'amlegal-known.json');
     if (existsSync(amlegalPath)) {
-      const knownIds = new Set(this.entries.map(e => e.id));
       const amlegalKnown: Array<{ name: string; state: string; slug: string; fips: string }> =
         JSON.parse(readFileSync(amlegalPath, 'utf-8'));
 
+      let added = 0;
       for (const known of amlegalKnown) {
         const id = `${known.state.toLowerCase()}-${slugify(known.name)}`;
         if (knownIds.has(id)) continue;
@@ -104,13 +140,15 @@ export class RegistryStore {
           censusMatch: known.fips,
           lastScanned: new Date().toISOString(),
         });
+        knownIds.add(id);
+        added += 1;
       }
-      console.log(`[RegistryStore] Added ${amlegalKnown.length} known AMLegal jurisdictions`);
+      console.log(`[RegistryStore] Added ${added} known AMLegal jurisdictions`);
     }
 
     // Add Arizona state-local-government statutes so production can expose them
     // without rebuilding the full registry catalog.
-    const knownIds = new Set(this.entries.map(e => e.id));
+    let azAdded = 0;
     for (const title of AZ_TITLES) {
       const id = `az-${title.slug}`;
       if (knownIds.has(id)) continue;
@@ -130,6 +168,31 @@ export class RegistryStore {
         censusMatch: '04',
         lastScanned: new Date().toISOString(),
       });
+      knownIds.add(id);
+      azAdded += 1;
+    }
+    if (azAdded > 0) {
+      console.log(`[RegistryStore] Added ${azAdded} Arizona local-government statute entries`);
+    }
+
+    // Load official manual sources (counties, HOAs, and other sources without a
+    // standard publisher API) so production lookup can resolve them without a
+    // full registry rebuild.
+    const manualPath = join(this.dataDir, 'manual-sources.json');
+    if (existsSync(manualPath)) {
+      const manualSources: ManualRegistrySource[] = JSON.parse(readFileSync(manualPath, 'utf-8'));
+      let added = 0;
+
+      for (const source of manualSources) {
+        if (knownIds.has(source.id)) continue;
+        this.entries.push(manualSourceToEntry(source));
+        knownIds.add(source.id);
+        added += 1;
+      }
+
+      if (added > 0) {
+        console.log(`[RegistryStore] Added ${added} manual source entries`);
+      }
     }
 
     // Build indexes
@@ -395,23 +458,25 @@ export class RegistryStore {
 
   /** Add a discovered entry to the in-memory index */
   addEntry(entry: RegistryEntry): void {
-    this.entries.push(entry);
-    this.byId.set(entry.id, entry);
-    if (entry.fips) this.registryFips.add(entry.fips);
-    if (entry.state) {
-      const list = this.byState.get(entry.state) || [];
-      list.push(entry);
-      this.byState.set(entry.state, list);
+    const normalized = applyRegistryOverrides(entry);
 
-      const slugKey = `${entry.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(entry.name)))}`;
-      this.bySlug.set(slugKey, entry);
-    } else if (entry.type === 'federal') {
-      const slugKey = `federal-${entry.id.replace(/^us-/, '')}`;
-      this.bySlug.set(slugKey, entry);
+    this.entries.push(normalized);
+    this.byId.set(normalized.id, normalized);
+    if (normalized.fips) this.registryFips.add(normalized.fips);
+    if (normalized.state) {
+      const list = this.byState.get(normalized.state) || [];
+      list.push(normalized);
+      this.byState.set(normalized.state, list);
+
+      const slugKey = `${normalized.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(normalized.name)))}`;
+      this.bySlug.set(slugKey, normalized);
+    } else if (normalized.type === 'federal') {
+      const slugKey = `federal-${normalized.id.replace(/^us-/, '')}`;
+      this.bySlug.set(slugKey, normalized);
     }
-    const pubList = this.byPublisher.get(entry.publisher) || [];
-    pubList.push(entry);
-    this.byPublisher.set(entry.publisher, pubList);
+    const pubList = this.byPublisher.get(normalized.publisher) || [];
+    pubList.push(normalized);
+    this.byPublisher.set(normalized.publisher, pubList);
   }
 
   get size(): number {

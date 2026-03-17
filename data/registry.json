@@ -108344,9 +108344,9 @@
     "lat": null,
     "lng": null,
     "population": null,
-    "publisher": "amlegal",
-    "sourceId": "nashville",
-    "sourceUrl": "https://codelibrary.amlegal.com/codes/nashville/latest/overview",
+    "publisher": "municode",
+    "sourceId": "14243",
+    "sourceUrl": "https://library.municode.com/tn/metro-government-of-nashville-and-davidson-county/codes/code_of_ordinances",
     "status": "available",
     "censusMatch": null,
     "lastScanned": "2026-03-17T06:19:03.438Z"

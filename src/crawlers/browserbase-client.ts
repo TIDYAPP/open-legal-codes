@@ -239,7 +239,8 @@ export class FallbackHttpClient {
     const lower = html.toLowerCase();
     return lower.includes('cloudflare') && lower.includes('challenge') ||
       lower.includes('just a moment') && lower.includes('cf-') ||
-      lower.includes('access denied') && html.length < 2000;
+      lower.includes('access denied') && html.length < 2000 ||
+      lower.includes('cookiesrequired?target=');
   }
 
   async getHtml(url: string, params?: Record<string, string>): Promise<string> {

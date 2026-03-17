@@ -5,10 +5,10 @@
 
 import type { Context } from 'hono';
 import type { Jurisdiction } from '../types.js';
-import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { registryStore } from '../registry/store.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { getUsableCachedJurisdiction } from '../cached-jurisdictions.js';
 
 export type ResolveResult =
   | { status: 'cached'; jurisdiction: Jurisdiction }
@@ -17,7 +17,7 @@ export type ResolveResult =
 
 /** Resolve a jurisdiction by ID: check cache, check crawl status, check registry + auto-crawl. */
 export function resolveJurisdiction(id: string): ResolveResult {
-  const jurisdiction = store.getJurisdiction(id);
+  const jurisdiction = getUsableCachedJurisdiction(id);
   if (jurisdiction) {
     return { status: 'cached', jurisdiction };
   }
