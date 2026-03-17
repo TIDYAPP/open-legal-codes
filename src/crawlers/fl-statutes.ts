@@ -49,42 +49,60 @@ export class FloridaStatutesCrawler implements CrawlerAdapter {
   }
 
   async fetchToc(_sourceId: string): Promise<RawTocNode[]> {
-    // The main TOC page lists all titles and their chapters
+    // Step 1: Fetch the main TOC page to discover title links.
+    // The TOC page lists titles with Display_Index links but does NOT have
+    // chapter-level Display_Statute links — those are on each title's index page.
     const tocUrl = `${SITE_BASE}/index.cfm?App_mode=Display_TOC`;
     console.log(`[fl-statutes] Fetching TOC from ${tocUrl}`);
 
     const html = await this.http.getHtml(tocUrl);
     const $ = cheerio.load(html);
 
+    // Collect title links (e.g., "TITLE I" → Display_Index&Title_Request=I)
+    const titleLinks: Array<{ text: string; titleParam: string }> = [];
+    $('a[href*="Display_Index"]').each((_i, el) => {
+      const link = $(el);
+      const href = link.attr('href') || '';
+      const text = link.text().trim();
+      if (!text || text.length < 2) return;
+      const paramMatch = href.match(/Title_Request=([^&#]+)/);
+      if (paramMatch) {
+        // Grab the sibling text node that has the title description
+        const parent = link.parent();
+        const fullText = parent.text().trim() || text;
+        titleLinks.push({ text: fullText.length > text.length ? fullText : text, titleParam: paramMatch[1] });
+      }
+    });
+
+    if (titleLinks.length === 0) {
+      console.log(`[fl-statutes] No title links found on TOC page, trying fallback`);
+      return this.fetchTocFallback($);
+    }
+
+    console.log(`[fl-statutes] Found ${titleLinks.length} titles, fetching chapter lists...`);
+
+    // Step 2: Fetch each title's index page to get chapter links.
     const titles: RawTocNode[] = [];
-    let currentTitle: RawTocNode | null = null;
+    for (const tl of titleLinks) {
+      const titleNode: RawTocNode = {
+        id: buildNodeId('title', tl.text),
+        title: tl.text,
+        level: 'title',
+        hasContent: false,
+        children: [],
+      };
 
-    // The TOC page has a structure with title headings and chapter links.
-    // Look for title headings — they're typically bold or in header elements,
-    // and chapter links that point to chapter pages.
+      try {
+        const indexUrl = `${SITE_BASE}/index.cfm?App_mode=Display_Index&Title_Request=${encodeURIComponent(tl.titleParam)}`;
+        const indexHtml = await this.http.getHtml(indexUrl);
+        const $idx = cheerio.load(indexHtml);
 
-    // Strategy 1: Look for links to Display_Index (title pages) and Display_Statute (chapter pages)
-    const allLinks = $('a[href*="Display_Index"], a[href*="Display_Statute"]');
+        $idx('a[href*="Display_Statute"]').each((_i, el) => {
+          const link = $idx(el);
+          const href = link.attr('href') || '';
+          const text = link.text().trim();
+          if (!text || text.length < 2) return;
 
-    if (allLinks.length > 0) {
-      allLinks.each((_i, el) => {
-        const link = $(el);
-        const href = link.attr('href') || '';
-        const text = link.text().trim();
-        if (!text || text.length < 2) return;
-
-        if (href.includes('Display_Index') || href.includes('Title_Request')) {
-          // This is a title-level link
-          currentTitle = {
-            id: buildNodeId('title', text),
-            title: text,
-            level: 'title',
-            hasContent: false,
-            children: [],
-          };
-          titles.push(currentTitle);
-        } else if (href.includes('Display_Statute')) {
-          // This is a chapter-level link
           const chapterNode: RawTocNode = {
             id: buildChapterIdFromUrl(href) || buildNodeId('chapter', text),
             title: text,
@@ -92,23 +110,17 @@ export class FloridaStatutesCrawler implements CrawlerAdapter {
             hasContent: true,
             children: [],
           };
+          titleNode.children!.push(chapterNode);
+        });
+      } catch (err) {
+        console.error(`[fl-statutes] Failed to fetch title index for ${tl.titleParam}:`, err);
+      }
 
-          if (currentTitle) {
-            currentTitle.children!.push(chapterNode);
-          } else {
-            titles.push(chapterNode);
-          }
-        }
-      });
+      titles.push(titleNode);
     }
 
-    // Strategy 2: If Strategy 1 didn't find much, try a broader text-based approach
-    if (titles.length === 0) {
-      console.log(`[fl-statutes] Primary TOC strategy found no results, trying fallback`);
-      return this.fetchTocFallback($);
-    }
-
-    console.log(`[fl-statutes] Found ${titles.length} titles`);
+    const totalChapters = titles.reduce((sum, t) => sum + (t.children?.length || 0), 0);
+    console.log(`[fl-statutes] Found ${titles.length} titles with ${totalChapters} chapters`);
     return titles;
   }
 
