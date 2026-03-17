@@ -59,7 +59,7 @@ jurisdictionsRoutes.get('/', (c) => {
     fips: e.fips,
     publisher: e.publisher,
     sourceUrl: e.sourceUrl,
-    status: store.getJurisdiction(e.id) ? 'cached' : e.status,
+    status: store.getToc(e.id) ? 'cached' : e.status,
     population: e.population,
   }));
 

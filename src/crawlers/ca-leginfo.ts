@@ -19,7 +19,7 @@ const CA_CODES: Array<{ code: string; name: string }> = [
   { code: 'CIV', name: 'Civil Code' },
   { code: 'CCP', name: 'Code of Civil Procedure' },
   { code: 'COM', name: 'Commercial Code' },
-  { code: 'CONS', name: 'California Constitution' },
+  { code: 'CONS', name: 'Constitution' },
   { code: 'CORP', name: 'Corporations Code' },
   { code: 'EDC', name: 'Education Code' },
   { code: 'ELEC', name: 'Elections Code' },
@@ -112,18 +112,10 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
       const title = link.text().trim();
       if (!title || title.length < 3) return;
 
-      // Extract URL params to build a unique ID that preserves hierarchy
-      const params = new URLSearchParams(href.split('?')[1] || '');
-      const division = params.get('division') || '';
-      const tocTitle = params.get('title') || '';
-      const part = params.get('part') || '';
-      const chapter = params.get('chapter') || '';
-      const article = params.get('article') || '';
-
-      // Build a structured ID from the hierarchy params
-      const hierarchyKey = [division, tocTitle, part, chapter, article]
-        .filter(Boolean).join(':') || title;
-      const id = `${sourceId}|${hierarchyKey}`;
+      // Store the full query string as the node ID so we can reconstruct the URL directly.
+      // This avoids fragile positional mapping of colon-separated params.
+      const queryString = href.split('?')[1] || '';
+      const id = `${sourceId}|${queryString}`;
       const level = guessLevelFromTitle(title);
       const isExpand = href.includes('codes_displayexpandedbranch');
 
@@ -154,17 +146,10 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
   }
 
   private async fetchExpandedBranch(sourceId: string, parentNode: RawTocNode): Promise<RawTocNode[]> {
-    // Parse hierarchy from the node ID: "CODE|division:title:part:chapter:article"
-    const hierarchyStr = parentNode.id.split('|')[1] || '';
-    const parts = hierarchyStr.split(':');
-
-    // Build expand URL preserving all hierarchy levels
-    const expandUrl = `${SITE_BASE}/faces/codes_displayexpandedbranch.xhtml?tocCode=${sourceId}` +
-      `&division=${encodeURIComponent(parts[0] || '')}` +
-      `&title=${encodeURIComponent(parts[1] || parts[0] || '')}` +
-      `&part=${encodeURIComponent(parts[2] || '')}` +
-      `&chapter=${encodeURIComponent(parts[3] || '')}` +
-      `&article=${encodeURIComponent(parts[4] || '')}`;
+    // The node ID stores the full query string from the original href.
+    // Use it directly to build the expand URL.
+    const queryString = parentNode.id.split('|')[1] || '';
+    const expandUrl = `${SITE_BASE}/faces/codes_displayexpandedbranch.xhtml?${queryString}`;
 
     try {
       const html = await this.http.getHtml(expandUrl);
@@ -178,16 +163,8 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
         const title = link.text().trim();
         if (!title || title.length < 3) return;
 
-        const params = new URLSearchParams(href.split('?')[1] || '');
-        const division = params.get('division') || '';
-        const tocTitle = params.get('title') || '';
-        const part = params.get('part') || '';
-        const chapter = params.get('chapter') || '';
-        const article = params.get('article') || '';
-
-        const hierarchyKey = [division, tocTitle, part, chapter, article]
-          .filter(Boolean).join(':') || title;
-        const id = `${sourceId}|${hierarchyKey}`;
+        const childQueryString = href.split('?')[1] || '';
+        const id = `${sourceId}|${childQueryString}`;
         const isExpand = href.includes('codes_displayexpandedbranch');
 
         children.push({
@@ -206,18 +183,14 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
   }
 
   async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    // sectionId format: "CODE|division:title:part:chapter:article"
-    const hierarchyStr = sectionId.split('|')[1] || sectionId;
-    const parts = hierarchyStr.split(':');
+    // sectionId format: "CODE|queryString" where queryString is the full URL params
+    // from the original codes_displayText href.
+    const queryString = sectionId.split('|')[1] || sectionId;
 
-    // Use codes_displayText which returns all sections in a chapter at once
-    // This is the most efficient endpoint per the CA leginfo docs
-    const url = `${SITE_BASE}/faces/codes_displayText.xhtml?lawCode=${sourceId}` +
-      `&division=${encodeURIComponent(parts[0] || '')}` +
-      `&title=${encodeURIComponent(parts[1] || parts[0] || '')}` +
-      `&part=${encodeURIComponent(parts[2] || '')}` +
-      `&chapter=${encodeURIComponent(parts[3] || '')}` +
-      `&article=${encodeURIComponent(parts[4] || '')}`;
+    // The stored query string uses tocCode= (from TOC links) but codes_displayText
+    // uses lawCode=. Normalize the param name.
+    const normalizedQuery = queryString.replace(/\btocCode=/, 'lawCode=');
+    const url = `${SITE_BASE}/faces/codes_displayText.xhtml?${normalizedQuery}`;
 
     console.log(`[ca-leginfo] Fetching section ${sectionId}`);
     const html = await this.http.getHtml(url);
@@ -226,10 +199,8 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
     const $ = cheerio.load(html);
     const cleanHtml = extractCodeContent($);
 
-    // Build a permalink
-    const sectionUrl = `${SITE_BASE}/faces/codes_displayText.xhtml?lawCode=${sourceId}` +
-      `&division=${parts[0] || ''}&title=${parts[1] || parts[0] || ''}` +
-      `&part=${parts[2] || ''}&chapter=${parts[3] || ''}&article=${parts[4] || ''}`;
+    // Use the same URL as the permalink
+    const sectionUrl = `${SITE_BASE}/faces/codes_displayText.xhtml?${normalizedQuery}`;
 
     return {
       html: cleanHtml || html,
