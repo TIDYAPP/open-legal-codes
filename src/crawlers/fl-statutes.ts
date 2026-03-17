@@ -2,6 +2,7 @@ import type { CrawlerAdapter, RawTocNode, RawContent } from './types.js';
 import type { Jurisdiction } from '../types.js';
 import { HttpClient } from './http-client.js';
 import * as cheerio from 'cheerio';
+import pLimit from 'p-limit';
 
 const SITE_BASE = 'http://www.leg.state.fl.us/statutes';
 
@@ -79,45 +80,50 @@ export class FloridaStatutesCrawler implements CrawlerAdapter {
       return this.fetchTocFallback($);
     }
 
-    console.log(`[fl-statutes] Found ${titleLinks.length} titles, fetching chapter lists...`);
+    console.log(`[fl-statutes] Found ${titleLinks.length} titles, fetching chapter lists in parallel...`);
 
     // Step 2: Fetch each title's index page to get chapter links.
-    const titles: RawTocNode[] = [];
-    for (const tl of titleLinks) {
-      const titleNode: RawTocNode = {
-        id: buildNodeId('title', tl.text),
-        title: tl.text,
-        level: 'title',
-        hasContent: false,
-        children: [],
-      };
+    // Use parallel fetches (concurrency=4) to avoid the ~72s sequential delay
+    // that would occur with 48 titles × 1500ms delay.
+    const limit = pLimit(4);
 
-      try {
-        const indexUrl = `${SITE_BASE}/index.cfm?App_mode=Display_Index&Title_Request=${encodeURIComponent(tl.titleParam)}`;
-        const indexHtml = await this.http.getHtml(indexUrl);
-        const $idx = cheerio.load(indexHtml);
+    const titles = await Promise.all(
+      titleLinks.map(tl => limit(async () => {
+        const titleNode: RawTocNode = {
+          id: buildNodeId('title', tl.text),
+          title: tl.text,
+          level: 'title',
+          hasContent: false,
+          children: [],
+        };
 
-        $idx('a[href*="Display_Statute"]').each((_i, el) => {
-          const link = $idx(el);
-          const href = link.attr('href') || '';
-          const text = link.text().trim();
-          if (!text || text.length < 2) return;
+        try {
+          const indexUrl = `${SITE_BASE}/index.cfm?App_mode=Display_Index&Title_Request=${encodeURIComponent(tl.titleParam)}`;
+          const indexHtml = await this.http.getHtml(indexUrl);
+          const $idx = cheerio.load(indexHtml);
 
-          const chapterNode: RawTocNode = {
-            id: buildChapterIdFromUrl(href) || buildNodeId('chapter', text),
-            title: text,
-            level: 'chapter',
-            hasContent: true,
-            children: [],
-          };
-          titleNode.children!.push(chapterNode);
-        });
-      } catch (err) {
-        console.error(`[fl-statutes] Failed to fetch title index for ${tl.titleParam}:`, err);
-      }
+          $idx('a[href*="Display_Statute"]').each((_i, el) => {
+            const link = $idx(el);
+            const href = link.attr('href') || '';
+            const text = link.text().trim();
+            if (!text || text.length < 2) return;
 
-      titles.push(titleNode);
-    }
+            const chapterNode: RawTocNode = {
+              id: buildChapterIdFromUrl(href) || buildNodeId('chapter', text),
+              title: text,
+              level: 'chapter',
+              hasContent: true,
+              children: [],
+            };
+            titleNode.children!.push(chapterNode);
+          });
+        } catch (err) {
+          console.error(`[fl-statutes] Failed to fetch title index for ${tl.titleParam}:`, err);
+        }
+
+        return titleNode;
+      }))
+    );
 
     const totalChapters = titles.reduce((sum, t) => sum + (t.children?.length || 0), 0);
     console.log(`[fl-statutes] Found ${titles.length} titles with ${totalChapters} chapters`);
