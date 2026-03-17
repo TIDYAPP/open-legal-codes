@@ -114,8 +114,8 @@ export class AmlegalCrawler implements CrawlerAdapter {
       id: `${codeSlug}/${docId}`,
       title: section.title || `Section ${docId}`,
       level: guessLevel(section),
-      hasContent: !section.has_children && !section.has_section_children,
-      children: [], // Children are fetched lazily during crawl
+      hasContent: true, // Always fetch — parent pages render all child content inline
+      children: [],
     };
   }
 
@@ -207,6 +207,12 @@ export class AmlegalCrawler implements CrawlerAdapter {
 
     // Strip React components that won't render as HTML
     contentHtml = cleanAmlegalHtml(contentHtml);
+
+    if (!contentHtml.trim()) {
+      throw new Error(
+        `Empty content for section ${sectionId} — AMLegal may be blocking requests (Cloudflare challenge). URL: ${url}`,
+      );
+    }
 
     return {
       html: contentHtml,
