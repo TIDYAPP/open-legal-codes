@@ -10,7 +10,7 @@
 //     "mcpServers": {
 //       "legal-codes": {
 //         "command": "npx",
-//         "args": ["open-legal-codes-mcp"]
+//         "args": ["-y", "-p", "open-legal-codes", "open-legal-codes-mcp"]
 //       }
 //     }
 //   }
