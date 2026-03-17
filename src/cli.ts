@@ -65,6 +65,35 @@ function loadJurisdiction(id: string): Jurisdiction | null {
     }
   }
 
+  // Fall back to codepublishing known list
+  const codepubPath = join(process.cwd(), 'data', 'codepublishing-known.json');
+  if (existsSync(codepubPath)) {
+    const known = JSON.parse(readFileSync(codepubPath, 'utf-8')) as Array<{
+      name: string; state: string; slug: string; fips?: string; type?: string;
+    }>;
+    for (const entry of known) {
+      const slug = entry.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const entryId = `${entry.state.toLowerCase()}-${slug}`;
+      if (entryId === id) {
+        return {
+          id: entryId,
+          name: `${entry.name}, ${entry.state}`,
+          type: (entry.type as Jurisdiction['type']) || 'city',
+          state: entry.state.toUpperCase(),
+          parentId: entry.state.toLowerCase(),
+          fips: entry.fips || null,
+          publisher: {
+            name: 'codepublishing' as const,
+            sourceId: `${entry.state}/${entry.slug}`,
+            url: `https://www.codepublishing.com/${entry.state}/${entry.slug}/`,
+          },
+          lastCrawled: '',
+          lastUpdated: '',
+        };
+      }
+    }
+  }
+
   return null;
 }
 

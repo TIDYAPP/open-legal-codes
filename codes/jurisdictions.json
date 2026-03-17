@@ -46,7 +46,7 @@
   },
   {
     "id": "us-cfr-title-24",
-    "name": "CFR Title 24 \u2014 Housing and Urban Development",
+    "name": "CFR Title 24 — Housing and Urban Development",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -61,7 +61,7 @@
   },
   {
     "id": "us-cfr-title-12",
-    "name": "CFR Title 12 \u2014 Banks and Banking",
+    "name": "CFR Title 12 — Banks and Banking",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -76,7 +76,7 @@
   },
   {
     "id": "us-cfr-title-26",
-    "name": "CFR Title 26 \u2014 Internal Revenue",
+    "name": "CFR Title 26 — Internal Revenue",
     "type": "federal",
     "state": null,
     "parentId": "us",
@@ -193,5 +193,20 @@
     },
     "lastCrawled": "2026-03-12T20:27:50.315Z",
     "lastUpdated": "2026-03-12T20:27:50.315Z"
+  },
+  {
+    "id": "ca-newport-beach",
+    "name": "Newport Beach, CA",
+    "type": "city",
+    "state": "CA",
+    "parentId": "ca",
+    "fips": null,
+    "publisher": {
+      "name": "codepublishing",
+      "sourceId": "CA/NewportBeach",
+      "url": "https://www.codepublishing.com/CA/NewportBeach/"
+    },
+    "lastCrawled": "2026-03-17T05:58:51.523Z",
+    "lastUpdated": "2026-03-17T05:58:51.523Z"
   }
 ]

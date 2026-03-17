@@ -75,6 +75,7 @@ Each publisher gets its own adapter implementing `CrawlerAdapter` (defined in `s
 **Adapter built**: eCode360 (`ecode360.ts`) — HTML scraper for ~4,400 municipal/county codes
 **Adapter built**: CA Leginfo (`ca-leginfo.ts`) — scrapes California's 30 state statute codes
 **Adapter built**: NY Open Legislation (`ny-openleg.ts`) — JSON API for all New York state laws (requires free API key via `NY_OPENLEG_API_KEY`)
+**Adapter built**: Code Publishing (`codepublishing.ts`) — HTML scraper for codepublishing.com municipal codes (known jurisdictions list in `data/codepublishing-known.json`)
 
 The crawl pipeline (`pipeline.ts`) orchestrates: fetch TOC → transform → fetch all sections → write to cache.
 
@@ -130,12 +131,13 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - eCode360 crawler: **adapter built** — HTML scraper with cheerio (cities + counties)
 - CA Leginfo crawler: **adapter built** — scrapes all 30 CA codes, public domain data
 - NY Open Legislation crawler: **adapter built** — JSON API for all NY state laws (free API key required)
+- Code Publishing crawler: **adapter built** — HTML scraper with cheerio, known jurisdictions in `data/codepublishing-known.json`
 
 ### Coverage by Jurisdiction Type
 - **Federal**: CFR via eCFR API (all 49 titles available, 3 pre-cached)
 - **State**: California statutes via leginfo, New York statutes via Open Legislation API
 - **County**: Detected from Municode/eCode360 client names, county lookup via `/lookup?county=X&state=Y`
-- **City/Municipal**: Municode + American Legal + eCode360
+- **City/Municipal**: Municode + American Legal + eCode360 + Code Publishing
 
 ### Infrastructure
 - Cache/storage: **working** — reads and writes jurisdiction data
