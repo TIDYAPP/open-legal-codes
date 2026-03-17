@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import type { RegistryEntry, RegistryStats } from './types.js';
 import type { CensusPlace } from './census-loader.js';
 import { AZ_TITLES } from '../crawlers/az-statutes.js';
+import { applyRegistryOverrides } from '../jurisdiction-overrides.js';
 
 const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc'];
 
@@ -74,7 +75,7 @@ export class RegistryStore {
       return;
     }
 
-    this.entries = JSON.parse(readFileSync(registryPath, 'utf-8'));
+    this.entries = JSON.parse(readFileSync(registryPath, 'utf-8')).map(applyRegistryOverrides);
 
     // Load known AMLegal jurisdictions (major cities not discoverable via API)
     const amlegalPath = join(this.dataDir, 'amlegal-known.json');
@@ -395,23 +396,25 @@ export class RegistryStore {
 
   /** Add a discovered entry to the in-memory index */
   addEntry(entry: RegistryEntry): void {
-    this.entries.push(entry);
-    this.byId.set(entry.id, entry);
-    if (entry.fips) this.registryFips.add(entry.fips);
-    if (entry.state) {
-      const list = this.byState.get(entry.state) || [];
-      list.push(entry);
-      this.byState.set(entry.state, list);
+    const normalized = applyRegistryOverrides(entry);
 
-      const slugKey = `${entry.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(entry.name)))}`;
-      this.bySlug.set(slugKey, entry);
-    } else if (entry.type === 'federal') {
-      const slugKey = `federal-${entry.id.replace(/^us-/, '')}`;
-      this.bySlug.set(slugKey, entry);
+    this.entries.push(normalized);
+    this.byId.set(normalized.id, normalized);
+    if (normalized.fips) this.registryFips.add(normalized.fips);
+    if (normalized.state) {
+      const list = this.byState.get(normalized.state) || [];
+      list.push(normalized);
+      this.byState.set(normalized.state, list);
+
+      const slugKey = `${normalized.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(normalized.name)))}`;
+      this.bySlug.set(slugKey, normalized);
+    } else if (normalized.type === 'federal') {
+      const slugKey = `federal-${normalized.id.replace(/^us-/, '')}`;
+      this.bySlug.set(slugKey, normalized);
     }
-    const pubList = this.byPublisher.get(entry.publisher) || [];
-    pubList.push(entry);
-    this.byPublisher.set(entry.publisher, pubList);
+    const pubList = this.byPublisher.get(normalized.publisher) || [];
+    pubList.push(normalized);
+    this.byPublisher.set(normalized.publisher, pubList);
   }
 
   get size(): number {

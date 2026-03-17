@@ -9,6 +9,7 @@ import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { registryStore } from '../registry/store.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
+import { isSuppressedCachedJurisdiction } from '../jurisdiction-overrides.js';
 
 export type ResolveResult =
   | { status: 'cached'; jurisdiction: Jurisdiction }
@@ -18,7 +19,7 @@ export type ResolveResult =
 /** Resolve a jurisdiction by ID: check cache, check crawl status, check registry + auto-crawl. */
 export function resolveJurisdiction(id: string): ResolveResult {
   const jurisdiction = store.getJurisdiction(id);
-  if (jurisdiction) {
+  if (jurisdiction && !isSuppressedCachedJurisdiction(jurisdiction)) {
     return { status: 'cached', jurisdiction };
   }
 

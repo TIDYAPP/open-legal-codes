@@ -4,8 +4,14 @@ import { store } from '../store/index.js';
 import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { BRANDING } from '../branding.js';
+import { isSuppressedCachedJurisdiction } from '../jurisdiction-overrides.js';
 
 export const jurisdictionsRoutes = new Hono();
+
+function isUsableCachedJurisdictionId(id: string): boolean {
+  const jurisdiction = store.getJurisdiction(id);
+  return !!jurisdiction && !isSuppressedCachedJurisdiction(jurisdiction);
+}
 
 /**
  * GET /jurisdictions
@@ -30,7 +36,8 @@ jurisdictionsRoutes.get('/', (c) => {
 
   // If ?cached=true, return only cached jurisdictions (old behavior)
   if (cached === 'true') {
-    const data = store.listJurisdictions({ type, state, publisher });
+    const data = store.listJurisdictions({ type, state, publisher })
+      .filter((j) => !isSuppressedCachedJurisdiction(j));
     c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
     return c.json({
       data,
@@ -61,7 +68,7 @@ jurisdictionsRoutes.get('/', (c) => {
     fips: e.fips,
     publisher: e.publisher,
     sourceUrl: e.sourceUrl,
-    status: store.getToc(e.id) ? 'cached' : (e.status === 'cached' ? 'available' : e.status),
+    status: isUsableCachedJurisdictionId(e.id) ? 'cached' : (e.status === 'cached' ? 'available' : e.status),
     population: e.population,
   }));
 
@@ -80,7 +87,7 @@ jurisdictionsRoutes.get('/:id', (c) => {
   const id = c.req.param('id');
   const jurisdiction = store.getJurisdiction(id);
 
-  if (jurisdiction) {
+  if (jurisdiction && !isSuppressedCachedJurisdiction(jurisdiction)) {
     c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
     return c.json({
       data: {
