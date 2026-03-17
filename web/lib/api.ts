@@ -65,8 +65,10 @@ export interface LookupResult {
   message?: string;
 }
 
-export async function lookupJurisdiction(state: string, slug: string): Promise<LookupResult> {
-  const res = await fetch(`${API_BASE}/api/v1/lookup?slug=${encodeURIComponent(slug)}&state=${encodeURIComponent(state.toUpperCase())}`, { cache: 'no-store' });
+export async function lookupJurisdiction(state: string, slug: string, options?: { toc?: boolean }): Promise<LookupResult> {
+  const includeToc = options?.toc !== false;
+  const tocParam = includeToc ? '' : '&toc=false';
+  const res = await fetch(`${API_BASE}/api/v1/lookup?slug=${encodeURIComponent(slug)}&state=${encodeURIComponent(state.toUpperCase())}${tocParam}`, { cache: 'no-store' });
   const json = await res.json();
   return json.data;
 }

@@ -17,7 +17,7 @@ export default function JurisdictionLayout({
 
   const doLookup = useCallback(async () => {
     try {
-      const result = await lookupJurisdiction(state, slug);
+      const result = await lookupJurisdiction(state, slug, { toc: false });
       setData(result);
     } catch {
       setData({ status: 'not_found' });

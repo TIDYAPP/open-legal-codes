@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useJurisdiction } from '@/lib/jurisdiction-context';
+import { getToc } from '@/lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -51,10 +52,16 @@ function TocTree({ nodes, baseUrl }: { nodes: TocNode[]; baseUrl: string }) {
 }
 
 export default function JurisdictionPage() {
-  const { id, name, state, children, urlBase, lastCrawled, publisher, publisherUrl } = useJurisdiction();
+  const { id, name, state, urlBase, lastCrawled, publisher, publisherUrl } = useJurisdiction();
+  const [children, setChildren] = useState<TocNode[] | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    getToc(id, 3).then(toc => setChildren(toc.children)).catch(() => setChildren([]));
+  }, [id]);
 
   const doSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,7 +136,9 @@ export default function JurisdictionPage() {
             ))}
           </div>
         </div>
-      ) : children && children.length > 0 ? (
+      ) : children === null ? (
+        <p className="text-muted">Loading table of contents...</p>
+      ) : children.length > 0 ? (
         <TocTree nodes={children} baseUrl={urlBase || ''} />
       ) : (
         <p className="text-muted">No code sections available.</p>

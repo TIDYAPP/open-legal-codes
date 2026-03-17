@@ -11,8 +11,8 @@ import { discoverPublisher } from '../registry/publisher-discovery.js';
 export const lookupRoutes = new Hono();
 
 /** Build the standard "ready" response for a cached jurisdiction. */
-function readyResponse(c: Context, jurisdiction: Jurisdiction) {
-  const toc = store.getToc(jurisdiction.id);
+function readyResponse(c: Context, jurisdiction: Jurisdiction, includeToc = true) {
+  const toc = includeToc ? store.getToc(jurisdiction.id) : null;
   return c.json({
     data: {
       status: 'ready',
@@ -29,7 +29,7 @@ function readyResponse(c: Context, jurisdiction: Jurisdiction) {
 }
 
 /** Check crawl status, check fresh cache, or trigger auto-crawl. Returns a 202 response. */
-function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
+function crawlingOrTrigger(c: Context, entry: RegistryEntry, includeToc = true) {
   const crawlStatus = crawlTracker.getStatus(entry.id);
   if (crawlStatus) {
     return c.json({
@@ -50,7 +50,7 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   // Check if it became cached since server start
   const freshCached = store.getJurisdiction(entry.id);
   if (freshCached) {
-    return readyResponse(c, freshCached);
+    return readyResponse(c, freshCached, includeToc);
   }
 
   triggerAutoCrawl(entry);
@@ -85,6 +85,7 @@ lookupRoutes.get('/', async (c) => {
   const county = c.req.query('county');
   let state = c.req.query('state');
   const address = c.req.query('address');
+  const includeToc = c.req.query('toc') !== 'false';
 
   // Parse address to extract city + state if provided
   if (address && !city && !slug) {
@@ -109,7 +110,7 @@ lookupRoutes.get('/', async (c) => {
     // Check if cached in store (try to find by slug match)
     const storeResults = store.listJurisdictions({ state });
     const cachedMatch = storeResults.find(j => toSlug(j.name) === slug);
-    if (cachedMatch) return readyResponse(c, cachedMatch);
+    if (cachedMatch) return readyResponse(c, cachedMatch, includeToc);
 
     // Check registry
     let registryEntry = registryStore.getBySlug(state, slug);
@@ -118,7 +119,7 @@ lookupRoutes.get('/', async (c) => {
       if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
       }
-      return crawlingOrTrigger(c, resolved);
+      return crawlingOrTrigger(c, resolved, includeToc);
     }
 
     return c.json({ data: { status: 'not_found' } });
@@ -131,7 +132,7 @@ lookupRoutes.get('/', async (c) => {
     // Check cached store first
     const storeResults = store.listJurisdictions({ state });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(cityLower));
-    if (cachedMatch) return readyResponse(c, cachedMatch);
+    if (cachedMatch) return readyResponse(c, cachedMatch, includeToc);
 
     // Check registry (includes census fallback)
     const registryResults = registryStore.findByName(city, state);
@@ -140,7 +141,7 @@ lookupRoutes.get('/', async (c) => {
       if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
       }
-      return crawlingOrTrigger(c, resolved);
+      return crawlingOrTrigger(c, resolved, includeToc);
     }
 
     return c.json({ data: { status: 'not_found' } });
@@ -153,7 +154,7 @@ lookupRoutes.get('/', async (c) => {
     // Check cached store first
     const storeResults = store.listJurisdictions({ state, type: 'county' });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(countyLower));
-    if (cachedMatch) return readyResponse(c, cachedMatch);
+    if (cachedMatch) return readyResponse(c, cachedMatch, includeToc);
 
     // Check registry — search for county name, filter to county type
     const registryResults = registryStore.findByName(county, state)
@@ -163,7 +164,7 @@ lookupRoutes.get('/', async (c) => {
       if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this county' } });
       }
-      return crawlingOrTrigger(c, resolved);
+      return crawlingOrTrigger(c, resolved, includeToc);
     }
 
     return c.json({ data: { status: 'not_found' } });

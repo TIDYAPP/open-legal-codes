@@ -237,12 +237,15 @@ async function crawlOne(item: Resolved, skipCached: boolean): Promise<void> {
     throw new Error(`${label} Not found on production (404) — jurisdiction may not be in prod registry`);
   }
 
-  if (res.status !== 202) {
+  // Transient server error on initial trigger — wait and retry via poll loop
+  if (res.status >= 500) {
+    console.log(`  ${label} Transient ${res.status} on initial trigger — will poll anyway...`);
+  } else if (res.status !== 202) {
     const body = await res.text().catch(() => '');
     throw new Error(`${label} Unexpected status ${res.status}: ${body.slice(0, 200)}`);
   }
 
-  // 202 — crawl is in progress, poll until done
+  // 202 (or transient 5xx) — crawl is in progress, poll until done
   console.log(`  ${label} Crawl started (202) — polling every ${POLL_INTERVAL_MS / 1000}s...`);
 
   while (true) {
@@ -274,6 +277,13 @@ async function crawlOne(item: Resolved, skipCached: boolean): Promise<void> {
     if (res.status === 503) {
       const body = await res.json().catch(() => ({}) as any);
       throw new Error(`${label} 503 CRAWL_FAILED — ${body?.error?.message ?? 'crawl failed on server'}`);
+    }
+
+    // Transient server errors (502, 504, etc.) — retry next poll cycle
+    if (res.status >= 500) {
+      const elapsed = Math.round((Date.now() - start) / 1000);
+      console.log(`  ${label} Transient ${res.status} (${elapsed}s) — will retry...`);
+      continue;
     }
 
     const body = await res.text().catch(() => '');

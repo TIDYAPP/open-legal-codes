@@ -13,6 +13,7 @@ import { triggerAutoCrawl } from '../auto-crawl.js';
 export type ResolveResult =
   | { status: 'cached'; jurisdiction: Jurisdiction }
   | { status: 'crawling'; id: string; progress: { phase: string; total: number; completed: number }; startedAt: string }
+  | { status: 'failed'; id: string; error: string }
   | { status: 'not_found' };
 
 /** Resolve a jurisdiction by ID: check cache, check crawl status, check registry + auto-crawl. */
@@ -33,18 +34,23 @@ export function resolveJurisdiction(id: string): ResolveResult {
     };
   }
 
-  // Known in registry? Trigger auto-crawl.
+  // Known in registry? Check for recent failure before triggering.
   const entry = registryStore.getById(id);
   if (entry) {
+    const recentFailure = crawlTracker.getRecentFailure(id);
+    if (recentFailure) {
+      return { status: 'failed', id, error: recentFailure.error };
+    }
+
     triggerAutoCrawl(entry);
-    const status = crawlTracker.getStatus(id);
+    const crawlStatus2 = crawlTracker.getStatus(id);
     return {
       status: 'crawling',
       id,
-      progress: status
-        ? { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed }
+      progress: crawlStatus2
+        ? { phase: crawlStatus2.progress.phase, total: crawlStatus2.progress.total, completed: crawlStatus2.progress.completed }
         : { phase: 'toc', total: 0, completed: 0 },
-      startedAt: status?.startedAt || new Date().toISOString(),
+      startedAt: crawlStatus2?.startedAt || new Date().toISOString(),
     };
   }
 
@@ -62,6 +68,14 @@ export function crawlingResponse(c: Context, result: Extract<ResolveResult, { st
       retryAfter: 30,
     },
     202,
+  );
+}
+
+/** Return a 503 response for a recently-failed crawl. */
+export function failedResponse(c: Context, result: Extract<ResolveResult, { status: 'failed' }>) {
+  return c.json(
+    { error: { code: 'CRAWL_FAILED', message: `Crawl for '${result.id}' failed: ${result.error}. Retry after cooldown.` } },
+    503,
   );
 }
 
