@@ -23,6 +23,19 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
   };
 }
 
+/** 10-minute timeout for auto-crawls */
+const AUTO_CRAWL_TIMEOUT_MS = 10 * 60 * 1000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Timeout after ${ms / 1000}s: ${label}`)), ms);
+    promise.then(
+      (val) => { clearTimeout(timer); resolve(val); },
+      (err) => { clearTimeout(timer); reject(err); },
+    );
+  });
+}
+
 export function triggerAutoCrawl(entry: RegistryEntry): void {
   if (crawlTracker.isActive(entry.id)) return;
 
@@ -37,7 +50,7 @@ export function triggerAutoCrawl(entry: RegistryEntry): void {
 
   console.log(`[auto-crawl] Starting crawl for ${entry.name} (${entry.id})`);
 
-  runCrawl(crawler, { jurisdiction })
+  withTimeout(runCrawl(crawler, { jurisdiction }), AUTO_CRAWL_TIMEOUT_MS, entry.id)
     .then(() => {
       console.log(`[auto-crawl] Completed crawl for ${entry.name}`);
       store.initialize();

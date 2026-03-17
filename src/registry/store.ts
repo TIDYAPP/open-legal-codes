@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import type { RegistryEntry, RegistryStats } from './types.js';
 import type { CensusPlace } from './census-loader.js';
 
-const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo'];
+const PUBLISHER_PRIORITY = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc'];
 
 function stripPrefix(name: string): string {
   return name.replace(/^(City of|Town of|Village of|County of|Borough of)\s+/i, '');

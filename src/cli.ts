@@ -221,14 +221,27 @@ async function main() {
       const state = getArg('state');
       const publisher = getArg('publisher') || 'municode';
 
+      // Load cached jurisdiction IDs to show status
+      const cachedIds = new Set<string>();
+      const registryPath = join(process.cwd(), 'codes', 'jurisdictions.json');
+      if (existsSync(registryPath)) {
+        try {
+          const cached: Array<{ id: string }> = JSON.parse(readFileSync(registryPath, 'utf-8'));
+          for (const j of cached) cachedIds.add(j.id);
+        } catch { /* ignore parse errors */ }
+      }
+
       const crawler = getCrawler(publisher);
       console.log(`Listing ${publisher} jurisdictions${state ? ` in ${state}` : ''}...`);
       let count = 0;
+      let cachedCount = 0;
       for await (const j of crawler.listJurisdictions(state)) {
-        console.log(`${j.id}\t${j.name}\t${j.publisher.sourceId}`);
+        const status = cachedIds.has(j.id) ? '[cached]' : '[available]';
+        if (cachedIds.has(j.id)) cachedCount++;
+        console.log(`${status}\t${j.id}\t${j.name}\t${j.publisher.sourceId}`);
         count++;
       }
-      console.log(`\n${count} jurisdictions found.`);
+      console.log(`\n${count} jurisdictions found (${cachedCount} cached).`);
       break;
     }
 

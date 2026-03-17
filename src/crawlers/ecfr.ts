@@ -31,9 +31,35 @@ const API_BASE = 'https://www.ecfr.gov/api';
 export class EcfrCrawler implements CrawlerAdapter {
   readonly publisherName = 'ecfr' as const;
   private http: HttpClient;
+  private cachedLatestDate: string | null = null;
 
   constructor(http?: HttpClient) {
     this.http = http ?? new HttpClient({ minDelayMs: 1000 });
+  }
+
+  /**
+   * Fetch the latest available date from the eCFR API.
+   * The API only serves data up to its latest version date, which may lag
+   * behind today's date. Using today's date causes 404s when it's ahead.
+   * Falls back to today's date if the titles endpoint fails.
+   */
+  private async getLatestDate(): Promise<string> {
+    if (this.cachedLatestDate) return this.cachedLatestDate;
+
+    try {
+      const data = await this.http.getJson<{ meta: { date: string } }>(
+        `${API_BASE}/versioner/v1/titles`,
+      );
+      if (data.meta?.date) {
+        this.cachedLatestDate = data.meta.date;
+        return this.cachedLatestDate;
+      }
+    } catch (err) {
+      console.warn('[ecfr] Failed to fetch latest date from API, falling back to today:', err);
+    }
+
+    this.cachedLatestDate = formatDate();
+    return this.cachedLatestDate;
   }
 
   async *listJurisdictions(_state?: string): AsyncIterable<Jurisdiction> {
@@ -63,7 +89,7 @@ export class EcfrCrawler implements CrawlerAdapter {
 
   async fetchToc(sourceId: string): Promise<RawTocNode[]> {
     const titleNum = sourceId;
-    const today = formatDate();
+    const today = await this.getLatestDate();
 
     console.log(`[ecfr] Fetching structure for CFR Title ${titleNum}`);
 
@@ -113,7 +139,7 @@ export class EcfrCrawler implements CrawlerAdapter {
 
   async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
     const titleNum = sourceId;
-    const today = formatDate();
+    const today = await this.getLatestDate();
 
     // The content endpoint accepts hierarchy params and follows redirects
     // to add any missing parent hierarchy levels automatically

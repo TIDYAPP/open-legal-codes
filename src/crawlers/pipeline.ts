@@ -63,6 +63,11 @@ export async function runCrawl(
   progress.phase = 'sections';
   progress.total = contentNodes.length;
   console.log(`[crawl] Found ${contentNodes.length} content sections to fetch`);
+
+  if (contentNodes.length === 0) {
+    console.warn(`[crawl] Warning: TOC for ${jurisdiction.name} has zero content sections — structure cached but no section content available`);
+    progress.errors.push({ path: '', error: 'TOC contains zero content sections' });
+  }
   onProgress?.(progress);
   crawlTracker.updateProgress(jurisdiction.id, progress);
 
