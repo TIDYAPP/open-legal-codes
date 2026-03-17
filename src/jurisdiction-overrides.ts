@@ -3,6 +3,7 @@ import type { Jurisdiction } from './types.js';
 
 const NASHVILLE_TN_METRO_URL =
   'https://library.municode.com/tn/metro-government-of-nashville-and-davidson-county/codes/code_of_ordinances';
+const TEXAS_LOCAL_GOVERNMENT_BAD_CRAWL_AT = '2026-03-17T21:24:31.661Z';
 
 /**
  * Production has a bad cached AMLegal mapping for Nashville, TN that actually
@@ -27,7 +28,18 @@ export function applyRegistryOverrides(entry: RegistryEntry): RegistryEntry {
 export function isSuppressedCachedJurisdiction(jurisdiction: Jurisdiction | undefined): boolean {
   if (!jurisdiction) return false;
 
-  return jurisdiction.id === 'tn-nashville' &&
+  if (
+    jurisdiction.id === 'tn-nashville' &&
     jurisdiction.publisher.name === 'amlegal' &&
-    jurisdiction.publisher.sourceId === 'nashville';
+    jurisdiction.publisher.sourceId === 'nashville'
+  ) {
+    return true;
+  }
+
+  // Production cached an empty TOC for tx-lg on March 17, 2026 before the
+  // Texas crawler was updated to the new TCSS headings API. Ignore that stale
+  // artifact so the next lookup/toc request can trigger a corrective recrawl.
+  return jurisdiction.id === 'tx-lg' &&
+    jurisdiction.publisher.name === 'tx-statutes' &&
+    jurisdiction.lastCrawled === TEXAS_LOCAL_GOVERNMENT_BAD_CRAWL_AT;
 }

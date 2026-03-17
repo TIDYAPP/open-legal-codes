@@ -49,7 +49,12 @@ export class CodeStore {
       const tocPath = join(this.codesDir, j.id, '_toc.json');
       if (existsSync(tocPath)) {
         try {
-          newTocTrees.set(j.id, JSON.parse(readFileSync(tocPath, 'utf-8')));
+          const toc = JSON.parse(readFileSync(tocPath, 'utf-8')) as TocTree;
+          if (!Array.isArray(toc.children) || toc.children.length === 0) {
+            console.warn(`[CodeStore] Skipping ${j.id}: empty _toc.json`);
+            continue;
+          }
+          newTocTrees.set(j.id, toc);
           newJurisdictions.set(j.id, j);
         } catch (err: any) {
           console.error(`[CodeStore] Skipping ${j.id}: corrupt _toc.json (${err.message})`);
@@ -99,6 +104,11 @@ export class CodeStore {
 
   getToc(jurisdictionId: string): TocTree | undefined {
     return this.tocTrees.get(jurisdictionId);
+  }
+
+  hasUsableToc(jurisdictionId: string): boolean {
+    const toc = this.tocTrees.get(jurisdictionId);
+    return !!toc && Array.isArray(toc.children) && toc.children.length > 0;
   }
 
   /** Find a TOC node by path (for metadata lookups) */

@@ -7,7 +7,7 @@ import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
 import { discoverPublisher } from '../registry/publisher-discovery.js';
-import { isSuppressedCachedJurisdiction } from '../jurisdiction-overrides.js';
+import { getUsableCachedJurisdiction, isUsableCachedJurisdiction } from '../cached-jurisdictions.js';
 
 export const lookupRoutes = new Hono();
 
@@ -35,7 +35,7 @@ function listUsableCachedJurisdictions(filters?: {
   state?: string;
   publisher?: string;
 }): Jurisdiction[] {
-  return store.listJurisdictions(filters).filter((j) => !isSuppressedCachedJurisdiction(j));
+  return store.listJurisdictions(filters).filter(isUsableCachedJurisdiction);
 }
 
 function normalizeLookupName(name: string): string {
@@ -64,7 +64,6 @@ function scoreLookupMatch(
   if (candidate.type === preferredType) score += 4;
   if (normalizedName.startsWith(normalizedQuery)) score += 2;
 
-  // Prefer tighter textual matches once exact/type scoring is exhausted.
   score -= Math.abs(normalizedName.length - normalizedQuery.length) / 100;
 
   return score;
@@ -104,8 +103,8 @@ function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
   }
 
   // Check if it became cached since server start
-  const freshCached = store.getJurisdiction(entry.id);
-  if (freshCached && !isSuppressedCachedJurisdiction(freshCached)) {
+  const freshCached = getUsableCachedJurisdiction(entry.id);
+  if (freshCached) {
     return readyResponse(c, freshCached);
   }
 

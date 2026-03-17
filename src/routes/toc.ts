@@ -35,14 +35,12 @@ tocRoutes.get('/:id/toc', (c) => {
   const id = c.req.param('id');
   const depth = c.req.query('depth') ? parseInt(c.req.query('depth')!, 10) : undefined;
 
+  const resolved = resolveJurisdiction(id);
+  if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
+  if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
+
   const toc = store.getToc(id);
-  if (!toc) {
-    const resolved = resolveJurisdiction(id);
-    if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
-    if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
-    // cached but no TOC yet — check if still crawling
-    return notFoundOrCrawling(c, id, `No table of contents available for '${id}'`);
-  }
+  if (!toc) return notFoundOrCrawling(c, id, `No table of contents available for '${id}'`);
 
   const children = depth ? limitDepth(toc.children, depth) : toc.children;
 

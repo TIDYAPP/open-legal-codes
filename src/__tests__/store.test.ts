@@ -43,6 +43,17 @@ const fixtureJurisdictions = [
     lastCrawled: '',
     lastUpdated: '',
   },
+  {
+    id: 'test-empty-toc',
+    name: 'Empty Toc City, ET',
+    type: 'city',
+    state: 'ET',
+    parentId: null,
+    fips: null,
+    publisher: { name: 'test-pub', sourceId: '4', url: 'https://example.com' },
+    lastCrawled: '',
+    lastUpdated: '',
+  },
 ];
 
 const fixtureToc = {
@@ -69,6 +80,13 @@ beforeAll(() => {
   writeFileSync(join(cityBDir, '_toc.json'), JSON.stringify({ ...fixtureToc, jurisdiction: 'test-city-b' }));
 
   // test-skeleton has NO _toc.json — simulates the bug scenario
+  const emptyTocDir = join(FIXTURE_DIR, 'test-empty-toc');
+  mkdirSync(emptyTocDir, { recursive: true });
+  writeFileSync(join(emptyTocDir, '_toc.json'), JSON.stringify({
+    jurisdiction: 'test-empty-toc',
+    title: 'Code of Empty Toc City',
+    children: [],
+  }));
 });
 
 afterAll(() => {
@@ -92,6 +110,12 @@ describe('CodeStore (fixture)', () => {
     expect(store.getJurisdiction('test-skeleton')).toBeUndefined();
   });
 
+  it('excludes entries whose _toc.json is present but empty', () => {
+    expect(store.getJurisdiction('test-empty-toc')).toBeUndefined();
+    expect(store.getToc('test-empty-toc')).toBeUndefined();
+    expect(store.hasUsableToc('test-empty-toc')).toBe(false);
+  });
+
   it('returns jurisdiction by ID', () => {
     const j = store.getJurisdiction('test-city-a');
     expect(j).toBeDefined();
@@ -103,6 +127,7 @@ describe('CodeStore (fixture)', () => {
     expect(toc).toBeDefined();
     expect(toc!.children.length).toBe(1);
     expect(toc!.children[0].heading).toBe('Chapter 1');
+    expect(store.hasUsableToc('test-city-a')).toBe(true);
   });
 
   it('filters by state', () => {
