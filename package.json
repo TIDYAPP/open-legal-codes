@@ -2,6 +2,7 @@
   "name": "open-legal-codes-server",
   "version": "0.1.0",
   "description": "Retrieve US legal codes programmatically. Give it a jurisdiction and code path, get the text back.",
+  "author": "TIDY (https://tidy.com)",
   "type": "module",
   "main": "dist/server.js",
   "bin": {

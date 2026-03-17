@@ -33,6 +33,11 @@ export default function RootLayout({
           </div>
         </nav>
         <main className="page">{children}</main>
+        <footer className="footer">
+          <div className="footer-inner">
+            A free service by <a href="https://tidy.com" target="_blank" rel="noopener noreferrer">TIDY</a> — AI Property Manager
+          </div>
+        </footer>
       </body>
     </html>
   );

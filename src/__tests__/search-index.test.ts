@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { CodeStore } from '../store/index.js';
 
 const CODES_DIR = join(process.cwd(), 'codes');
+const hasCachedData = existsSync(join(CODES_DIR, 'ca-mountain-view', '_toc.json'));
 
-describe('SearchIndex (via CodeStore)', () => {
+describe.skipIf(!hasCachedData)('SearchIndex (via CodeStore)', () => {
   const store = new CodeStore(CODES_DIR);
 
   beforeAll(() => {

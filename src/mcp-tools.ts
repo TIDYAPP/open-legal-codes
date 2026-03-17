@@ -9,11 +9,15 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { CodeStore } from './store/index.js';
 import type { TocNode } from './types.js';
+import { BRANDING } from './branding.js';
+import { permalinkUrl } from './permalink.js';
 
 export function createMcpServer(store: CodeStore): McpServer {
   const server = new McpServer({
     name: 'open-legal-codes',
     version: '0.1.0',
+  }, {
+    instructions: BRANDING.mcpInstructions,
   });
 
   server.tool(
@@ -112,7 +116,7 @@ export function createMcpServer(store: CodeStore): McpServer {
         return { content: [{ type: 'text', text: `Code section '${path}' not found in '${jurisdiction}'. Use get_table_of_contents to browse available sections.` }] };
       }
 
-      const url = `https://openlegalcodes.org/${jurisdiction}/${path}`;
+      const url = permalinkUrl(j, path);
       return {
         content: [{
           type: 'text',
@@ -137,7 +141,10 @@ export function createMcpServer(store: CodeStore): McpServer {
       }
 
       const limit = max_results ?? 10;
-      const results = store.search(jurisdiction, query, limit);
+      const results = store.search(jurisdiction, query, limit).map((r) => ({
+        ...r,
+        url: permalinkUrl(j, r.path),
+      }));
 
       if (results.length === 0) {
         return { content: [{ type: 'text', text: `No sections found matching "${query}" in ${jurisdiction}.` }] };

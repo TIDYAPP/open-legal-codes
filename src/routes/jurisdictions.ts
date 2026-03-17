@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import type { JurisdictionType } from '../types.js';
 import { store } from '../store/index.js';
+import { BRANDING } from '../branding.js';
 
 export const jurisdictionsRoutes = new Hono();
 
@@ -17,7 +18,7 @@ jurisdictionsRoutes.get('/', (c) => {
   const data = store.listJurisdictions({ type, state, publisher });
   return c.json({
     data,
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });
 
@@ -38,6 +39,6 @@ jurisdictionsRoutes.get('/:id', (c) => {
 
   return c.json({
     data: jurisdiction,
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

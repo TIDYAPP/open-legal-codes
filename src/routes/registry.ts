@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { registryStore } from '../registry/store.js';
+import { BRANDING } from '../branding.js';
 
 export const registryRoutes = new Hono();
 
@@ -41,7 +42,7 @@ registryRoutes.get('/', (c) => {
 
   return c.json({
     data,
-    meta: { total: data.length, timestamp: new Date().toISOString() },
+    meta: { total: data.length, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });
 
@@ -56,7 +57,7 @@ registryRoutes.get('/geo', (c) => {
   const data = registryStore.getGeoEntries();
   return c.json({
     data,
-    meta: { total: data.length, timestamp: new Date().toISOString() },
+    meta: { total: data.length, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });
 
@@ -68,6 +69,6 @@ registryRoutes.get('/stats', (c) => {
   const data = registryStore.getStats();
   return c.json({
     data,
-    meta: { timestamp: new Date().toISOString() },
+    meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

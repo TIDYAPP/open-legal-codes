@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { CodeStore } from '../store/index.js';
 
 const CODES_DIR = join(process.cwd(), 'codes');
+const hasCachedData = existsSync(join(CODES_DIR, 'ca-mountain-view', '_toc.json'));
 
 describe('CodeStore', () => {
   const store = new CodeStore(CODES_DIR);
@@ -43,7 +45,7 @@ describe('CodeStore', () => {
     });
   });
 
-  describe('getToc', () => {
+  describe.skipIf(!hasCachedData)('getToc', () => {
     it('returns TOC tree for crawled jurisdiction', () => {
       const toc = store.getToc('ca-mountain-view');
       expect(toc).toBeDefined();
@@ -56,7 +58,7 @@ describe('CodeStore', () => {
     });
   });
 
-  describe('getCodeText', () => {
+  describe.skipIf(!hasCachedData)('getCodeText', () => {
     it('returns plain text for a section', () => {
       const text = store.getCodeText('ca-mountain-view', 'part-i/article-i/section-100');
       expect(text).toBeDefined();
@@ -72,7 +74,7 @@ describe('CodeStore', () => {
     });
   });
 
-  describe('getCodeXml', () => {
+  describe.skipIf(!hasCachedData)('getCodeXml', () => {
     it('returns XML content', () => {
       const xml = store.getCodeXml('ca-mountain-view', 'part-i/article-i/section-100');
       expect(xml).toBeDefined();
@@ -81,7 +83,7 @@ describe('CodeStore', () => {
     });
   });
 
-  describe('getCodeHtml', () => {
+  describe.skipIf(!hasCachedData)('getCodeHtml', () => {
     it('returns original HTML content', () => {
       const html = store.getCodeHtml('ca-mountain-view', 'part-i/article-i/section-100');
       expect(html).toBeDefined();

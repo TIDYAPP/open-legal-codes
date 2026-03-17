@@ -283,3 +283,7 @@ Submit a PR. If you have ideas for improvement, open an issue.
 The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes cannot be copyrighted. We're not replacing publishers — we're making it easy for everyone to know what the laws actually are.
 
 This project's source code is MIT licensed.
+
+## Sponsor
+
+Open Legal Codes is offered free of charge by [TIDY](https://tidy.com), an AI property management company.

@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { Hono } from 'hono';
 import { jurisdictionsRoutes } from '../routes/jurisdictions.js';
 import { tocRoutes } from '../routes/toc.js';
@@ -7,6 +9,8 @@ import { searchRoutes } from '../routes/search.js';
 import { lookupRoutes } from '../routes/lookup.js';
 import { store } from '../store/index.js';
 import { crawlTracker } from '../crawl-tracker.js';
+
+const hasCachedData = existsSync(join(process.cwd(), 'codes', 'ca-mountain-view', '_toc.json'));
 
 // Initialize store before tests
 beforeAll(() => {
@@ -59,7 +63,7 @@ describe('GET /api/v1/jurisdictions/:id', () => {
   });
 });
 
-describe('GET /api/v1/jurisdictions/:id/toc', () => {
+describe.skipIf(!hasCachedData)('GET /api/v1/jurisdictions/:id/toc', () => {
   it('returns full TOC', async () => {
     const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/toc');
     expect(res.status).toBe(200);
@@ -82,7 +86,7 @@ describe('GET /api/v1/jurisdictions/:id/toc', () => {
   });
 });
 
-describe('GET /api/v1/jurisdictions/:id/code/*', () => {
+describe.skipIf(!hasCachedData)('GET /api/v1/jurisdictions/:id/code/*', () => {
   const section = 'part-i/article-i/section-100';
 
   it('returns plain text by default', async () => {
@@ -120,7 +124,7 @@ describe('GET /api/v1/jurisdictions/:id/code/*', () => {
   });
 });
 
-describe('GET /api/v1/jurisdictions/:id/search', () => {
+describe.skipIf(!hasCachedData)('GET /api/v1/jurisdictions/:id/search', () => {
   it('returns results for a known term', async () => {
     const res = await fetch('/api/v1/jurisdictions/ca-mountain-view/search?q=Mountain+View');
     expect(res.status).toBe(200);
@@ -173,7 +177,7 @@ describe('GET /api/v1/lookup', () => {
   });
 });
 
-describe('202 CRAWL_IN_PROGRESS responses', () => {
+describe.skipIf(!hasCachedData)('202 CRAWL_IN_PROGRESS responses', () => {
   afterEach(() => {
     crawlTracker.finish('ca-mountain-view');
   });
