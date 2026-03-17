@@ -134638,5 +134638,37 @@
     "status": "available",
     "censusMatch": "5684925",
     "lastScanned": "2026-03-09T15:59:26.936Z"
+  },
+  {
+    "id": "il-statutes",
+    "name": "Illinois Compiled Statutes",
+    "type": "state",
+    "state": "IL",
+    "fips": "17",
+    "lat": 39.78,
+    "lng": -89.65,
+    "population": 0,
+    "publisher": "il-statutes",
+    "sourceId": "il-statutes",
+    "sourceUrl": "https://www.ilga.gov/Legislation/ILCS/Chapters",
+    "status": "available",
+    "censusMatch": null,
+    "lastScanned": "2026-03-17T00:00:00.000Z"
+  },
+  {
+    "id": "tn-statutes",
+    "name": "Tennessee Code",
+    "type": "state",
+    "state": "TN",
+    "fips": "47",
+    "lat": 35.75,
+    "lng": -86.25,
+    "population": 0,
+    "publisher": "tn-statutes",
+    "sourceId": "tn-statutes",
+    "sourceUrl": "https://www.lexisnexis.com/hottopics/tncode/",
+    "status": "available",
+    "censusMatch": null,
+    "lastScanned": "2026-03-17T00:00:00.000Z"
   }
 ]
