@@ -9,6 +9,16 @@ import { FloridaStatutesCrawler } from './fl-statutes.js';
 import { UscCrawler } from './usc.js';
 import { TexasStatutesCrawler } from './tx-statutes.js';
 import { ManualCrawler } from './manual.js';
+import { NcStatutesCrawler } from './nc-statutes.js';
+import { VaStatutesCrawler } from './va-statutes.js';
+import { WaStatutesCrawler } from './wa-statutes.js';
+import { OhStatutesCrawler } from './oh-statutes.js';
+import { MaStatutesCrawler } from './ma-statutes.js';
+import { IlStatutesCrawler } from './il-statutes.js';
+import { PaStatutesCrawler } from './pa-statutes.js';
+import { NjStatutesCrawler } from './nj-statutes.js';
+import { GaStatutesCrawler } from './ga-statutes.js';
+import { CoStatutesCrawler } from './co-statutes.js';
 import { createFallbackClient } from './browserbase-client.js';
 
 /**
@@ -38,12 +48,55 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
       return new UscCrawler();
     case 'manual':
       return new ManualCrawler();
+    case 'nc-statutes':
+      return new NcStatutesCrawler();
+    case 'va-statutes':
+      return new VaStatutesCrawler();
+    case 'wa-statutes':
+      return new WaStatutesCrawler();
+    case 'oh-statutes':
+      return new OhStatutesCrawler();
+    case 'ma-statutes':
+      return new MaStatutesCrawler();
+    case 'il-statutes':
+      return new IlStatutesCrawler();
+    case 'pa-statutes':
+      return new PaStatutesCrawler();
+    case 'nj-statutes':
+      return new NjStatutesCrawler();
+    case 'ga-statutes':
+      return new GaStatutesCrawler();
+    case 'co-statutes':
+      return new CoStatutesCrawler();
     default:
-      throw new Error(`Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual`);
+      throw new Error(
+        `Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual, nc-statutes, va-statutes, wa-statutes, oh-statutes, ma-statutes, il-statutes, pa-statutes, nj-statutes, ga-statutes, co-statutes`,
+      );
   }
 }
 
 /**
  * List all available publisher names.
  */
-export const PUBLISHERS = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc', 'tx-statutes', 'manual'] as const;
+export const PUBLISHERS = [
+  'municode',
+  'amlegal',
+  'ecode360',
+  'ecfr',
+  'ca-leginfo',
+  'ny-openleg',
+  'fl-statutes',
+  'usc',
+  'tx-statutes',
+  'manual',
+  'nc-statutes',
+  'va-statutes',
+  'wa-statutes',
+  'oh-statutes',
+  'ma-statutes',
+  'il-statutes',
+  'pa-statutes',
+  'nj-statutes',
+  'ga-statutes',
+  'co-statutes',
+] as const;
