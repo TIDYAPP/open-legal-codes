@@ -2,7 +2,8 @@ import type { CrawlerAdapter } from './crawlers/types.js';
 import type { CrawlOptions, CrawlProgress } from './crawlers/pipeline.js';
 import { runCrawl } from './crawlers/pipeline.js';
 
-const MAX_QUEUE_SIZE = 10;
+const MAX_QUEUE_SIZE = 10; // max waiting (not counting active slots)
+const MAX_CONCURRENT = 5;  // max simultaneous crawls
 
 type RunCrawlFn = (
   crawler: CrawlerAdapter,
@@ -18,12 +19,12 @@ interface QueueEntry {
 }
 
 /**
- * Global crawl queue. Ensures only 1 crawl runs at a time.
- * Rejects if more than 10 items are queued.
+ * Global crawl queue. Runs up to MAX_CONCURRENT crawls in parallel.
+ * Queues additional requests up to MAX_QUEUE_SIZE waiting; rejects beyond that.
  */
 export class CrawlQueue {
   private queue: QueueEntry[] = [];
-  private running = false;
+  private activeCount = 0;
   private runFn: RunCrawlFn;
 
   constructor(runFn: RunCrawlFn = runCrawl) {
@@ -35,7 +36,7 @@ export class CrawlQueue {
   }
 
   get isRunning(): boolean {
-    return this.running;
+    return this.activeCount > 0;
   }
 
   enqueue(
@@ -62,20 +63,16 @@ export class CrawlQueue {
     });
   }
 
-  private async drain(): Promise<void> {
-    if (this.running) return;
-    const entry = this.queue.shift();
-    if (!entry) return;
+  private drain(): void {
+    while (this.activeCount < MAX_CONCURRENT) {
+      const entry = this.queue.shift();
+      if (!entry) return;
 
-    this.running = true;
-    try {
-      const result = await entry.run();
-      entry.resolve(result);
-    } catch (err) {
-      entry.reject(err instanceof Error ? err : new Error(String(err)));
-    } finally {
-      this.running = false;
-      this.drain();
+      this.activeCount++;
+      entry.run().then(
+        (result) => { this.activeCount--; entry.resolve(result); this.drain(); },
+        (err) => { this.activeCount--; entry.reject(err instanceof Error ? err : new Error(String(err))); this.drain(); },
+      );
     }
   }
 }

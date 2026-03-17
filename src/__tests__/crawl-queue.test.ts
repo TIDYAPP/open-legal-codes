@@ -38,27 +38,39 @@ describe('CrawlQueue', () => {
     expect(runFn).toHaveBeenCalledTimes(1);
   });
 
-  it('serializes concurrent crawls (1 at a time)', async () => {
+  it('runs up to 5 crawls concurrently, queues the rest', async () => {
     const order: string[] = [];
+    let unblock!: () => void;
+    const blocker = new Promise<void>((r) => { unblock = r; });
+
     const runFn = vi.fn().mockImplementation(async (_crawler, options) => {
       const id = options.jurisdiction.id;
       order.push(`start-${id}`);
-      await new Promise((r) => setTimeout(r, 10));
+      await blocker;
       order.push(`end-${id}`);
       return doneProgress;
     });
     const queue = new CrawlQueue(runFn);
 
-    const p1 = queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('a') });
-    const p2 = queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('b') });
+    // Enqueue 6 crawls — first 5 should start immediately, 6th should wait
+    const promises = Array.from({ length: 6 }, (_, i) =>
+      queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction(`j-${i}`) }),
+    );
 
-    await Promise.all([p1, p2]);
+    await new Promise((r) => setTimeout(r, 0));
 
-    // b should not start until a ends
-    expect(order).toEqual(['start-a', 'end-a', 'start-b', 'end-b']);
+    // First 5 should have started, 6th should be queued
+    expect(order.filter(e => e.startsWith('start'))).toHaveLength(5);
+    expect(queue.queueLength).toBe(1);
+
+    unblock();
+    await Promise.all(promises);
+
+    // All 6 ran
+    expect(runFn).toHaveBeenCalledTimes(6);
   });
 
-  it('rejects when queue is full (>10 pending)', async () => {
+  it('rejects when queue is full (>10 waiting)', async () => {
     let unblock!: () => void;
     const blocker = new Promise<void>((r) => { unblock = r; });
     const runFn = vi.fn().mockImplementation(async () => {
@@ -67,15 +79,15 @@ describe('CrawlQueue', () => {
     });
     const queue = new CrawlQueue(runFn);
 
-    // 1 running + 10 queued = 11 total
+    // 5 running + 10 waiting = 15 total
     const promises: Promise<CrawlProgress>[] = [];
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 15; i++) {
       promises.push(
         queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction(`j-${i}`) }),
       );
     }
 
-    // 12th should be rejected
+    // 16th should be rejected (queue waiting slots are full)
     await expect(
       queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('overflow') }),
     ).rejects.toThrow(/queue is full/i);
@@ -116,7 +128,7 @@ describe('CrawlQueue', () => {
     );
   });
 
-  it('reports queue length correctly', async () => {
+  it('reports queue length and isRunning correctly', async () => {
     let unblock!: () => void;
     const blocker = new Promise<void>((r) => { unblock = r; });
     const runFn = vi.fn().mockImplementation(async () => {
@@ -128,15 +140,19 @@ describe('CrawlQueue', () => {
     expect(queue.queueLength).toBe(0);
     expect(queue.isRunning).toBe(false);
 
-    const p1 = queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('a') });
+    // Fill all 5 concurrent slots
+    const running = Array.from({ length: 5 }, (_, i) =>
+      queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction(`r-${i}`) }),
+    );
     await new Promise((r) => setTimeout(r, 0));
     expect(queue.isRunning).toBe(true);
 
-    const p2 = queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('b') });
+    // One more goes to the waiting queue
+    const p6 = queue.enqueue(fakeCrawler, { jurisdiction: fakeJurisdiction('queued') });
     expect(queue.queueLength).toBe(1);
 
     unblock();
-    await Promise.all([p1, p2]);
+    await Promise.all([...running, p6]);
     expect(queue.queueLength).toBe(0);
     expect(queue.isRunning).toBe(false);
   });
