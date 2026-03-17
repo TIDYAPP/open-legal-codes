@@ -9,6 +9,7 @@ import { FloridaStatutesCrawler } from './fl-statutes.js';
 import { UscCrawler } from './usc.js';
 import { TexasStatutesCrawler } from './tx-statutes.js';
 import { ManualCrawler } from './manual.js';
+import { CodePublishingCrawler } from './codepublishing.js';
 import { createFallbackClient } from './browserbase-client.js';
 
 /**
@@ -36,14 +37,16 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
       return new TexasStatutesCrawler();
     case 'usc':
       return new UscCrawler();
+    case 'codepublishing':
+      return new CodePublishingCrawler();
     case 'manual':
       return new ManualCrawler();
     default:
-      throw new Error(`Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual`);
+      throw new Error(`Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, codepublishing, manual`);
   }
 }
 
 /**
  * List all available publisher names.
  */
-export const PUBLISHERS = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc', 'tx-statutes', 'manual'] as const;
+export const PUBLISHERS = ['municode', 'amlegal', 'ecode360', 'ecfr', 'ca-leginfo', 'ny-openleg', 'fl-statutes', 'usc', 'tx-statutes', 'codepublishing', 'manual'] as const;
