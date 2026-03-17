@@ -85,10 +85,12 @@ export class ApiClient {
     return json.data;
   }
 
-  async listJurisdictions(opts?: { state?: string; type?: string }): Promise<ApiResult<Jurisdiction[]>> {
+  async listJurisdictions(opts?: { state?: string; type?: string; q?: string; limit?: number }): Promise<ApiResult<Jurisdiction[]>> {
     return this.request<Jurisdiction[]>('jurisdictions', {
       state: opts?.state,
       type: opts?.type,
+      q: opts?.q,
+      limit: (opts?.limit ?? 100).toString(),
     });
   }
 

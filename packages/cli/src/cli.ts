@@ -34,7 +34,7 @@ function parseArgs(argv: string[]): { command: string; flags: Record<string, str
     if (arg.startsWith('--')) {
       const key = arg.slice(2);
       const value = args[i + 1];
-      if (value && !value.startsWith('--')) {
+      if (value !== undefined && !value.startsWith('--')) {
         flags[key] = value;
         i++;
       } else {

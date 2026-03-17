@@ -45,22 +45,26 @@ server.tool(
       return { content: [{ type: 'text' as const, text: 'Provide at least a query, state, or type.' }] };
     }
 
-    const result = await client.listJurisdictions({ state: state || undefined, type: type || undefined });
+    const result = await client.listJurisdictions({
+      state: state || undefined,
+      type: type || undefined,
+      q: query || undefined,
+      limit: 50,
+    });
     if (isCrawling(result)) {
       return { content: [{ type: 'text' as const, text: 'Data is being loaded. Try again in ~30 seconds.' }] };
     }
 
-    let results = result;
-    if (query) {
-      const queryLower = query.toLowerCase();
-      results = results.filter((j) => j.name.toLowerCase().includes(queryLower) || j.id.includes(queryLower));
-    }
+    const results = result;
 
     if (results.length === 0) {
       return { content: [{ type: 'text' as const, text: `No jurisdictions found matching query=${query || ''} state=${state || ''} type=${type || ''}` }] };
     }
 
-    const lines = results.map((j) => `${j.id} — ${j.name} (${j.publisher.name})`);
+    const lines = results.map((j) => {
+      const pub = typeof j.publisher === 'string' ? j.publisher : j.publisher?.name || '';
+      return `${j.id} — ${j.name}${pub ? ` (${pub})` : ''}`;
+    });
     return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
   }
 );
