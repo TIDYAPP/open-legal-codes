@@ -1,7 +1,7 @@
 [
   {
     "id": "us-cfr-title-1",
-    "name": "CFR Title 1 — General Provisions",
+    "name": "CFR Title 1 \u2014 General Provisions",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -17,7 +17,7 @@
   },
   {
     "id": "us-cfr-title-10",
-    "name": "CFR Title 10 — Energy",
+    "name": "CFR Title 10 \u2014 Energy",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -33,7 +33,7 @@
   },
   {
     "id": "us-cfr-title-11",
-    "name": "CFR Title 11 — Federal Elections",
+    "name": "CFR Title 11 \u2014 Federal Elections",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -49,7 +49,7 @@
   },
   {
     "id": "us-cfr-title-12",
-    "name": "CFR Title 12 — Banks and Banking",
+    "name": "CFR Title 12 \u2014 Banks and Banking",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -65,7 +65,7 @@
   },
   {
     "id": "us-cfr-title-13",
-    "name": "CFR Title 13 — Business Credit and Assistance",
+    "name": "CFR Title 13 \u2014 Business Credit and Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -81,7 +81,7 @@
   },
   {
     "id": "us-cfr-title-14",
-    "name": "CFR Title 14 — Aeronautics and Space",
+    "name": "CFR Title 14 \u2014 Aeronautics and Space",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -97,7 +97,7 @@
   },
   {
     "id": "us-cfr-title-15",
-    "name": "CFR Title 15 — Commerce and Foreign Trade",
+    "name": "CFR Title 15 \u2014 Commerce and Foreign Trade",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -113,7 +113,7 @@
   },
   {
     "id": "us-cfr-title-16",
-    "name": "CFR Title 16 — Commercial Practices",
+    "name": "CFR Title 16 \u2014 Commercial Practices",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -129,7 +129,7 @@
   },
   {
     "id": "us-cfr-title-17",
-    "name": "CFR Title 17 — Commodity and Securities Exchanges",
+    "name": "CFR Title 17 \u2014 Commodity and Securities Exchanges",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -145,7 +145,7 @@
   },
   {
     "id": "us-cfr-title-18",
-    "name": "CFR Title 18 — Conservation of Power and Water Resources",
+    "name": "CFR Title 18 \u2014 Conservation of Power and Water Resources",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -161,7 +161,7 @@
   },
   {
     "id": "us-cfr-title-19",
-    "name": "CFR Title 19 — Customs Duties",
+    "name": "CFR Title 19 \u2014 Customs Duties",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -177,7 +177,7 @@
   },
   {
     "id": "us-cfr-title-2",
-    "name": "CFR Title 2 — Federal Financial Assistance",
+    "name": "CFR Title 2 \u2014 Federal Financial Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -193,7 +193,7 @@
   },
   {
     "id": "us-cfr-title-20",
-    "name": "CFR Title 20 — Employees' Benefits",
+    "name": "CFR Title 20 \u2014 Employees' Benefits",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -209,7 +209,7 @@
   },
   {
     "id": "us-cfr-title-21",
-    "name": "CFR Title 21 — Food and Drugs",
+    "name": "CFR Title 21 \u2014 Food and Drugs",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -225,7 +225,7 @@
   },
   {
     "id": "us-cfr-title-22",
-    "name": "CFR Title 22 — Foreign Relations",
+    "name": "CFR Title 22 \u2014 Foreign Relations",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -241,7 +241,7 @@
   },
   {
     "id": "us-cfr-title-23",
-    "name": "CFR Title 23 — Highways",
+    "name": "CFR Title 23 \u2014 Highways",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -257,7 +257,7 @@
   },
   {
     "id": "us-cfr-title-24",
-    "name": "CFR Title 24 — Housing and Urban Development",
+    "name": "CFR Title 24 \u2014 Housing and Urban Development",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -273,7 +273,7 @@
   },
   {
     "id": "us-cfr-title-25",
-    "name": "CFR Title 25 — Indians",
+    "name": "CFR Title 25 \u2014 Indians",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -289,7 +289,7 @@
   },
   {
     "id": "us-cfr-title-26",
-    "name": "CFR Title 26 — Internal Revenue",
+    "name": "CFR Title 26 \u2014 Internal Revenue",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -305,7 +305,7 @@
   },
   {
     "id": "us-cfr-title-27",
-    "name": "CFR Title 27 — Alcohol, Tobacco Products and Firearms",
+    "name": "CFR Title 27 \u2014 Alcohol, Tobacco Products and Firearms",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -321,7 +321,7 @@
   },
   {
     "id": "us-cfr-title-28",
-    "name": "CFR Title 28 — Judicial Administration",
+    "name": "CFR Title 28 \u2014 Judicial Administration",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -337,7 +337,7 @@
   },
   {
     "id": "us-cfr-title-29",
-    "name": "CFR Title 29 — Labor",
+    "name": "CFR Title 29 \u2014 Labor",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -353,7 +353,7 @@
   },
   {
     "id": "us-cfr-title-3",
-    "name": "CFR Title 3 — The President",
+    "name": "CFR Title 3 \u2014 The President",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -369,7 +369,7 @@
   },
   {
     "id": "us-cfr-title-30",
-    "name": "CFR Title 30 — Mineral Resources",
+    "name": "CFR Title 30 \u2014 Mineral Resources",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -385,7 +385,7 @@
   },
   {
     "id": "us-cfr-title-31",
-    "name": "CFR Title 31 — Money and Finance: Treasury",
+    "name": "CFR Title 31 \u2014 Money and Finance: Treasury",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -401,7 +401,7 @@
   },
   {
     "id": "us-cfr-title-32",
-    "name": "CFR Title 32 — National Defense",
+    "name": "CFR Title 32 \u2014 National Defense",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -417,7 +417,7 @@
   },
   {
     "id": "us-cfr-title-33",
-    "name": "CFR Title 33 — Navigation and Navigable Waters",
+    "name": "CFR Title 33 \u2014 Navigation and Navigable Waters",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -433,7 +433,7 @@
   },
   {
     "id": "us-cfr-title-34",
-    "name": "CFR Title 34 — Education",
+    "name": "CFR Title 34 \u2014 Education",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -449,7 +449,7 @@
   },
   {
     "id": "us-cfr-title-36",
-    "name": "CFR Title 36 — Parks, Forests, and Public Property",
+    "name": "CFR Title 36 \u2014 Parks, Forests, and Public Property",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -465,7 +465,7 @@
   },
   {
     "id": "us-cfr-title-37",
-    "name": "CFR Title 37 — Patents, Trademarks, and Copyrights",
+    "name": "CFR Title 37 \u2014 Patents, Trademarks, and Copyrights",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -481,7 +481,7 @@
   },
   {
     "id": "us-cfr-title-38",
-    "name": "CFR Title 38 — Pensions, Bonuses, and Veterans' Relief",
+    "name": "CFR Title 38 \u2014 Pensions, Bonuses, and Veterans' Relief",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -497,7 +497,7 @@
   },
   {
     "id": "us-cfr-title-39",
-    "name": "CFR Title 39 — Postal Service",
+    "name": "CFR Title 39 \u2014 Postal Service",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -513,7 +513,7 @@
   },
   {
     "id": "us-cfr-title-4",
-    "name": "CFR Title 4 — Accounts",
+    "name": "CFR Title 4 \u2014 Accounts",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -529,7 +529,7 @@
   },
   {
     "id": "us-cfr-title-40",
-    "name": "CFR Title 40 — Protection of Environment",
+    "name": "CFR Title 40 \u2014 Protection of Environment",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -545,7 +545,7 @@
   },
   {
     "id": "us-cfr-title-41",
-    "name": "CFR Title 41 — Public Contracts and Property Management",
+    "name": "CFR Title 41 \u2014 Public Contracts and Property Management",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -561,7 +561,7 @@
   },
   {
     "id": "us-cfr-title-42",
-    "name": "CFR Title 42 — Public Health",
+    "name": "CFR Title 42 \u2014 Public Health",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -577,7 +577,7 @@
   },
   {
     "id": "us-cfr-title-43",
-    "name": "CFR Title 43 — Public Lands: Interior",
+    "name": "CFR Title 43 \u2014 Public Lands: Interior",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -593,7 +593,7 @@
   },
   {
     "id": "us-cfr-title-44",
-    "name": "CFR Title 44 — Emergency Management and Assistance",
+    "name": "CFR Title 44 \u2014 Emergency Management and Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -609,7 +609,7 @@
   },
   {
     "id": "us-cfr-title-45",
-    "name": "CFR Title 45 — Public Welfare",
+    "name": "CFR Title 45 \u2014 Public Welfare",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -625,7 +625,7 @@
   },
   {
     "id": "us-cfr-title-46",
-    "name": "CFR Title 46 — Shipping",
+    "name": "CFR Title 46 \u2014 Shipping",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -641,7 +641,7 @@
   },
   {
     "id": "us-cfr-title-47",
-    "name": "CFR Title 47 — Telecommunication",
+    "name": "CFR Title 47 \u2014 Telecommunication",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -657,7 +657,7 @@
   },
   {
     "id": "us-cfr-title-48",
-    "name": "CFR Title 48 — Federal Acquisition Regulations System",
+    "name": "CFR Title 48 \u2014 Federal Acquisition Regulations System",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -673,7 +673,7 @@
   },
   {
     "id": "us-cfr-title-49",
-    "name": "CFR Title 49 — Transportation",
+    "name": "CFR Title 49 \u2014 Transportation",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -689,7 +689,7 @@
   },
   {
     "id": "us-cfr-title-5",
-    "name": "CFR Title 5 — Administrative Personnel",
+    "name": "CFR Title 5 \u2014 Administrative Personnel",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -705,7 +705,7 @@
   },
   {
     "id": "us-cfr-title-50",
-    "name": "CFR Title 50 — Wildlife and Fisheries",
+    "name": "CFR Title 50 \u2014 Wildlife and Fisheries",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -721,7 +721,7 @@
   },
   {
     "id": "us-cfr-title-6",
-    "name": "CFR Title 6 — Domestic Security",
+    "name": "CFR Title 6 \u2014 Domestic Security",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -737,7 +737,7 @@
   },
   {
     "id": "us-cfr-title-7",
-    "name": "CFR Title 7 — Agriculture",
+    "name": "CFR Title 7 \u2014 Agriculture",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -753,7 +753,7 @@
   },
   {
     "id": "us-cfr-title-8",
-    "name": "CFR Title 8 — Aliens and Nationality",
+    "name": "CFR Title 8 \u2014 Aliens and Nationality",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -769,7 +769,7 @@
   },
   {
     "id": "us-cfr-title-9",
-    "name": "CFR Title 9 — Animals and Animal Products",
+    "name": "CFR Title 9 \u2014 Animals and Animal Products",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -2978,7 +2978,7 @@
   {
     "id": "ar-baxter-county",
     "name": "Baxter County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05005",
     "lat": 36.280268,
@@ -3010,7 +3010,7 @@
   {
     "id": "ar-benton-county",
     "name": "Benton County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05007",
     "lat": 36.337819,
@@ -3266,7 +3266,7 @@
   {
     "id": "ar-garland-county",
     "name": "Garland County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05051",
     "lat": 34.578852,
@@ -3314,7 +3314,7 @@
   {
     "id": "ar-greene-county",
     "name": "Greene County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05055",
     "lat": 36.120607,
@@ -3394,7 +3394,7 @@
   {
     "id": "ar-howard-county",
     "name": "Howard County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05061",
     "lat": 34.083064,
@@ -3474,7 +3474,7 @@
   {
     "id": "ar-lonoke-county",
     "name": "Lonoke County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05085",
     "lat": 34.755114,
@@ -3586,7 +3586,7 @@
   {
     "id": "ar-perry-county",
     "name": "Perry County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05105",
     "lat": 34.946363,
@@ -3634,7 +3634,7 @@
   {
     "id": "ar-pulaski-county",
     "name": "Pulaski County, AR",
-    "type": "city",
+    "type": "county",
     "state": "AR",
     "fips": "05119",
     "lat": 34.770311,
@@ -3906,7 +3906,7 @@
   {
     "id": "az-cochise-county",
     "name": "Cochise County, AZ",
-    "type": "city",
+    "type": "county",
     "state": "AZ",
     "fips": "04003",
     "lat": 31.840129,
@@ -4018,7 +4018,7 @@
   {
     "id": "az-graham-county",
     "name": "Graham County, AZ",
-    "type": "city",
+    "type": "county",
     "state": "AZ",
     "fips": "04009",
     "lat": 32.931828,
@@ -4130,7 +4130,7 @@
   {
     "id": "az-pinal-county",
     "name": "Pinal County, AZ",
-    "type": "city",
+    "type": "county",
     "state": "AZ",
     "fips": "04021",
     "lat": 32.918521,
@@ -4338,7 +4338,7 @@
   {
     "id": "ca-alameda-county",
     "name": "Alameda County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06001",
     "lat": 37.647139,
@@ -4514,7 +4514,7 @@
   {
     "id": "ca-ecode360-ma4742",
     "name": "Authority of Malaga County Water District",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": null,
     "lat": null,
@@ -4706,7 +4706,7 @@
   {
     "id": "ca-butte-county",
     "name": "Butte County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06007",
     "lat": 39.665336,
@@ -4722,7 +4722,7 @@
   {
     "id": "ca-calaveras-county",
     "name": "Calaveras County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06009",
     "lat": 38.191068,
@@ -8114,7 +8114,7 @@
   {
     "id": "ca-contra-costa-county",
     "name": "Contra Costa County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06013",
     "lat": 37.919479,
@@ -8162,7 +8162,7 @@
   {
     "id": "ca-ecode360-am4323",
     "name": "County of Amador",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": null,
     "lat": null,
@@ -8242,7 +8242,7 @@
   {
     "id": "ca-del-norte-county",
     "name": "Del Norte County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06015",
     "lat": 41.749903,
@@ -8418,7 +8418,7 @@
   {
     "id": "ca-el-dorado-county",
     "name": "El Dorado County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06017",
     "lat": 38.785612,
@@ -8562,7 +8562,7 @@
   {
     "id": "ca-fresno-county",
     "name": "Fresno County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06019",
     "lat": 36.761006,
@@ -8786,7 +8786,7 @@
   {
     "id": "ca-imperial-county",
     "name": "Imperial County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06025",
     "lat": 33.040814,
@@ -8802,7 +8802,7 @@
   {
     "id": "ca-ecode360-in4943",
     "name": "Inyo County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06027",
     "lat": 36.56216,
@@ -8898,7 +8898,7 @@
   {
     "id": "ca-kern-county",
     "name": "Kern County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06029",
     "lat": 35.346629,
@@ -8914,7 +8914,7 @@
   {
     "id": "ca-kings-county",
     "name": "Kings County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06031",
     "lat": 36.072478,
@@ -8946,7 +8946,7 @@
   {
     "id": "ca-la-county-bos",
     "name": "LA County - BOS, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": null,
     "lat": null,
@@ -9058,7 +9058,7 @@
   {
     "id": "ca-lake-county",
     "name": "Lake County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06033",
     "lat": 39.108009,
@@ -9106,7 +9106,7 @@
   {
     "id": "ca-ecode360-la4955",
     "name": "Lassen County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06035",
     "lat": 40.715287,
@@ -9218,7 +9218,7 @@
   {
     "id": "ca-los-angeles-county",
     "name": "Los Angeles County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06037",
     "lat": 34.196398,
@@ -9250,7 +9250,7 @@
   {
     "id": "ca-madera-county",
     "name": "Madera County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06039",
     "lat": 37.209821,
@@ -9298,7 +9298,7 @@
   {
     "id": "ca-marin-county",
     "name": "Marin County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06041",
     "lat": 38.051367,
@@ -9346,7 +9346,7 @@
   {
     "id": "ca-mariposa-county",
     "name": "Mariposa County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06043",
     "lat": 37.574343,
@@ -9394,7 +9394,7 @@
   {
     "id": "ca-mendocino-county",
     "name": "Mendocino County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06045",
     "lat": 39.432388,
@@ -9426,7 +9426,7 @@
   {
     "id": "ca-ecode360-me4967",
     "name": "Merced County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06047",
     "lat": 37.194806,
@@ -9506,7 +9506,7 @@
   {
     "id": "ca-modoc-county",
     "name": "Modoc County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06049",
     "lat": 41.592918,
@@ -9522,7 +9522,7 @@
   {
     "id": "ca-mono-county",
     "name": "Mono County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06051",
     "lat": 37.915836,
@@ -9586,7 +9586,7 @@
   {
     "id": "ca-monterey-county",
     "name": "Monterey County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06053",
     "lat": 36.240104,
@@ -9666,7 +9666,7 @@
   {
     "id": "ca-napa-county",
     "name": "Napa County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06055",
     "lat": 38.5071,
@@ -9714,7 +9714,7 @@
   {
     "id": "ca-nevada-county",
     "name": "Nevada County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06057",
     "lat": 39.297508,
@@ -9826,7 +9826,7 @@
   {
     "id": "ca-orange-county",
     "name": "Orange County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06059",
     "lat": 33.675687,
@@ -9970,7 +9970,7 @@
   {
     "id": "ca-ecode360-pl4987",
     "name": "Placer County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06061",
     "lat": 39.062032,
@@ -10002,7 +10002,7 @@
   {
     "id": "ca-plumas-county",
     "name": "Plumas County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06063",
     "lat": 39.992295,
@@ -10210,7 +10210,7 @@
   {
     "id": "ca-riverside-county",
     "name": "Riverside County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06065",
     "lat": 33.729828,
@@ -10322,7 +10322,7 @@
   {
     "id": "ca-ecode360-sa4999",
     "name": "Sacramento County Water Agency",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": null,
     "lat": null,
@@ -10370,7 +10370,7 @@
   {
     "id": "ca-san-benito-county-water-district",
     "name": "San Benito County Water District, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": null,
     "lat": null,
@@ -10434,7 +10434,7 @@
   {
     "id": "ca-san-joaquin-county",
     "name": "San Joaquin County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06077",
     "lat": 37.934982,
@@ -10466,7 +10466,7 @@
   {
     "id": "ca-san-luis-obispo-county",
     "name": "San Luis Obispo County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06079",
     "lat": 35.388189,
@@ -10498,7 +10498,7 @@
   {
     "id": "ca-san-mateo-county",
     "name": "San Mateo County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06081",
     "lat": 37.414672,
@@ -10562,7 +10562,7 @@
   {
     "id": "ca-santa-barbara-county",
     "name": "Santa Barbara County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06083",
     "lat": 34.536677,
@@ -10578,7 +10578,7 @@
   {
     "id": "ca-santa-clara-county",
     "name": "Santa Clara County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06085",
     "lat": 37.221614,
@@ -10594,7 +10594,7 @@
   {
     "id": "ca-ecode360-sa4770",
     "name": "Santa Cruz County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06087",
     "lat": 37.012347,
@@ -10674,7 +10674,7 @@
   {
     "id": "ca-shasta-county",
     "name": "Shasta County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06089",
     "lat": 40.760514,
@@ -10738,7 +10738,7 @@
   {
     "id": "ca-siskiyou-county",
     "name": "Siskiyou County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06093",
     "lat": 41.587986,
@@ -10770,7 +10770,7 @@
   {
     "id": "ca-sonoma-county",
     "name": "Sonoma County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06097",
     "lat": 38.525182,
@@ -10802,7 +10802,7 @@
   {
     "id": "ca-ecode360-st5017",
     "name": "Stanislaus County",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06099",
     "lat": 37.562316,
@@ -10834,7 +10834,7 @@
   {
     "id": "ca-sutter-county",
     "name": "Sutter County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06101",
     "lat": 39.03619,
@@ -10882,7 +10882,7 @@
   {
     "id": "ca-tehama-county",
     "name": "Tehama County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06103",
     "lat": 40.126157,
@@ -10994,7 +10994,7 @@
   {
     "id": "ca-trinity-county",
     "name": "Trinity County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06105",
     "lat": 40.647858,
@@ -11106,7 +11106,7 @@
   {
     "id": "ca-ventura-county",
     "name": "Ventura County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06111",
     "lat": 34.358748,
@@ -11330,7 +11330,7 @@
   {
     "id": "ca-yuba-county",
     "name": "Yuba County, CA",
-    "type": "city",
+    "type": "county",
     "state": "CA",
     "fips": "06115",
     "lat": 39.27013,
@@ -11346,7 +11346,7 @@
   {
     "id": "co-adams-county",
     "name": "Adams County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08001",
     "lat": 39.874325,
@@ -11826,7 +11826,7 @@
   {
     "id": "co-coal-creek-fremont-county",
     "name": "Coal Creek, Fremont County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": null,
     "lat": null,
@@ -12146,7 +12146,7 @@
   {
     "id": "co-el-paso-county",
     "name": "El Paso County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08041",
     "lat": 38.827383,
@@ -12674,7 +12674,7 @@
   {
     "id": "co-huerfano-county",
     "name": "Huerfano County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08055",
     "lat": 37.687815,
@@ -13314,7 +13314,7 @@
   {
     "id": "co-otero-county",
     "name": "Otero County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08089",
     "lat": 37.88417,
@@ -13586,7 +13586,7 @@
   {
     "id": "co-san-miguel-county",
     "name": "San Miguel County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08113",
     "lat": 38.009319,
@@ -13810,7 +13810,7 @@
   {
     "id": "co-summit-county",
     "name": "Summit County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08117",
     "lat": 39.621023,
@@ -13954,7 +13954,7 @@
   {
     "id": "co-weld-county",
     "name": "Weld County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08123",
     "lat": 40.555961,
@@ -14098,7 +14098,7 @@
   {
     "id": "co-yuma-county",
     "name": "Yuma County, CO",
-    "type": "city",
+    "type": "county",
     "state": "CO",
     "fips": "08125",
     "lat": 40.00077,
@@ -16178,7 +16178,7 @@
   {
     "id": "de-ecode360-ke1751",
     "name": "County of Kent",
-    "type": "city",
+    "type": "county",
     "state": "DE",
     "fips": null,
     "lat": null,
@@ -16242,7 +16242,7 @@
   {
     "id": "de-new-castle-county",
     "name": "New Castle County, DE",
-    "type": "city",
+    "type": "county",
     "state": "DE",
     "fips": "10003",
     "lat": 39.575915,
@@ -16290,7 +16290,7 @@
   {
     "id": "de-ecode360-su1223",
     "name": "Sussex County",
-    "type": "city",
+    "type": "county",
     "state": "DE",
     "fips": "10005",
     "lat": 38.673227,
@@ -16594,7 +16594,7 @@
   {
     "id": "fl-alachua-county",
     "name": "Alachua County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12001",
     "lat": 29.67574,
@@ -16818,7 +16818,7 @@
   {
     "id": "fl-baker-county",
     "name": "Baker County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12003",
     "lat": 30.324442,
@@ -16882,7 +16882,7 @@
   {
     "id": "fl-bay-county",
     "name": "Bay County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12005",
     "lat": 30.15914,
@@ -17170,7 +17170,7 @@
   {
     "id": "fl-bradford-county",
     "name": "Bradford County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12007",
     "lat": 29.952386,
@@ -17202,7 +17202,7 @@
   {
     "id": "fl-brevard-county",
     "name": "Brevard County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12009",
     "lat": 28.298311,
@@ -17250,7 +17250,7 @@
   {
     "id": "fl-broward-county-board-of-rules-and-appeals",
     "name": "Broward County Board of Rules and Appeals, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": null,
     "lat": null,
@@ -17266,7 +17266,7 @@
   {
     "id": "fl-broward-county",
     "name": "Broward County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12011",
     "lat": 26.193535,
@@ -17442,7 +17442,7 @@
   {
     "id": "fl-charlotte-county",
     "name": "Charlotte County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12015",
     "lat": 26.906396,
@@ -17490,7 +17490,7 @@
   {
     "id": "fl-children-s-trust-of-alachua-county",
     "name": "Children's Trust of Alachua County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": null,
     "lat": null,
@@ -17538,7 +17538,7 @@
   {
     "id": "fl-citrus-county",
     "name": "Citrus County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12017",
     "lat": 28.850292,
@@ -17570,7 +17570,7 @@
   {
     "id": "fl-clay-county",
     "name": "Clay County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12019",
     "lat": 29.986584,
@@ -17714,7 +17714,7 @@
   {
     "id": "fl-collier-county",
     "name": "Collier County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12021",
     "lat": 26.118786,
@@ -17730,7 +17730,7 @@
   {
     "id": "fl-columbia-county",
     "name": "Columbia County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12023",
     "lat": 30.221651,
@@ -18066,7 +18066,7 @@
   {
     "id": "fl-desoto-county",
     "name": "DeSoto County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12027",
     "lat": 27.190581,
@@ -18098,7 +18098,7 @@
   {
     "id": "fl-dixie-county",
     "name": "Dixie County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12029",
     "lat": 29.552675,
@@ -18258,7 +18258,7 @@
   {
     "id": "fl-escambia-county",
     "name": "Escambia County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12033",
     "lat": 30.529998,
@@ -18370,7 +18370,7 @@
   {
     "id": "fl-flagler-county",
     "name": "Flagler County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12035",
     "lat": 29.474891,
@@ -18530,7 +18530,7 @@
   {
     "id": "fl-franklin-county",
     "name": "Franklin County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12037",
     "lat": 29.677794,
@@ -18594,7 +18594,7 @@
   {
     "id": "fl-gadsden-county",
     "name": "Gadsden County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12039",
     "lat": 30.578687,
@@ -18642,7 +18642,7 @@
   {
     "id": "fl-gilchrist-county",
     "name": "Gilchrist County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12041",
     "lat": 29.723456,
@@ -18658,7 +18658,7 @@
   {
     "id": "fl-glades-county-florida-clerk-of-court",
     "name": "Glades County Florida Clerk of Court, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": null,
     "lat": null,
@@ -18674,7 +18674,7 @@
   {
     "id": "fl-glades-county",
     "name": "Glades County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12043",
     "lat": 26.95481,
@@ -18834,7 +18834,7 @@
   {
     "id": "fl-gulf-county",
     "name": "Gulf County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12045",
     "lat": 29.859238,
@@ -18914,7 +18914,7 @@
   {
     "id": "fl-hamilton-county",
     "name": "Hamilton County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12047",
     "lat": 30.498438,
@@ -18946,7 +18946,7 @@
   {
     "id": "fl-hardee-county",
     "name": "Hardee County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12049",
     "lat": 27.492846,
@@ -19010,7 +19010,7 @@
   {
     "id": "fl-hendry-county",
     "name": "Hendry County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12051",
     "lat": 26.539967,
@@ -19026,7 +19026,7 @@
   {
     "id": "fl-hernando-county",
     "name": "Hernando County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12053",
     "lat": 28.555995,
@@ -19106,7 +19106,7 @@
   {
     "id": "fl-highlands-county",
     "name": "Highlands County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12055",
     "lat": 27.34108,
@@ -19154,7 +19154,7 @@
   {
     "id": "fl-hillsborough-county",
     "name": "Hillsborough County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12057",
     "lat": 27.893154,
@@ -19314,7 +19314,7 @@
   {
     "id": "fl-indian-river-county",
     "name": "Indian River County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12061",
     "lat": 27.700528,
@@ -19442,7 +19442,7 @@
   {
     "id": "fl-jackson-county",
     "name": "Jackson County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12063",
     "lat": 30.789249,
@@ -19506,7 +19506,7 @@
   {
     "id": "fl-jefferson-county",
     "name": "Jefferson County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12065",
     "lat": 30.396898,
@@ -19714,7 +19714,7 @@
   {
     "id": "fl-lafayette-county",
     "name": "Lafayette County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12067",
     "lat": 29.990066,
@@ -19794,7 +19794,7 @@
   {
     "id": "fl-lake-county",
     "name": "Lake County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12069",
     "lat": 28.764113,
@@ -20018,7 +20018,7 @@
   {
     "id": "fl-lee-county",
     "name": "Lee County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12071",
     "lat": 26.563273,
@@ -20050,7 +20050,7 @@
   {
     "id": "fl-leon-county",
     "name": "Leon County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12073",
     "lat": 30.45931,
@@ -20066,7 +20066,7 @@
   {
     "id": "fl-levy-county",
     "name": "Levy County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12075",
     "lat": 29.271854,
@@ -20082,7 +20082,7 @@
   {
     "id": "fl-liberty-county",
     "name": "Liberty County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12077",
     "lat": 30.259849,
@@ -20210,7 +20210,7 @@
   {
     "id": "fl-madison-county",
     "name": "Madison County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12079",
     "lat": 30.447233,
@@ -20290,7 +20290,7 @@
   {
     "id": "fl-manatee-county",
     "name": "Manatee County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12081",
     "lat": 27.475556,
@@ -20386,7 +20386,7 @@
   {
     "id": "fl-marion-county",
     "name": "Marion County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12083",
     "lat": 29.202805,
@@ -20402,7 +20402,7 @@
   {
     "id": "fl-martin-county",
     "name": "Martin County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12085",
     "lat": 27.083604,
@@ -20514,7 +20514,7 @@
   {
     "id": "fl-miami-dade-county",
     "name": "Miami - Dade County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": null,
     "lat": null,
@@ -20706,7 +20706,7 @@
   {
     "id": "fl-monroe-county",
     "name": "Monroe County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12087",
     "lat": 25.58612,
@@ -20818,7 +20818,7 @@
   {
     "id": "fl-nassau-county",
     "name": "Nassau County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12089",
     "lat": 30.605963,
@@ -21138,7 +21138,7 @@
   {
     "id": "fl-okaloosa-county",
     "name": "Okaloosa County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12091",
     "lat": 30.614325,
@@ -21154,7 +21154,7 @@
   {
     "id": "fl-okeechobee-county",
     "name": "Okeechobee County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12093",
     "lat": 27.385592,
@@ -21234,7 +21234,7 @@
   {
     "id": "fl-orange-county",
     "name": "Orange County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12095",
     "lat": 28.514391,
@@ -21314,7 +21314,7 @@
   {
     "id": "fl-osceola-county",
     "name": "Osceola County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12097",
     "lat": 28.059027,
@@ -21378,7 +21378,7 @@
   {
     "id": "fl-palm-beach-county",
     "name": "Palm Beach County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12099",
     "lat": 26.649126,
@@ -21570,7 +21570,7 @@
   {
     "id": "fl-pasco-county",
     "name": "Pasco County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12101",
     "lat": 28.309823,
@@ -21666,7 +21666,7 @@
   {
     "id": "fl-pinellas-county",
     "name": "Pinellas County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12103",
     "lat": 27.905342,
@@ -21746,7 +21746,7 @@
   {
     "id": "fl-polk-county",
     "name": "Polk County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12105",
     "lat": 27.953686,
@@ -21874,7 +21874,7 @@
   {
     "id": "fl-putnam-county",
     "name": "Putnam County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12107",
     "lat": 29.593896,
@@ -22050,7 +22050,7 @@
   {
     "id": "fl-santa-rosa-county",
     "name": "Santa Rosa County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12113",
     "lat": 30.675348,
@@ -22066,7 +22066,7 @@
   {
     "id": "fl-sarasota-county",
     "name": "Sarasota County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12115",
     "lat": 27.225329,
@@ -22162,7 +22162,7 @@
   {
     "id": "fl-seminole-county",
     "name": "Seminole County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12117",
     "lat": 28.690065,
@@ -22402,7 +22402,7 @@
   {
     "id": "fl-st-johns-county",
     "name": "St. Johns County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12109",
     "lat": 29.890487,
@@ -22434,7 +22434,7 @@
   {
     "id": "fl-st-lucie-county",
     "name": "St. Lucie County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12111",
     "lat": 27.379814,
@@ -22530,7 +22530,7 @@
   {
     "id": "fl-sumter-county",
     "name": "Sumter County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12119",
     "lat": 28.713326,
@@ -22594,7 +22594,7 @@
   {
     "id": "fl-suwannee-county",
     "name": "Suwannee County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12121",
     "lat": 30.189244,
@@ -22706,7 +22706,7 @@
   {
     "id": "fl-taylor-county",
     "name": "Taylor County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12123",
     "lat": 29.967146,
@@ -22866,7 +22866,7 @@
   {
     "id": "fl-volusia-county",
     "name": "Volusia County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12127",
     "lat": 29.057769,
@@ -22882,7 +22882,7 @@
   {
     "id": "fl-wakulla-county",
     "name": "Wakulla County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12129",
     "lat": 30.091335,
@@ -22914,7 +22914,7 @@
   {
     "id": "fl-walton-county",
     "name": "Walton County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12131",
     "lat": 30.571247,
@@ -22930,7 +22930,7 @@
   {
     "id": "fl-washington-county",
     "name": "Washington County, FL",
-    "type": "city",
+    "type": "county",
     "state": "FL",
     "fips": "12133",
     "lat": 30.602102,
@@ -23442,7 +23442,7 @@
   {
     "id": "ga-athens-clarke-county",
     "name": "Athens-Clarke County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -23490,7 +23490,7 @@
   {
     "id": "ga-augusta-richmond-county",
     "name": "Augusta-Richmond County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -23554,7 +23554,7 @@
   {
     "id": "ga-baldwin-county",
     "name": "Baldwin County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13009",
     "lat": 33.05949,
@@ -23586,7 +23586,7 @@
   {
     "id": "ga-banks-county",
     "name": "Banks County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13011",
     "lat": 34.351922,
@@ -23602,7 +23602,7 @@
   {
     "id": "ga-barrow-county",
     "name": "Barrow County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13013",
     "lat": 33.992009,
@@ -23618,7 +23618,7 @@
   {
     "id": "ga-bartow-county",
     "name": "Bartow County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13015",
     "lat": 34.240917,
@@ -23634,7 +23634,7 @@
   {
     "id": "ga-ben-hill-county",
     "name": "Ben Hill County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13017",
     "lat": 31.740772,
@@ -23666,7 +23666,7 @@
   {
     "id": "ga-berrien-county",
     "name": "Berrien County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13019",
     "lat": 31.288652,
@@ -23714,7 +23714,7 @@
   {
     "id": "ga-bleckley-county",
     "name": "Bleckley County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13023",
     "lat": 32.435403,
@@ -23794,7 +23794,7 @@
   {
     "id": "ga-brantley-county",
     "name": "Brantley County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13025",
     "lat": 31.197334,
@@ -23858,7 +23858,7 @@
   {
     "id": "ga-brooks-county",
     "name": "Brooks County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13027",
     "lat": 30.822934,
@@ -23890,7 +23890,7 @@
   {
     "id": "ga-bryan-county",
     "name": "Bryan County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13029",
     "lat": 32.017969,
@@ -23954,7 +23954,7 @@
   {
     "id": "ga-bulloch-county",
     "name": "Bulloch County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13031",
     "lat": 32.394498,
@@ -23970,7 +23970,7 @@
   {
     "id": "ga-burke-county",
     "name": "Burke County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13033",
     "lat": 33.060181,
@@ -24002,7 +24002,7 @@
   {
     "id": "ga-butts-county",
     "name": "Butts County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13035",
     "lat": 33.290355,
@@ -24082,7 +24082,7 @@
   {
     "id": "ga-candler-county",
     "name": "Candler County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13043",
     "lat": 32.40395,
@@ -24114,7 +24114,7 @@
   {
     "id": "ga-carroll-county",
     "name": "Carroll County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13045",
     "lat": 33.582237,
@@ -24162,7 +24162,7 @@
   {
     "id": "ga-catoosa-county",
     "name": "Catoosa County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13047",
     "lat": 34.900212,
@@ -24242,7 +24242,7 @@
   {
     "id": "ga-charlton-county",
     "name": "Charlton County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13049",
     "lat": 30.779904,
@@ -24290,7 +24290,7 @@
   {
     "id": "ga-cherokee-county",
     "name": "Cherokee County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13057",
     "lat": 34.244317,
@@ -24354,7 +24354,7 @@
   {
     "id": "ga-clayton-county",
     "name": "Clayton County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13063",
     "lat": 33.552242,
@@ -24402,7 +24402,7 @@
   {
     "id": "ga-cobb-county",
     "name": "Cobb County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13067",
     "lat": 33.939926,
@@ -24434,7 +24434,7 @@
   {
     "id": "ga-coffee-county",
     "name": "Coffee County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13069",
     "lat": 31.549245,
@@ -24482,7 +24482,7 @@
   {
     "id": "ga-colquitt-county",
     "name": "Colquitt County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13071",
     "lat": 31.189707,
@@ -24514,7 +24514,7 @@
   {
     "id": "ga-columbia-county",
     "name": "Columbia County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13073",
     "lat": 33.552075,
@@ -24578,7 +24578,7 @@
   {
     "id": "ga-cook-county",
     "name": "Cook County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13075",
     "lat": 31.152516,
@@ -24642,7 +24642,7 @@
   {
     "id": "ga-coweta-county",
     "name": "Coweta County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13077",
     "lat": 33.352897,
@@ -24674,7 +24674,7 @@
   {
     "id": "ga-crisp-county",
     "name": "Crisp County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13081",
     "lat": 31.920268,
@@ -24706,7 +24706,7 @@
   {
     "id": "ga-cusseta-chattahoochee-county",
     "name": "Cusseta-Chattahoochee County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -24738,7 +24738,7 @@
   {
     "id": "ga-dade-county",
     "name": "Dade County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13083",
     "lat": 34.852424,
@@ -24818,7 +24818,7 @@
   {
     "id": "ga-dawson-county",
     "name": "Dawson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13085",
     "lat": 34.442608,
@@ -24882,7 +24882,7 @@
   {
     "id": "ga-dekalb-county",
     "name": "DeKalb County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13089",
     "lat": 33.770661,
@@ -24914,7 +24914,7 @@
   {
     "id": "ga-dodge-county",
     "name": "Dodge County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13091",
     "lat": 32.164369,
@@ -24962,7 +24962,7 @@
   {
     "id": "ga-dooly-county",
     "name": "Dooly County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13093",
     "lat": 32.151995,
@@ -24994,7 +24994,7 @@
   {
     "id": "ga-dougherty-county",
     "name": "Dougherty County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13095",
     "lat": 31.532588,
@@ -25010,7 +25010,7 @@
   {
     "id": "ga-douglas-county",
     "name": "Douglas County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13097",
     "lat": 33.701242,
@@ -25106,7 +25106,7 @@
   {
     "id": "ga-early-county",
     "name": "Early County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13099",
     "lat": 31.324191,
@@ -25186,7 +25186,7 @@
   {
     "id": "ga-echols-county",
     "name": "Echols County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13101",
     "lat": 30.714008,
@@ -25218,7 +25218,7 @@
   {
     "id": "ga-effingham-county",
     "name": "Effingham County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13103",
     "lat": 32.361688,
@@ -25234,7 +25234,7 @@
   {
     "id": "ga-elbert-county",
     "name": "Elbert County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13105",
     "lat": 34.116415,
@@ -25298,7 +25298,7 @@
   {
     "id": "ga-emanuel-county",
     "name": "Emanuel County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13107",
     "lat": 32.5912,
@@ -25378,7 +25378,7 @@
   {
     "id": "ga-fayette-county",
     "name": "Fayette County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13113",
     "lat": 33.412717,
@@ -25458,7 +25458,7 @@
   {
     "id": "ga-floyd-county",
     "name": "Floyd County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13115",
     "lat": 34.26369,
@@ -25490,7 +25490,7 @@
   {
     "id": "ga-forsyth-county",
     "name": "Forsyth County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13117",
     "lat": 34.225143,
@@ -25554,7 +25554,7 @@
   {
     "id": "ga-fulton-county",
     "name": "Fulton County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13121",
     "lat": 33.790034,
@@ -25602,7 +25602,7 @@
   {
     "id": "ga-gilmer-county",
     "name": "Gilmer County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13123",
     "lat": 34.690523,
@@ -25618,7 +25618,7 @@
   {
     "id": "ga-glascock-county",
     "name": "Glascock County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13125",
     "lat": 33.227491,
@@ -25650,7 +25650,7 @@
   {
     "id": "ga-glynn-county",
     "name": "Glynn County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13127",
     "lat": 31.21271,
@@ -25666,7 +25666,7 @@
   {
     "id": "ga-gordon-county",
     "name": "Gordon County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13129",
     "lat": 34.509667,
@@ -25682,7 +25682,7 @@
   {
     "id": "ga-grady-county",
     "name": "Grady County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13131",
     "lat": 30.8759,
@@ -25746,7 +25746,7 @@
   {
     "id": "ga-greene-county",
     "name": "Greene County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13133",
     "lat": 33.576704,
@@ -25842,7 +25842,7 @@
   {
     "id": "ga-gwinnett-county",
     "name": "Gwinnett County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13135",
     "lat": 33.958756,
@@ -25858,7 +25858,7 @@
   {
     "id": "ga-habersham-county",
     "name": "Habersham County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13137",
     "lat": 34.634392,
@@ -25890,7 +25890,7 @@
   {
     "id": "ga-hall-county",
     "name": "Hall County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13139",
     "lat": 34.317569,
@@ -25954,7 +25954,7 @@
   {
     "id": "ga-haralson-county",
     "name": "Haralson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13143",
     "lat": 33.795165,
@@ -26002,7 +26002,7 @@
   {
     "id": "ga-harris-county",
     "name": "Harris County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13145",
     "lat": 32.731549,
@@ -26018,7 +26018,7 @@
   {
     "id": "ga-hart-county",
     "name": "Hart County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13147",
     "lat": 34.348733,
@@ -26066,7 +26066,7 @@
   {
     "id": "ga-heard-county",
     "name": "Heard County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13149",
     "lat": 33.291347,
@@ -26098,7 +26098,7 @@
   {
     "id": "ga-henry-county",
     "name": "Henry County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13151",
     "lat": 33.452947,
@@ -26210,7 +26210,7 @@
   {
     "id": "ga-houston-county",
     "name": "Houston County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13153",
     "lat": 32.458147,
@@ -26226,7 +26226,7 @@
   {
     "id": "ga-jackson-county",
     "name": "Jackson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13157",
     "lat": 34.130905,
@@ -26258,7 +26258,7 @@
   {
     "id": "ga-jasper-county",
     "name": "Jasper County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13159",
     "lat": 33.316981,
@@ -26290,7 +26290,7 @@
   {
     "id": "ga-jeff-davis-county",
     "name": "Jeff Davis County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13161",
     "lat": 31.811615,
@@ -26306,7 +26306,7 @@
   {
     "id": "ga-jefferson-county",
     "name": "Jefferson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13163",
     "lat": 33.058176,
@@ -26386,7 +26386,7 @@
   {
     "id": "ga-johnson-county",
     "name": "Johnson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13167",
     "lat": 32.694584,
@@ -26402,7 +26402,7 @@
   {
     "id": "ga-jones-county",
     "name": "Jones County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13169",
     "lat": 33.021664,
@@ -26530,7 +26530,7 @@
   {
     "id": "ga-lamar-county",
     "name": "Lamar County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13171",
     "lat": 33.07444,
@@ -26546,7 +26546,7 @@
   {
     "id": "ga-lanier-county",
     "name": "Lanier County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13173",
     "lat": 31.038197,
@@ -26562,7 +26562,7 @@
   {
     "id": "ga-laurens-county",
     "name": "Laurens County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13175",
     "lat": 32.39322,
@@ -26610,7 +26610,7 @@
   {
     "id": "ga-lee-county",
     "name": "Lee County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13177",
     "lat": 31.818419,
@@ -26674,7 +26674,7 @@
   {
     "id": "ga-liberty-county",
     "name": "Liberty County , GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13179",
     "lat": 31.807458,
@@ -26690,7 +26690,7 @@
   {
     "id": "ga-liberty-county-joint-planning-commission",
     "name": "Liberty County Joint Planning Commission, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -26722,7 +26722,7 @@
   {
     "id": "ga-lincoln-county",
     "name": "Lincoln County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13181",
     "lat": 33.792151,
@@ -26802,7 +26802,7 @@
   {
     "id": "ga-long-county",
     "name": "Long County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13183",
     "lat": 31.749563,
@@ -26866,7 +26866,7 @@
   {
     "id": "ga-lumpkin-county",
     "name": "Lumpkin County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13187",
     "lat": 34.56814,
@@ -26930,7 +26930,7 @@
   {
     "id": "ga-macon-county",
     "name": "Macon County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13193",
     "lat": 32.362686,
@@ -26946,7 +26946,7 @@
   {
     "id": "ga-macon-bibb-county",
     "name": "Macon-Bibb County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "1349008",
     "lat": 32.80899,
@@ -26962,7 +26962,7 @@
   {
     "id": "ga-madison-county",
     "name": "Madison County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13195",
     "lat": 34.12748,
@@ -27026,7 +27026,7 @@
   {
     "id": "ga-marion-county",
     "name": "Marion County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13197",
     "lat": 32.359312,
@@ -27058,7 +27058,7 @@
   {
     "id": "ga-mcduffie-county",
     "name": "McDuffie County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13189",
     "lat": 33.48061,
@@ -27074,7 +27074,7 @@
   {
     "id": "ga-mcintosh-county",
     "name": "McIntosh County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13191",
     "lat": 31.485629,
@@ -27106,7 +27106,7 @@
   {
     "id": "ga-meriwether-county",
     "name": "Meriwether County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13199",
     "lat": 33.029267,
@@ -27186,7 +27186,7 @@
   {
     "id": "ga-miller-county",
     "name": "Miller County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13201",
     "lat": 31.162931,
@@ -27234,7 +27234,7 @@
   {
     "id": "ga-mitchell-county",
     "name": "Mitchell County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13205",
     "lat": 31.228997,
@@ -27250,7 +27250,7 @@
   {
     "id": "ga-monroe-county",
     "name": "Monroe County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13207",
     "lat": 33.018784,
@@ -27298,7 +27298,7 @@
   {
     "id": "ga-montgomery-county",
     "name": "Montgomery County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13209",
     "lat": 32.172108,
@@ -27330,7 +27330,7 @@
   {
     "id": "ga-morgan-county",
     "name": "Morgan County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13211",
     "lat": 33.598649,
@@ -27426,7 +27426,7 @@
   {
     "id": "ga-murray-county",
     "name": "Murray County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13213",
     "lat": 34.797097,
@@ -27506,7 +27506,7 @@
   {
     "id": "ga-newton-county",
     "name": "Newton County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13217",
     "lat": 33.552751,
@@ -27586,7 +27586,7 @@
   {
     "id": "ga-oconee-county",
     "name": "Oconee County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13219",
     "lat": 33.834125,
@@ -27602,7 +27602,7 @@
   {
     "id": "ga-oglethorpe-county",
     "name": "Oglethorpe County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13221",
     "lat": 33.866806,
@@ -27666,7 +27666,7 @@
   {
     "id": "ga-paulding-county",
     "name": "Paulding County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13223",
     "lat": 33.92103,
@@ -27682,7 +27682,7 @@
   {
     "id": "ga-peach-county",
     "name": "Peach County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13225",
     "lat": 32.571324,
@@ -27778,7 +27778,7 @@
   {
     "id": "ga-pickens-county",
     "name": "Pickens County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13227",
     "lat": 34.456756,
@@ -27794,7 +27794,7 @@
   {
     "id": "ga-pierce-county",
     "name": "Pierce County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13229",
     "lat": 31.353998,
@@ -27826,7 +27826,7 @@
   {
     "id": "ga-polk-county",
     "name": "Polk County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13233",
     "lat": 33.996015,
@@ -27906,7 +27906,7 @@
   {
     "id": "ga-pulaski-county",
     "name": "Pulaski County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13235",
     "lat": 32.238803,
@@ -27922,7 +27922,7 @@
   {
     "id": "ga-putnam-county",
     "name": "Putnam County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13237",
     "lat": 33.32106,
@@ -27954,7 +27954,7 @@
   {
     "id": "ga-rabun-county",
     "name": "Rabun County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13241",
     "lat": 34.883934,
@@ -28082,7 +28082,7 @@
   {
     "id": "ga-rockdale-county",
     "name": "Rockdale County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13247",
     "lat": 33.652081,
@@ -28226,7 +28226,7 @@
   {
     "id": "ga-schley-county",
     "name": "Schley County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13249",
     "lat": 32.263444,
@@ -28242,7 +28242,7 @@
   {
     "id": "ga-screven-county",
     "name": "Screven County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13251",
     "lat": 32.744751,
@@ -28258,7 +28258,7 @@
   {
     "id": "ga-seminole-county",
     "name": "Seminole County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13253",
     "lat": 30.93396,
@@ -28386,7 +28386,7 @@
   {
     "id": "ga-spalding-county",
     "name": "Spalding County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13255",
     "lat": 33.262348,
@@ -28482,7 +28482,7 @@
   {
     "id": "ga-stephens-county",
     "name": "Stephens County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13257",
     "lat": 34.553582,
@@ -28562,7 +28562,7 @@
   {
     "id": "ga-sumter-county",
     "name": "Sumter County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13261",
     "lat": 32.042266,
@@ -28626,7 +28626,7 @@
   {
     "id": "ga-talbot-county",
     "name": "Talbot County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13263",
     "lat": 32.704603,
@@ -28642,7 +28642,7 @@
   {
     "id": "ga-taliaferro-county",
     "name": "Taliaferro County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13265",
     "lat": 33.559319,
@@ -28690,7 +28690,7 @@
   {
     "id": "ga-tattnall-county",
     "name": "Tattnall County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13267",
     "lat": 32.043768,
@@ -28706,7 +28706,7 @@
   {
     "id": "ga-taylor-county",
     "name": "Taylor County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13269",
     "lat": 32.554667,
@@ -28738,7 +28738,7 @@
   {
     "id": "ga-thomas-county",
     "name": "Thomas County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13275",
     "lat": 30.864619,
@@ -28818,7 +28818,7 @@
   {
     "id": "ga-tift-county",
     "name": "Tift County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13277",
     "lat": 31.457003,
@@ -28866,7 +28866,7 @@
   {
     "id": "ga-towns-county",
     "name": "Towns County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13281",
     "lat": 34.902529,
@@ -28898,7 +28898,7 @@
   {
     "id": "ga-troup-county",
     "name": "Troup County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13285",
     "lat": 33.034482,
@@ -28930,7 +28930,7 @@
   {
     "id": "ga-turner-county",
     "name": "Turner County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13287",
     "lat": 31.7248,
@@ -29026,7 +29026,7 @@
   {
     "id": "ga-unified-government-of-georgetown-quitman-county-commission",
     "name": "Unified Government of Georgetown-Quitman County Commission, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -29058,7 +29058,7 @@
   {
     "id": "ga-union-county",
     "name": "Union County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13291",
     "lat": 34.833333,
@@ -29090,7 +29090,7 @@
   {
     "id": "ga-upson-county",
     "name": "Upson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13293",
     "lat": 32.881837,
@@ -29186,7 +29186,7 @@
   {
     "id": "ga-walker-county",
     "name": "Walker County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13295",
     "lat": 34.735802,
@@ -29234,7 +29234,7 @@
   {
     "id": "ga-walton-county",
     "name": "Walton County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13297",
     "lat": 33.783887,
@@ -29250,7 +29250,7 @@
   {
     "id": "ga-ware-county",
     "name": "Ware County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13299",
     "lat": 31.050881,
@@ -29314,7 +29314,7 @@
   {
     "id": "ga-washington-county",
     "name": "Washington County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13303",
     "lat": 32.971843,
@@ -29378,7 +29378,7 @@
   {
     "id": "ga-wayne-county",
     "name": "Wayne County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13305",
     "lat": 31.547845,
@@ -29410,7 +29410,7 @@
   {
     "id": "ga-webster-county-consolidated-government",
     "name": "Webster County Consolidated Government, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": null,
     "lat": null,
@@ -29442,7 +29442,7 @@
   {
     "id": "ga-white-county",
     "name": "White County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13311",
     "lat": 34.644182,
@@ -29474,7 +29474,7 @@
   {
     "id": "ga-whitfield-county",
     "name": "Whitfield County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13313",
     "lat": 34.801726,
@@ -29490,7 +29490,7 @@
   {
     "id": "ga-wilkes-county",
     "name": "Wilkes County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13317",
     "lat": 33.779031,
@@ -29506,7 +29506,7 @@
   {
     "id": "ga-wilkinson-county",
     "name": "Wilkinson County, GA",
-    "type": "city",
+    "type": "county",
     "state": "GA",
     "fips": "13319",
     "lat": 32.804266,
@@ -29650,7 +29650,7 @@
   {
     "id": "hi-county-of-maui",
     "name": "County of Maui, HI",
-    "type": "city",
+    "type": "county",
     "state": "HI",
     "fips": null,
     "lat": null,
@@ -29666,7 +29666,7 @@
   {
     "id": "hi-ecode360-ka4947",
     "name": "Kaua'i County",
-    "type": "city",
+    "type": "county",
     "state": "HI",
     "fips": "15007",
     "lat": 22.012038,
@@ -29906,7 +29906,7 @@
   {
     "id": "ia-linn-county",
     "name": "Linn County, IA",
-    "type": "city",
+    "type": "county",
     "state": "IA",
     "fips": "19113",
     "lat": 42.077951,
@@ -30082,7 +30082,7 @@
   {
     "id": "id-bannock-county",
     "name": "Bannock County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16005",
     "lat": 42.692921,
@@ -30114,7 +30114,7 @@
   {
     "id": "id-caribou-county",
     "name": "Caribou County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16029",
     "lat": 42.786072,
@@ -30178,7 +30178,7 @@
   {
     "id": "id-fremont-county",
     "name": "Fremont County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16043",
     "lat": 44.218091,
@@ -30226,7 +30226,7 @@
   {
     "id": "id-jefferson-county",
     "name": "Jefferson County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16051",
     "lat": 43.796965,
@@ -30306,7 +30306,7 @@
   {
     "id": "id-lincoln-county",
     "name": "Lincoln County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16063",
     "lat": 42.990782,
@@ -30322,7 +30322,7 @@
   {
     "id": "id-madison-county",
     "name": "Madison County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16065",
     "lat": 43.788614,
@@ -30418,7 +30418,7 @@
   {
     "id": "id-nez-perce-county",
     "name": "Nez Perce County, ID",
-    "type": "city",
+    "type": "county",
     "state": "ID",
     "fips": "16069",
     "lat": 46.333791,
@@ -30866,7 +30866,7 @@
   {
     "id": "il-boone-county",
     "name": "Boone County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17007",
     "lat": 42.318983,
@@ -31458,7 +31458,7 @@
   {
     "id": "il-clayton-township-adams-county",
     "name": "Clayton Township - Adams County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": null,
     "lat": null,
@@ -31522,7 +31522,7 @@
   {
     "id": "il-cook-county",
     "name": "Cook County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17031",
     "lat": 41.894294,
@@ -31650,7 +31650,7 @@
   {
     "id": "il-dupage-county",
     "name": "DuPage County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17043",
     "lat": 41.852058,
@@ -32146,7 +32146,7 @@
   {
     "id": "il-grundy-county",
     "name": "Grundy County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17063",
     "lat": 41.29241,
@@ -32290,7 +32290,7 @@
   {
     "id": "il-henry-county",
     "name": "Henry County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17073",
     "lat": 41.350021,
@@ -32450,7 +32450,7 @@
   {
     "id": "il-iroquois-county",
     "name": "Iroquois County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17075",
     "lat": 40.748867,
@@ -32498,7 +32498,7 @@
   {
     "id": "il-kankakee-county",
     "name": "Kankakee County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17091",
     "lat": 41.13951,
@@ -32514,7 +32514,7 @@
   {
     "id": "il-kendall-county",
     "name": "Kendall County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17093",
     "lat": 41.58814,
@@ -32674,7 +32674,7 @@
   {
     "id": "il-livingston-county",
     "name": "Livingston County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17105",
     "lat": 40.894376,
@@ -32818,7 +32818,7 @@
   {
     "id": "il-maine-township-cook-county",
     "name": "Maine Township (Cook County), IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": null,
     "lat": null,
@@ -32946,7 +32946,7 @@
   {
     "id": "il-ecode360-mc2883",
     "name": "McLean County",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17113",
     "lat": 40.494559,
@@ -33058,7 +33058,7 @@
   {
     "id": "il-ecode360-mo3122",
     "name": "Monroe County",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17133",
     "lat": 38.277983,
@@ -33666,7 +33666,7 @@
   {
     "id": "il-peoria-county",
     "name": "Peoria County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17143",
     "lat": 40.785972,
@@ -34098,7 +34098,7 @@
   {
     "id": "il-sangamon-county",
     "name": "Sangamon County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17167",
     "lat": 39.756886,
@@ -34338,7 +34338,7 @@
   {
     "id": "il-ecode360-st2918",
     "name": "Stephenson County",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17177",
     "lat": 42.349726,
@@ -35154,7 +35154,7 @@
   {
     "id": "il-whiteside-county",
     "name": "Whiteside County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17195",
     "lat": 41.750673,
@@ -35218,7 +35218,7 @@
   {
     "id": "il-winnebago-county",
     "name": "Winnebago County, IL",
-    "type": "city",
+    "type": "county",
     "state": "IL",
     "fips": "17201",
     "lat": 42.337396,
@@ -35442,7 +35442,7 @@
   {
     "id": "in-hamilton-county",
     "name": "Hamilton County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": "18057",
     "lat": 40.053513,
@@ -35458,7 +35458,7 @@
   {
     "id": "in-indianapolis-marion-county",
     "name": "Indianapolis - Marion County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": null,
     "lat": null,
@@ -35698,7 +35698,7 @@
   {
     "id": "in-noble-county",
     "name": "Noble County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": "18113",
     "lat": 41.404679,
@@ -35730,7 +35730,7 @@
   {
     "id": "in-parke-county",
     "name": "Parke County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": "18121",
     "lat": 39.77425,
@@ -35762,7 +35762,7 @@
   {
     "id": "in-porter-county",
     "name": "Porter County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": "18127",
     "lat": 41.509914,
@@ -35842,7 +35842,7 @@
   {
     "id": "in-st-joseph-county",
     "name": "St. Joseph County, IN",
-    "type": "city",
+    "type": "county",
     "state": "IN",
     "fips": "18141",
     "lat": 41.617723,
@@ -36306,7 +36306,7 @@
   {
     "id": "ks-ecode360-mi4747",
     "name": "County of Miami",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": null,
     "lat": null,
@@ -36578,7 +36578,7 @@
   {
     "id": "ks-johnson-county",
     "name": "Johnson County, KS",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": "20091",
     "lat": 38.883907,
@@ -36882,7 +36882,7 @@
   {
     "id": "ks-sedgwick-county",
     "name": "Sedgwick County, KS",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": "20173",
     "lat": 37.681045,
@@ -36914,7 +36914,7 @@
   {
     "id": "ks-shawnee-county",
     "name": "Shawnee County, KS",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": "20177",
     "lat": 39.041805,
@@ -37010,7 +37010,7 @@
   {
     "id": "ks-wichita-sedgwick-county-unified",
     "name": "Wichita-Sedgwick County Unified, KS",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": null,
     "lat": null,
@@ -37058,7 +37058,7 @@
   {
     "id": "ks-wyandotte-county-unified-government",
     "name": "Wyandotte County - Unified Government, KS",
-    "type": "city",
+    "type": "county",
     "state": "KS",
     "fips": null,
     "lat": null,
@@ -37138,7 +37138,7 @@
   {
     "id": "ky-ecode360-he3160",
     "name": "Henderson County",
-    "type": "city",
+    "type": "county",
     "state": "KY",
     "fips": "21101",
     "lat": 37.792542,
@@ -37186,7 +37186,7 @@
   {
     "id": "ky-hopkins-county",
     "name": "Hopkins County, KY",
-    "type": "city",
+    "type": "county",
     "state": "KY",
     "fips": "21107",
     "lat": 37.31107,
@@ -43058,7 +43058,7 @@
   {
     "id": "md-ecode360-al0892",
     "name": "Allegany County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24001",
     "lat": 39.612313,
@@ -43090,7 +43090,7 @@
   {
     "id": "md-baltimore-county",
     "name": "Baltimore County, MD",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24005",
     "lat": 39.443167,
@@ -43138,7 +43138,7 @@
   {
     "id": "md-ecode360-ca1802",
     "name": "Calvert County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24009",
     "lat": 38.522719,
@@ -43170,7 +43170,7 @@
   {
     "id": "md-ecode360-ca1090",
     "name": "Caroline County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24011",
     "lat": 38.871531,
@@ -43186,7 +43186,7 @@
   {
     "id": "md-ecode360-ce0748",
     "name": "Cecil County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24015",
     "lat": 39.562354,
@@ -43218,7 +43218,7 @@
   {
     "id": "md-ecode360-ch0836",
     "name": "Charles County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24017",
     "lat": 38.472853,
@@ -43522,7 +43522,7 @@
   {
     "id": "md-ecode360-do0950",
     "name": "Dorchester County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24019",
     "lat": 38.429196,
@@ -43618,7 +43618,7 @@
   {
     "id": "md-ecode360-ha0904",
     "name": "Harford County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24025",
     "lat": 39.537429,
@@ -43634,7 +43634,7 @@
   {
     "id": "md-howard-county",
     "name": "Howard County, MD",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24027",
     "lat": 39.252264,
@@ -43650,7 +43650,7 @@
   {
     "id": "md-ecode360-ke1414",
     "name": "Kent County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24029",
     "lat": 39.241279,
@@ -43762,7 +43762,7 @@
   {
     "id": "md-prince-george-s-county",
     "name": "Prince George's County, MD",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24033",
     "lat": 38.829278,
@@ -43778,7 +43778,7 @@
   {
     "id": "md-ecode360-qu1770",
     "name": "Queen Annes County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24035",
     "lat": 39.040693,
@@ -43826,7 +43826,7 @@
   {
     "id": "md-st-mary-s-county",
     "name": "St. Mary's County, MD",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24037",
     "lat": 38.223077,
@@ -43842,7 +43842,7 @@
   {
     "id": "md-ecode360-ta0795",
     "name": "Talbot County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24041",
     "lat": 38.748349,
@@ -44466,7 +44466,7 @@
   {
     "id": "md-ecode360-wi0638",
     "name": "Wicomico County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24045",
     "lat": 38.367368,
@@ -44498,7 +44498,7 @@
   {
     "id": "md-ecode360-wo1426",
     "name": "Worcester County",
-    "type": "city",
+    "type": "county",
     "state": "MD",
     "fips": "24047",
     "lat": 38.222133,
@@ -45570,7 +45570,7 @@
   {
     "id": "mi-bay-county",
     "name": "Bay County, MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": "26017",
     "lat": 43.699711,
@@ -46050,7 +46050,7 @@
   {
     "id": "mi-casco-township-allegan-county",
     "name": "Casco Township, Allegan County, MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": null,
     "lat": null,
@@ -48322,7 +48322,7 @@
   {
     "id": "mi-macomb-county",
     "name": "Macomb County, MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": "26099",
     "lat": 42.671553,
@@ -48466,7 +48466,7 @@
   {
     "id": "mi-mason-county",
     "name": "Mason County , MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": "26105",
     "lat": 43.957196,
@@ -49394,7 +49394,7 @@
   {
     "id": "mi-porter-township-van-buren-county",
     "name": "Porter Township, (Van Buren County), MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": null,
     "lat": null,
@@ -50898,7 +50898,7 @@
   {
     "id": "mi-wayne-county",
     "name": "Wayne County, MI",
-    "type": "city",
+    "type": "county",
     "state": "MI",
     "fips": "26163",
     "lat": 42.284664,
@@ -51266,7 +51266,7 @@
   {
     "id": "mn-blue-earth-county",
     "name": "Blue Earth County, MN",
-    "type": "city",
+    "type": "county",
     "state": "MN",
     "fips": "27013",
     "lat": 44.03371,
@@ -51490,7 +51490,7 @@
   {
     "id": "mn-clay-county",
     "name": "Clay County, MN",
-    "type": "city",
+    "type": "county",
     "state": "MN",
     "fips": "27027",
     "lat": 46.898377,
@@ -51762,7 +51762,7 @@
   {
     "id": "mn-freeborn-county",
     "name": "Freeborn County, MN",
-    "type": "city",
+    "type": "county",
     "state": "MN",
     "fips": "27047",
     "lat": 43.674202,
@@ -52050,7 +52050,7 @@
   {
     "id": "mn-meeker-county",
     "name": "Meeker County, MN",
-    "type": "city",
+    "type": "county",
     "state": "MN",
     "fips": "27093",
     "lat": 45.123155,
@@ -52114,7 +52114,7 @@
   {
     "id": "mn-morrison-county",
     "name": "Morrison County, MN",
-    "type": "city",
+    "type": "county",
     "state": "MN",
     "fips": "27097",
     "lat": 46.020484,
@@ -53074,7 +53074,7 @@
   {
     "id": "mo-ecode360-ca3260",
     "name": "Cass County",
-    "type": "city",
+    "type": "county",
     "state": "MO",
     "fips": "29037",
     "lat": 38.646474,
@@ -57058,7 +57058,7 @@
   {
     "id": "mo-clay-county",
     "name": "Clay County, MO",
-    "type": "city",
+    "type": "county",
     "state": "MO",
     "fips": "29047",
     "lat": 39.315551,
@@ -57474,7 +57474,7 @@
   {
     "id": "mo-ecode360-je3328",
     "name": "Jefferson County",
-    "type": "city",
+    "type": "county",
     "state": "MO",
     "fips": "29099",
     "lat": 38.25763,
@@ -58098,7 +58098,7 @@
   {
     "id": "mo-ecode360-st3436",
     "name": "St. Charles County",
-    "type": "city",
+    "type": "county",
     "state": "MO",
     "fips": "29183",
     "lat": 38.781102,
@@ -58146,7 +58146,7 @@
   {
     "id": "mo-st-louis-county",
     "name": "St. Louis County, MO",
-    "type": "city",
+    "type": "county",
     "state": "MO",
     "fips": "29189",
     "lat": 38.640688,
@@ -59474,7 +59474,7 @@
   {
     "id": "mt-anaconda-deer-lodge-county",
     "name": "Anaconda-Deer Lodge County, MT",
-    "type": "city",
+    "type": "county",
     "state": "MT",
     "fips": "3001675",
     "lat": 46.094672,
@@ -59554,7 +59554,7 @@
   {
     "id": "mt-butte-silver-bow-county",
     "name": "Butte-Silver Bow County, MT",
-    "type": "city",
+    "type": "county",
     "state": "MT",
     "fips": null,
     "lat": null,
@@ -60146,7 +60146,7 @@
   {
     "id": "nc-bladen-county",
     "name": "Bladen County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37017",
     "lat": 34.591938,
@@ -60194,7 +60194,7 @@
   {
     "id": "nc-brunswick-county",
     "name": "Brunswick County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37019",
     "lat": 34.038754,
@@ -60210,7 +60210,7 @@
   {
     "id": "nc-buncombe-county",
     "name": "Buncombe County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37021",
     "lat": 35.609371,
@@ -60242,7 +60242,7 @@
   {
     "id": "nc-burke-county",
     "name": "Burke County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37023",
     "lat": 35.746182,
@@ -60274,7 +60274,7 @@
   {
     "id": "nc-cabarrus-county",
     "name": "Cabarrus County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37025",
     "lat": 35.388346,
@@ -60338,7 +60338,7 @@
   {
     "id": "nc-carteret-county",
     "name": "Carteret County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37031",
     "lat": 34.858343,
@@ -60354,7 +60354,7 @@
   {
     "id": "nc-caswell-county",
     "name": "Caswell County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37033",
     "lat": 36.394298,
@@ -60370,7 +60370,7 @@
   {
     "id": "nc-catawba-county",
     "name": "Catawba County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37035",
     "lat": 35.661883,
@@ -60434,7 +60434,7 @@
   {
     "id": "nc-cleveland-county-water-district-nc",
     "name": "Cleveland County Water District, NC, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": null,
     "lat": null,
@@ -60450,7 +60450,7 @@
   {
     "id": "nc-cleveland-county",
     "name": "Cleveland County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37045",
     "lat": 35.33463,
@@ -60530,7 +60530,7 @@
   {
     "id": "nc-craven-county",
     "name": "Craven County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37049",
     "lat": 35.116829,
@@ -60546,7 +60546,7 @@
   {
     "id": "nc-cumberland-county",
     "name": "Cumberland County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37051",
     "lat": 35.050192,
@@ -60562,7 +60562,7 @@
   {
     "id": "nc-currituck-county",
     "name": "Currituck County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37053",
     "lat": 36.372174,
@@ -60626,7 +60626,7 @@
   {
     "id": "nc-durham-county",
     "name": "Durham County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37063",
     "lat": 36.033828,
@@ -60770,7 +60770,7 @@
   {
     "id": "nc-forsyth-county",
     "name": "Forsyth County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37067",
     "lat": 36.132466,
@@ -60802,7 +60802,7 @@
   {
     "id": "nc-franklin-county",
     "name": "Franklin County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37069",
     "lat": 36.088247,
@@ -60850,7 +60850,7 @@
   {
     "id": "nc-gaston-county",
     "name": "Gaston County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37071",
     "lat": 35.292834,
@@ -60946,7 +60946,7 @@
   {
     "id": "nc-granville-county",
     "name": "Granville County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37077",
     "lat": 36.299884,
@@ -60978,7 +60978,7 @@
   {
     "id": "nc-halifax-county",
     "name": "Halifax County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37083",
     "lat": 36.251438,
@@ -61138,7 +61138,7 @@
   {
     "id": "nc-hyde-county",
     "name": "Hyde County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37095",
     "lat": 35.408157,
@@ -61186,7 +61186,7 @@
   {
     "id": "nc-iredell-county",
     "name": "Iredell County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37097",
     "lat": 35.806251,
@@ -61202,7 +61202,7 @@
   {
     "id": "nc-jackson-county",
     "name": "Jackson County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37099",
     "lat": 35.285454,
@@ -61394,7 +61394,7 @@
   {
     "id": "nc-lee-county",
     "name": "Lee County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37105",
     "lat": 35.476336,
@@ -61506,7 +61506,7 @@
   {
     "id": "nc-macon-county",
     "name": "Macon County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37113",
     "lat": 35.152959,
@@ -61554,7 +61554,7 @@
   {
     "id": "nc-martin-county",
     "name": "Martin County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37117",
     "lat": 35.847301,
@@ -61586,7 +61586,7 @@
   {
     "id": "nc-mcdowell-county",
     "name": "McDowell County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37111",
     "lat": 35.682268,
@@ -61634,7 +61634,7 @@
   {
     "id": "nc-montgomery-county",
     "name": "Montgomery County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37123",
     "lat": 35.327548,
@@ -61650,7 +61650,7 @@
   {
     "id": "nc-moore-county",
     "name": "Moore County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37125",
     "lat": 35.308273,
@@ -61794,7 +61794,7 @@
   {
     "id": "nc-nash-county",
     "name": "Nash County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37127",
     "lat": 35.965945,
@@ -61842,7 +61842,7 @@
   {
     "id": "nc-new-hanover-county",
     "name": "New Hanover County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37129",
     "lat": 34.183445,
@@ -61938,7 +61938,7 @@
   {
     "id": "nc-onslow-county",
     "name": "Onslow County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37133",
     "lat": 34.763109,
@@ -61954,7 +61954,7 @@
   {
     "id": "nc-orange-county",
     "name": "Orange County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37135",
     "lat": 36.062525,
@@ -61970,7 +61970,7 @@
   {
     "id": "nc-pender-county",
     "name": "Pender County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37141",
     "lat": 34.512556,
@@ -62098,7 +62098,7 @@
   {
     "id": "nc-robeson-county",
     "name": "Robeson County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37155",
     "lat": 34.63921,
@@ -62114,7 +62114,7 @@
   {
     "id": "nc-rockingham-county",
     "name": "Rockingham County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37157",
     "lat": 36.381806,
@@ -62178,7 +62178,7 @@
   {
     "id": "nc-rowan-county",
     "name": "Rowan County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37159",
     "lat": 35.641355,
@@ -62210,7 +62210,7 @@
   {
     "id": "nc-rutherford-county",
     "name": "Rutherford County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37161",
     "lat": 35.402747,
@@ -62546,7 +62546,7 @@
   {
     "id": "nc-union-county",
     "name": "Union County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37179",
     "lat": 34.99182,
@@ -62578,7 +62578,7 @@
   {
     "id": "nc-wake-county",
     "name": "Wake County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37183",
     "lat": 35.789846,
@@ -62674,7 +62674,7 @@
   {
     "id": "nc-wayne-county",
     "name": "Wayne County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37191",
     "lat": 35.35419,
@@ -62850,7 +62850,7 @@
   {
     "id": "nc-yadkin-county",
     "name": "Yadkin County, NC",
-    "type": "city",
+    "type": "county",
     "state": "NC",
     "fips": "37197",
     "lat": 36.158765,
@@ -63954,7 +63954,7 @@
   {
     "id": "nj-ecode360-at0854",
     "name": "Atlantic County",
-    "type": "city",
+    "type": "county",
     "state": "NJ",
     "fips": "34001",
     "lat": 39.469355,
@@ -68434,7 +68434,7 @@
   {
     "id": "nj-ecode360-me2189",
     "name": "County of Mercer",
-    "type": "city",
+    "type": "county",
     "state": "NJ",
     "fips": null,
     "lat": null,
@@ -68450,7 +68450,7 @@
   {
     "id": "nj-ecode360-mo4033",
     "name": "County of Monmouth",
-    "type": "city",
+    "type": "county",
     "state": "NJ",
     "fips": null,
     "lat": null,
@@ -68530,7 +68530,7 @@
   {
     "id": "nj-ecode360-es1525",
     "name": "Essex County",
-    "type": "city",
+    "type": "county",
     "state": "NJ",
     "fips": "34013",
     "lat": 40.7874,
@@ -68610,7 +68610,7 @@
   {
     "id": "nj-ecode360-hu2724",
     "name": "Hudson County",
-    "type": "city",
+    "type": "county",
     "state": "NJ",
     "fips": "34017",
     "lat": 40.731375,
@@ -72738,7 +72738,7 @@
   {
     "id": "nm-bernalillo-county",
     "name": "Bernalillo County, NM",
-    "type": "city",
+    "type": "county",
     "state": "NM",
     "fips": "35001",
     "lat": 35.053628,
@@ -72801,7 +72801,7 @@
   },
   {
     "id": "nm-ecode360-es2879",
-    "name": "City of Española",
+    "name": "City of Espa\u00f1ola",
     "type": "city",
     "state": "NM",
     "fips": "3525170",
@@ -72881,8 +72881,8 @@
   },
   {
     "id": "nm-ecode360-do2860",
-    "name": "Doña Ana County",
-    "type": "city",
+    "name": "Do\u00f1a Ana County",
+    "type": "county",
     "state": "NM",
     "fips": "35013",
     "lat": 32.349919,
@@ -72994,7 +72994,7 @@
   {
     "id": "nm-los-alamos-county",
     "name": "Los Alamos County, NM",
-    "type": "city",
+    "type": "county",
     "state": "NM",
     "fips": "35028",
     "lat": 35.870047,
@@ -73026,7 +73026,7 @@
   {
     "id": "nm-ecode360-ot3148",
     "name": "Otero County",
-    "type": "city",
+    "type": "county",
     "state": "NM",
     "fips": "35035",
     "lat": 32.615599,
@@ -73106,7 +73106,7 @@
   {
     "id": "nm-sandoval-county",
     "name": "Sandoval County, NM",
-    "type": "city",
+    "type": "county",
     "state": "NM",
     "fips": "35043",
     "lat": 35.685091,
@@ -73122,7 +73122,7 @@
   {
     "id": "nm-ecode360-sa6524",
     "name": "Santa Fe County",
-    "type": "city",
+    "type": "county",
     "state": "NM",
     "fips": "35049",
     "lat": 35.514531,
@@ -73330,7 +73330,7 @@
   {
     "id": "nv-churchill-county",
     "name": "Churchill County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32001",
     "lat": 39.53771,
@@ -73346,7 +73346,7 @@
   {
     "id": "nv-clark-county",
     "name": "Clark County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32003",
     "lat": 36.21413,
@@ -73362,7 +73362,7 @@
   {
     "id": "nv-douglas-county",
     "name": "Douglas County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32005",
     "lat": 38.905129,
@@ -73426,7 +73426,7 @@
   {
     "id": "nv-lander-county",
     "name": "Lander County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32015",
     "lat": 39.90021,
@@ -73474,7 +73474,7 @@
   {
     "id": "nv-nye-county",
     "name": "Nye County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32023",
     "lat": 37.965864,
@@ -73522,7 +73522,7 @@
   {
     "id": "nv-storey-county",
     "name": "Storey County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32029",
     "lat": 39.438385,
@@ -73538,7 +73538,7 @@
   {
     "id": "nv-washoe-county",
     "name": "Washoe County, NV",
-    "type": "city",
+    "type": "county",
     "state": "NV",
     "fips": "32031",
     "lat": 40.73132,
@@ -73570,7 +73570,7 @@
   {
     "id": "ny-ecode360-al3660",
     "name": "Albany County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36001",
     "lat": 42.58824,
@@ -73618,7 +73618,7 @@
   {
     "id": "ny-ecode360-ca2794",
     "name": "Cayuga County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36011",
     "lat": 43.008546,
@@ -74434,7 +74434,7 @@
   {
     "id": "ny-ecode360-du1148",
     "name": "Dutchess County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36027",
     "lat": 41.754825,
@@ -74546,7 +74546,7 @@
   {
     "id": "ny-ecode360-mo0860",
     "name": "Monroe County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36055",
     "lat": 43.250347,
@@ -74562,7 +74562,7 @@
   {
     "id": "ny-orange-county",
     "name": "Orange County, NY",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36071",
     "lat": 41.40241,
@@ -74578,7 +74578,7 @@
   {
     "id": "ny-ecode360-pu1531",
     "name": "Putnam County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36079",
     "lat": 41.427907,
@@ -74594,7 +74594,7 @@
   {
     "id": "ny-ecode360-ro1021",
     "name": "Rockland County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36087",
     "lat": 41.154628,
@@ -74626,7 +74626,7 @@
   {
     "id": "ny-ecode360-sa2068",
     "name": "Saratoga County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36091",
     "lat": 43.106135,
@@ -74642,7 +74642,7 @@
   {
     "id": "ny-ecode360-su0867",
     "name": "Suffolk County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36103",
     "lat": 40.943554,
@@ -74658,7 +74658,7 @@
   {
     "id": "ny-ecode360-su1732",
     "name": "Sullivan County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36105",
     "lat": 41.719993,
@@ -74690,7 +74690,7 @@
   {
     "id": "ny-ecode360-to1768",
     "name": "Tompkins County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36109",
     "lat": 42.453006,
@@ -80082,7 +80082,7 @@
   {
     "id": "ny-ecode360-ul2774",
     "name": "Ulster County",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36111",
     "lat": 41.947212,
@@ -85186,7 +85186,7 @@
   {
     "id": "ny-westchester-county",
     "name": "Westchester County, NY",
-    "type": "city",
+    "type": "county",
     "state": "NY",
     "fips": "36119",
     "lat": 41.152686,
@@ -86978,7 +86978,7 @@
   {
     "id": "or-benton-county",
     "name": "Benton County, OR",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41003",
     "lat": 44.493882,
@@ -87426,7 +87426,7 @@
   {
     "id": "or-ecode360-cl4917",
     "name": "Clatsop County",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41007",
     "lat": 46.024509,
@@ -87474,7 +87474,7 @@
   {
     "id": "or-ecode360-ba6896",
     "name": "County of Baker",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": null,
     "lat": null,
@@ -87538,7 +87538,7 @@
   {
     "id": "or-deschutes-county",
     "name": "Deschutes County, OR",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41017",
     "lat": 43.915118,
@@ -87666,7 +87666,7 @@
   {
     "id": "or-ecode360-je4731",
     "name": "Jefferson County",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41031",
     "lat": 44.645151,
@@ -87698,7 +87698,7 @@
   {
     "id": "or-ecode360-jo4733",
     "name": "Josephine County",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41033",
     "lat": 42.386983,
@@ -87794,7 +87794,7 @@
   {
     "id": "or-lincoln-county",
     "name": "Lincoln County, OR",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41041",
     "lat": 44.641061,
@@ -88146,7 +88146,7 @@
   {
     "id": "or-union-county",
     "name": "Union County, OR",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41061",
     "lat": 45.304081,
@@ -88178,7 +88178,7 @@
   {
     "id": "or-washington-county",
     "name": "Washington County, OR",
-    "type": "city",
+    "type": "county",
     "state": "OR",
     "fips": "41067",
     "lat": 45.553542,
@@ -88210,7 +88210,7 @@
   {
     "id": "pa-ecode360-al1955",
     "name": "Allegheny County",
-    "type": "city",
+    "type": "county",
     "state": "PA",
     "fips": "42003",
     "lat": 40.469757,
@@ -93938,7 +93938,7 @@
   {
     "id": "pa-ecode360-de1994",
     "name": "Delaware County",
-    "type": "city",
+    "type": "county",
     "state": "PA",
     "fips": "42045",
     "lat": 39.916685,
@@ -94082,7 +94082,7 @@
   {
     "id": "pa-marshall-township-allegheny-county",
     "name": "Marshall Township (Allegheny County), PA",
-    "type": "city",
+    "type": "county",
     "state": "PA",
     "fips": null,
     "lat": null,
@@ -94322,7 +94322,7 @@
   {
     "id": "pa-southampton-township-franklin-county",
     "name": "Southampton Township, Franklin County, PA",
-    "type": "city",
+    "type": "county",
     "state": "PA",
     "fips": null,
     "lat": null,
@@ -100530,7 +100530,7 @@
   {
     "id": "pa-ecode360-yo1522",
     "name": "York County",
-    "type": "city",
+    "type": "county",
     "state": "PA",
     "fips": "42133",
     "lat": 39.921751,
@@ -101122,7 +101122,7 @@
   {
     "id": "sc-abbeville-county",
     "name": "Abbeville County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45001",
     "lat": 34.229041,
@@ -101154,7 +101154,7 @@
   {
     "id": "sc-aiken-county",
     "name": "Aiken County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45003",
     "lat": 33.550013,
@@ -101186,7 +101186,7 @@
   {
     "id": "sc-anderson-county",
     "name": "Anderson County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45007",
     "lat": 34.521235,
@@ -101234,7 +101234,7 @@
   {
     "id": "sc-bamberg-county",
     "name": "Bamberg County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45009",
     "lat": 33.203021,
@@ -101266,7 +101266,7 @@
   {
     "id": "sc-barnwell-county",
     "name": "Barnwell County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45011",
     "lat": 33.260552,
@@ -101314,7 +101314,7 @@
   {
     "id": "sc-beaufort-county",
     "name": "Beaufort County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45013",
     "lat": 32.358112,
@@ -101362,7 +101362,7 @@
   {
     "id": "sc-berkeley-county",
     "name": "Berkeley County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45015",
     "lat": 33.2077,
@@ -101426,7 +101426,7 @@
   {
     "id": "sc-calhoun-county",
     "name": "Calhoun County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45017",
     "lat": 33.67478,
@@ -101490,7 +101490,7 @@
   {
     "id": "sc-charleston-county",
     "name": "Charleston County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45019",
     "lat": 32.800458,
@@ -101538,7 +101538,7 @@
   {
     "id": "sc-cherokee-county",
     "name": "Cherokee County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45021",
     "lat": 35.049796,
@@ -101570,7 +101570,7 @@
   {
     "id": "sc-chester-county",
     "name": "Chester County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45023",
     "lat": 34.689339,
@@ -101666,7 +101666,7 @@
   {
     "id": "sc-colleton-county",
     "name": "Colleton County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45029",
     "lat": 32.849386,
@@ -101714,7 +101714,7 @@
   {
     "id": "sc-darlington-county",
     "name": "Darlington County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45031",
     "lat": 34.332185,
@@ -101746,7 +101746,7 @@
   {
     "id": "sc-dillon-county",
     "name": "Dillon County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45033",
     "lat": 34.390164,
@@ -101762,7 +101762,7 @@
   {
     "id": "sc-dorchester-county",
     "name": "Dorchester County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45035",
     "lat": 33.082186,
@@ -101810,7 +101810,7 @@
   {
     "id": "sc-edgefield-county",
     "name": "Edgefield County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45037",
     "lat": 33.779453,
@@ -101842,7 +101842,7 @@
   {
     "id": "sc-fairfield-county",
     "name": "Fairfield County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45039",
     "lat": 34.395669,
@@ -101858,7 +101858,7 @@
   {
     "id": "sc-florence-county",
     "name": "Florence County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45041",
     "lat": 34.028535,
@@ -101954,7 +101954,7 @@
   {
     "id": "sc-georgetown-county",
     "name": "Georgetown County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45043",
     "lat": 33.417531,
@@ -102034,7 +102034,7 @@
   {
     "id": "sc-greenwood-county",
     "name": "Greenwood County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45047",
     "lat": 34.155796,
@@ -102178,7 +102178,7 @@
   {
     "id": "sc-horry-county",
     "name": "Horry County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45051",
     "lat": 33.909269,
@@ -102258,7 +102258,7 @@
   {
     "id": "sc-jasper-county",
     "name": "Jasper County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45053",
     "lat": 32.430591,
@@ -102290,7 +102290,7 @@
   {
     "id": "sc-kershaw-county",
     "name": "Kershaw County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45055",
     "lat": 34.338356,
@@ -102338,7 +102338,7 @@
   {
     "id": "sc-lancaster-county",
     "name": "Lancaster County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45057",
     "lat": 34.686818,
@@ -102370,7 +102370,7 @@
   {
     "id": "sc-laurens-county",
     "name": "Laurens County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45059",
     "lat": 34.483676,
@@ -102402,7 +102402,7 @@
   {
     "id": "sc-lexington-county",
     "name": "Lexington County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45063",
     "lat": 33.892309,
@@ -102482,7 +102482,7 @@
   {
     "id": "sc-marion-county",
     "name": "Marion County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45067",
     "lat": 34.08362,
@@ -102530,7 +102530,7 @@
   {
     "id": "sc-mccormick-county",
     "name": "McCormick County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45065",
     "lat": 33.897599,
@@ -102690,7 +102690,7 @@
   {
     "id": "sc-oconee-county",
     "name": "Oconee County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45073",
     "lat": 34.748766,
@@ -102722,7 +102722,7 @@
   {
     "id": "sc-orangeburg-county",
     "name": "Orangeburg County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45075",
     "lat": 33.436135,
@@ -102818,7 +102818,7 @@
   {
     "id": "sc-pickens-county",
     "name": "Pickens County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45077",
     "lat": 34.885368,
@@ -103074,7 +103074,7 @@
   {
     "id": "sc-spartanburg-county",
     "name": "Spartanburg County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45083",
     "lat": 34.932014,
@@ -103138,7 +103138,7 @@
   {
     "id": "sc-sumter-county",
     "name": "Sumter County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45085",
     "lat": 33.91614,
@@ -103266,7 +103266,7 @@
   {
     "id": "sc-union-county",
     "name": "Union County, SC",
-    "type": "city",
+    "type": "county",
     "state": "SC",
     "fips": "45087",
     "lat": 34.690374,
@@ -103906,7 +103906,7 @@
   {
     "id": "tn-knox-county",
     "name": "Knox County, TN",
-    "type": "city",
+    "type": "county",
     "state": "TN",
     "fips": "47093",
     "lat": 35.992726,
@@ -103986,7 +103986,7 @@
   {
     "id": "tn-metro-government-of-nashville-and-davidson-county",
     "name": "Metro Government of Nashville and Davidson County, TN",
-    "type": "city",
+    "type": "county",
     "state": "TN",
     "fips": null,
     "lat": null,
@@ -104146,7 +104146,7 @@
   {
     "id": "tn-shelby-county",
     "name": "Shelby County, TN",
-    "type": "city",
+    "type": "county",
     "state": "TN",
     "fips": "47157",
     "lat": 35.184553,
@@ -114674,7 +114674,7 @@
   {
     "id": "ut-cache-county",
     "name": "Cache County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49005",
     "lat": 41.734118,
@@ -114834,7 +114834,7 @@
   {
     "id": "ut-davis-county",
     "name": "Davis County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49011",
     "lat": 41.037559,
@@ -115106,7 +115106,7 @@
   {
     "id": "ut-iron-county",
     "name": "Iron County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49021",
     "lat": 37.909304,
@@ -115586,7 +115586,7 @@
   {
     "id": "ut-salt-lake-county",
     "name": "Salt Lake County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49035",
     "lat": 40.667883,
@@ -115762,7 +115762,7 @@
   {
     "id": "ut-summit-county",
     "name": "Summit County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49043",
     "lat": 40.87206,
@@ -115858,7 +115858,7 @@
   {
     "id": "ut-uintah-county",
     "name": "Uintah County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49047",
     "lat": 40.125887,
@@ -115874,7 +115874,7 @@
   {
     "id": "ut-utah-county",
     "name": "Utah County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49049",
     "lat": 40.120418,
@@ -115938,7 +115938,7 @@
   {
     "id": "ut-wasatch-county",
     "name": "Wasatch County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49051",
     "lat": 40.334884,
@@ -115970,7 +115970,7 @@
   {
     "id": "ut-weber-county",
     "name": "Weber County, UT",
-    "type": "city",
+    "type": "county",
     "state": "UT",
     "fips": "49057",
     "lat": 41.270325,
@@ -116018,7 +116018,7 @@
   {
     "id": "va-accomack-county",
     "name": "Accomack County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51001",
     "lat": 37.765944,
@@ -116034,7 +116034,7 @@
   {
     "id": "va-albemarle-county",
     "name": "Albemarle County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51003",
     "lat": 38.024184,
@@ -116066,7 +116066,7 @@
   {
     "id": "va-alleghany-county",
     "name": "Alleghany County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51005",
     "lat": 37.787905,
@@ -116098,7 +116098,7 @@
   {
     "id": "va-ecode360-am4210",
     "name": "Amelia County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51007",
     "lat": 37.331927,
@@ -116114,7 +116114,7 @@
   {
     "id": "va-amherst-county",
     "name": "Amherst County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51009",
     "lat": 37.629301,
@@ -116146,7 +116146,7 @@
   {
     "id": "va-ecode360-ap1396",
     "name": "Appomattox County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51011",
     "lat": 37.370725,
@@ -116194,7 +116194,7 @@
   {
     "id": "va-augusta-county",
     "name": "Augusta County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51015",
     "lat": 38.17259,
@@ -116210,7 +116210,7 @@
   {
     "id": "va-bedford-county",
     "name": "Bedford County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51019",
     "lat": 37.312257,
@@ -116306,7 +116306,7 @@
   {
     "id": "va-bland-county",
     "name": "Bland County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51021",
     "lat": 37.130612,
@@ -116338,7 +116338,7 @@
   {
     "id": "va-botetourt-county",
     "name": "Botetourt County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51023",
     "lat": 37.565482,
@@ -116370,7 +116370,7 @@
   {
     "id": "va-brunswick-county",
     "name": "Brunswick County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51025",
     "lat": 36.764204,
@@ -116386,7 +116386,7 @@
   {
     "id": "va-ecode360-bu1535",
     "name": "Buchanan County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51027",
     "lat": 37.26812,
@@ -116450,7 +116450,7 @@
   {
     "id": "va-caroline-county",
     "name": "Caroline County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51033",
     "lat": 38.028033,
@@ -116466,7 +116466,7 @@
   {
     "id": "va-ecode360-ca1276",
     "name": "Carroll County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51035",
     "lat": 36.731963,
@@ -116482,7 +116482,7 @@
   {
     "id": "va-charles-city-county",
     "name": "Charles City County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51036",
     "lat": 37.361054,
@@ -116562,7 +116562,7 @@
   {
     "id": "va-chesterfield-county",
     "name": "Chesterfield County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51041",
     "lat": 37.378434,
@@ -116738,7 +116738,7 @@
   {
     "id": "va-craig-county",
     "name": "Craig County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51045",
     "lat": 37.473603,
@@ -116770,7 +116770,7 @@
   {
     "id": "va-culpeper-county",
     "name": "Culpeper County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51047",
     "lat": 38.48593,
@@ -116802,7 +116802,7 @@
   {
     "id": "va-cumberland-county",
     "name": "Cumberland County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51049",
     "lat": 37.520189,
@@ -116866,7 +116866,7 @@
   {
     "id": "va-dinwiddie-county",
     "name": "Dinwiddie County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51053",
     "lat": 37.073498,
@@ -116914,7 +116914,7 @@
   {
     "id": "va-essex-county",
     "name": "Essex County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51057",
     "lat": 37.936389,
@@ -116930,7 +116930,7 @@
   {
     "id": "va-fairfax-county",
     "name": "Fairfax County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51059",
     "lat": 38.82952,
@@ -116994,7 +116994,7 @@
   {
     "id": "va-fauquier-county",
     "name": "Fauquier County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51061",
     "lat": 38.744096,
@@ -117010,7 +117010,7 @@
   {
     "id": "va-floyd-county",
     "name": "Floyd County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51063",
     "lat": 36.931433,
@@ -117026,7 +117026,7 @@
   {
     "id": "va-fluvanna-county",
     "name": "Fluvanna County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51065",
     "lat": 37.830584,
@@ -117042,7 +117042,7 @@
   {
     "id": "va-franklin-county",
     "name": "Franklin County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51067",
     "lat": 36.991186,
@@ -117058,7 +117058,7 @@
   {
     "id": "va-ecode360-fr1364",
     "name": "Frederick County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51069",
     "lat": 39.20366,
@@ -117122,7 +117122,7 @@
   {
     "id": "va-gloucester-county",
     "name": "Gloucester County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51073",
     "lat": 37.403541,
@@ -117138,7 +117138,7 @@
   {
     "id": "va-goochland-county",
     "name": "Goochland County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51075",
     "lat": 37.718814,
@@ -117170,7 +117170,7 @@
   {
     "id": "va-greene-county",
     "name": "Greene County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51079",
     "lat": 38.297981,
@@ -117186,7 +117186,7 @@
   {
     "id": "va-greensville-county",
     "name": "Greensville County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51081",
     "lat": 36.680336,
@@ -117218,7 +117218,7 @@
   {
     "id": "va-halifax-county",
     "name": "Halifax County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51083",
     "lat": 36.766461,
@@ -117266,7 +117266,7 @@
   {
     "id": "va-hanover-county",
     "name": "Hanover County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51085",
     "lat": 37.760215,
@@ -117314,7 +117314,7 @@
   {
     "id": "va-henrico-county",
     "name": "Henrico County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51087",
     "lat": 37.43752,
@@ -117330,7 +117330,7 @@
   {
     "id": "va-henry-county",
     "name": "Henry County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51089",
     "lat": 36.620612,
@@ -117410,7 +117410,7 @@
   {
     "id": "va-isle-of-wight-county",
     "name": "Isle of Wight County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51093",
     "lat": 36.901418,
@@ -117426,7 +117426,7 @@
   {
     "id": "va-james-city-county",
     "name": "James City County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51095",
     "lat": 37.324837,
@@ -117474,7 +117474,7 @@
   {
     "id": "va-king-and-queen-county",
     "name": "King and Queen County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51097",
     "lat": 37.717772,
@@ -117490,7 +117490,7 @@
   {
     "id": "va-king-george-county",
     "name": "King George County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51099",
     "lat": 38.27718,
@@ -117506,7 +117506,7 @@
   {
     "id": "va-king-william-county",
     "name": "King William County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51101",
     "lat": 37.70826,
@@ -117522,7 +117522,7 @@
   {
     "id": "va-lancaster-county",
     "name": "Lancaster County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51103",
     "lat": 37.704843,
@@ -117570,7 +117570,7 @@
   {
     "id": "va-louisa-county",
     "name": "Louisa County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51109",
     "lat": 37.972704,
@@ -117602,7 +117602,7 @@
   {
     "id": "va-lunenburg-county",
     "name": "Lunenburg County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51111",
     "lat": 36.945555,
@@ -117650,7 +117650,7 @@
   {
     "id": "va-madison-county",
     "name": "Madison County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51113",
     "lat": 38.412059,
@@ -117730,7 +117730,7 @@
   {
     "id": "va-ecode360-ma1886",
     "name": "Mathews County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51115",
     "lat": 37.425348,
@@ -117746,7 +117746,7 @@
   {
     "id": "va-mecklenburg-county",
     "name": "Mecklenburg County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51117",
     "lat": 36.687256,
@@ -117762,7 +117762,7 @@
   {
     "id": "va-middlesex-county",
     "name": "Middlesex County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51119",
     "lat": 37.606975,
@@ -117794,7 +117794,7 @@
   {
     "id": "va-montgomery-county",
     "name": "Montgomery County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51121",
     "lat": 37.175538,
@@ -117826,7 +117826,7 @@
   {
     "id": "va-nelson-county",
     "name": "Nelson County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51125",
     "lat": 37.789079,
@@ -117842,7 +117842,7 @@
   {
     "id": "va-new-kent-county",
     "name": "New Kent County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51127",
     "lat": 37.51016,
@@ -117906,7 +117906,7 @@
   {
     "id": "va-ecode360-no1673",
     "name": "Northumberland County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51133",
     "lat": 37.856974,
@@ -117954,7 +117954,7 @@
   {
     "id": "va-orange-county",
     "name": "Orange County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51137",
     "lat": 38.249326,
@@ -117986,7 +117986,7 @@
   {
     "id": "va-ecode360-pa1470",
     "name": "Page County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51139",
     "lat": 38.623209,
@@ -118050,7 +118050,7 @@
   {
     "id": "va-powhatan-county",
     "name": "Powhatan County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51145",
     "lat": 37.549404,
@@ -118066,7 +118066,7 @@
   {
     "id": "va-prince-edward-county",
     "name": "Prince Edward County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51147",
     "lat": 37.224881,
@@ -118082,7 +118082,7 @@
   {
     "id": "va-prince-george-county",
     "name": "Prince George County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51149",
     "lat": 37.187325,
@@ -118098,7 +118098,7 @@
   {
     "id": "va-prince-william-county",
     "name": "Prince William County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51153",
     "lat": 38.701119,
@@ -118178,7 +118178,7 @@
   {
     "id": "va-ecode360-ra1333",
     "name": "Rappahannock County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51157",
     "lat": 38.684522,
@@ -118210,7 +118210,7 @@
   {
     "id": "va-roanoke-county",
     "name": "Roanoke County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51161",
     "lat": 37.330792,
@@ -118242,7 +118242,7 @@
   {
     "id": "va-rockingham-county",
     "name": "Rockingham County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51165",
     "lat": 38.507612,
@@ -118306,7 +118306,7 @@
   {
     "id": "va-ecode360-sh1548",
     "name": "Shenandoah County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51171",
     "lat": 38.856204,
@@ -118354,7 +118354,7 @@
   {
     "id": "va-smyth-county",
     "name": "Smyth County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51173",
     "lat": 36.842318,
@@ -118402,7 +118402,7 @@
   {
     "id": "va-southampton-county",
     "name": "Southampton County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51175",
     "lat": 36.720068,
@@ -118418,7 +118418,7 @@
   {
     "id": "va-spotsylvania-county",
     "name": "Spotsylvania County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51177",
     "lat": 38.182431,
@@ -118450,7 +118450,7 @@
   {
     "id": "va-stafford-county",
     "name": "Stafford County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51179",
     "lat": 38.423084,
@@ -118498,7 +118498,7 @@
   {
     "id": "va-surry-county",
     "name": "Surry County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51181",
     "lat": 37.119761,
@@ -118514,7 +118514,7 @@
   {
     "id": "va-sussex-county",
     "name": "Sussex County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51183",
     "lat": 36.926645,
@@ -118546,7 +118546,7 @@
   {
     "id": "va-tazewell-county",
     "name": "Tazewell County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51185",
     "lat": 37.125395,
@@ -118802,7 +118802,7 @@
   {
     "id": "va-ecode360-wa1232",
     "name": "Warren County",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51187",
     "lat": 38.908221,
@@ -118850,7 +118850,7 @@
   {
     "id": "va-washington-county",
     "name": "Washington County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51191",
     "lat": 36.747814,
@@ -118898,7 +118898,7 @@
   {
     "id": "va-westmoreland-county",
     "name": "Westmoreland County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51193",
     "lat": 38.109311,
@@ -118962,7 +118962,7 @@
   {
     "id": "va-wise-county",
     "name": "Wise County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51195",
     "lat": 36.974561,
@@ -119010,7 +119010,7 @@
   {
     "id": "va-york-county",
     "name": "York County, VA",
-    "type": "city",
+    "type": "county",
     "state": "VA",
     "fips": "51199",
     "lat": 37.220914,
@@ -120178,7 +120178,7 @@
   {
     "id": "wa-ecode360-co4708",
     "name": "Columbia County",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53013",
     "lat": 46.29285,
@@ -120210,7 +120210,7 @@
   {
     "id": "wa-ecode360-sk4778",
     "name": "County of Skamania",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": null,
     "lat": null,
@@ -120322,7 +120322,7 @@
   {
     "id": "wa-franklin-county",
     "name": "Franklin County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53021",
     "lat": 46.537502,
@@ -120354,7 +120354,7 @@
   {
     "id": "wa-grant-county",
     "name": "Grant County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53025",
     "lat": 47.213633,
@@ -120370,7 +120370,7 @@
   {
     "id": "wa-grays-harbor-county",
     "name": "Grays Harbor County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53027",
     "lat": 47.113732,
@@ -120386,7 +120386,7 @@
   {
     "id": "wa-island-county",
     "name": "Island County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53029",
     "lat": 48.158554,
@@ -120434,7 +120434,7 @@
   {
     "id": "wa-ecode360-ki6857",
     "name": "Kittitas County",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53037",
     "lat": 47.124441,
@@ -120450,7 +120450,7 @@
   {
     "id": "wa-klickitat-county",
     "name": "Klickitat County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53039",
     "lat": 45.870446,
@@ -120530,7 +120530,7 @@
   {
     "id": "wa-mason-county",
     "name": "Mason County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53045",
     "lat": 47.350832,
@@ -120850,7 +120850,7 @@
   {
     "id": "wa-spokane-county",
     "name": "Spokane County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53063",
     "lat": 47.620375,
@@ -120898,7 +120898,7 @@
   {
     "id": "wa-thurston-county",
     "name": "Thurston County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53067",
     "lat": 46.935822,
@@ -121234,7 +121234,7 @@
   {
     "id": "wa-walla-walla-county",
     "name": "Walla Walla County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53071",
     "lat": 46.254606,
@@ -121266,7 +121266,7 @@
   {
     "id": "wa-ecode360-wh4863",
     "name": "Whatcom County",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53073",
     "lat": 48.842653,
@@ -121298,7 +121298,7 @@
   {
     "id": "wa-whitman-county",
     "name": "Whitman County, WA",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53075",
     "lat": 46.905944,
@@ -121330,7 +121330,7 @@
   {
     "id": "wa-ecode360-ya4874",
     "name": "Yakima County",
-    "type": "city",
+    "type": "county",
     "state": "WA",
     "fips": "53077",
     "lat": 46.456558,
@@ -121346,7 +121346,7 @@
   {
     "id": "wi-ecode360-ad3603",
     "name": "Adams County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55001",
     "lat": 43.973757,
@@ -121666,7 +121666,7 @@
   {
     "id": "wi-burnett-county",
     "name": "Burnett County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55013",
     "lat": 45.866897,
@@ -122722,7 +122722,7 @@
   {
     "id": "wi-crawford-county",
     "name": "Crawford County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55023",
     "lat": 43.242768,
@@ -122866,7 +122866,7 @@
   {
     "id": "wi-dodge-county",
     "name": "Dodge County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55027",
     "lat": 43.429628,
@@ -122962,7 +122962,7 @@
   {
     "id": "wi-fond-du-lac-county",
     "name": "Fond du Lac County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55039",
     "lat": 43.754722,
@@ -123058,7 +123058,7 @@
   {
     "id": "wi-ecode360-gr2181",
     "name": "Grant County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55043",
     "lat": 42.870028,
@@ -123090,7 +123090,7 @@
   {
     "id": "wi-ecode360-gr2053",
     "name": "Green Lake County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55047",
     "lat": 43.780247,
@@ -123298,7 +123298,7 @@
   {
     "id": "wi-jefferson-county",
     "name": "Jefferson County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55055",
     "lat": 43.013804,
@@ -123314,7 +123314,7 @@
   {
     "id": "wi-juneau-county",
     "name": "Juneau County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55057",
     "lat": 43.932836,
@@ -123506,7 +123506,7 @@
   {
     "id": "wi-lincoln-county",
     "name": "Lincoln County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55069",
     "lat": 45.333148,
@@ -123586,7 +123586,7 @@
   {
     "id": "wi-marathon-county",
     "name": "Marathon County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55073",
     "lat": 44.898036,
@@ -123762,7 +123762,7 @@
   {
     "id": "wi-milwaukee-county",
     "name": "Milwaukee County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55079",
     "lat": 42.912643,
@@ -123810,7 +123810,7 @@
   {
     "id": "wi-monroe-county",
     "name": "Monroe County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55081",
     "lat": 43.945175,
@@ -124002,7 +124002,7 @@
   {
     "id": "wi-ecode360-on3970",
     "name": "Oneida County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55085",
     "lat": 45.716176,
@@ -124034,7 +124034,7 @@
   {
     "id": "wi-outagamie-county",
     "name": "Outagamie County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55087",
     "lat": 44.418226,
@@ -124130,7 +124130,7 @@
   {
     "id": "wi-ecode360-pi1852",
     "name": "Pierce County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55093",
     "lat": 44.725336,
@@ -124178,7 +124178,7 @@
   {
     "id": "wi-polk-county",
     "name": "Polk County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55095",
     "lat": 45.462041,
@@ -124194,7 +124194,7 @@
   {
     "id": "wi-portage-county",
     "name": "Portage County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55097",
     "lat": 44.476246,
@@ -124226,7 +124226,7 @@
   {
     "id": "wi-ecode360-pr2691",
     "name": "Price County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55099",
     "lat": 45.679072,
@@ -124242,7 +124242,7 @@
   {
     "id": "wi-racine-county",
     "name": "Racine County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55101",
     "lat": 42.780392,
@@ -124354,7 +124354,7 @@
   {
     "id": "wi-richland-county",
     "name": "Richland County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55103",
     "lat": 43.376199,
@@ -124450,7 +124450,7 @@
   {
     "id": "wi-rusk-county",
     "name": "Rusk County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55107",
     "lat": 45.472734,
@@ -124482,7 +124482,7 @@
   {
     "id": "wi-sauk-county",
     "name": "Sauk County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55111",
     "lat": 43.428001,
@@ -124498,7 +124498,7 @@
   {
     "id": "wi-sawyer-county",
     "name": "Sawyer County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55113",
     "lat": 45.864999,
@@ -124562,7 +124562,7 @@
   {
     "id": "wi-shawano-county",
     "name": "Shawano County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55115",
     "lat": 44.789641,
@@ -124690,7 +124690,7 @@
   {
     "id": "wi-st-croix-county",
     "name": "St. Croix County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55109",
     "lat": 45.028959,
@@ -125618,7 +125618,7 @@
   {
     "id": "wi-vernon-county",
     "name": "Vernon County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55123",
     "lat": 43.599366,
@@ -127314,7 +127314,7 @@
   {
     "id": "wi-walworth-county",
     "name": "Walworth County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55127",
     "lat": 42.66811,
@@ -127330,7 +127330,7 @@
   {
     "id": "wi-washburn-county",
     "name": "Washburn County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55129",
     "lat": 45.892489,
@@ -127346,7 +127346,7 @@
   {
     "id": "wi-ecode360-wa3863",
     "name": "Washington County",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55131",
     "lat": 43.391156,
@@ -127378,7 +127378,7 @@
   {
     "id": "wi-watertown-jefferson-county",
     "name": "Watertown (Jefferson County), WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": null,
     "lat": null,
@@ -127490,7 +127490,7 @@
   {
     "id": "wi-waushara-county",
     "name": "Waushara County, WI",
-    "type": "city",
+    "type": "county",
     "state": "WI",
     "fips": "55137",
     "lat": 44.112823,
