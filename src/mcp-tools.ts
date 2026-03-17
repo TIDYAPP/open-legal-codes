@@ -8,6 +8,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { CodeStore } from './store/index.js';
+import { registryStore } from './registry/store.js';
 import type { TocNode } from './types.js';
 import { BRANDING } from './branding.js';
 import { permalinkUrl } from './permalink.js';
@@ -33,17 +34,30 @@ export function createMcpServer(store: CodeStore): McpServer {
         return { content: [{ type: 'text', text: 'Provide at least a query, state, or type.' }] };
       }
 
-      let results = store.listJurisdictions({ state: state || undefined, type: type || undefined });
+      // Search cached jurisdictions first
+      let cached = store.listJurisdictions({ state: state || undefined, type: type || undefined });
       if (query) {
         const queryLower = query.toLowerCase();
-        results = results.filter((j) => j.name.toLowerCase().includes(queryLower) || j.id.includes(queryLower));
+        cached = cached.filter((j) => j.name.toLowerCase().includes(queryLower) || j.id.includes(queryLower));
       }
 
-      if (results.length === 0) {
+      if (cached.length > 0) {
+        const lines = cached.map((j) => `${j.id} — ${j.name} (${j.publisher.name}) [cached]`);
+        return { content: [{ type: 'text', text: lines.join('\n') }] };
+      }
+
+      // Fall back to registry (full catalog)
+      let registryResults = query
+        ? registryStore.findByName(query, state || undefined)
+        : registryStore.query({ state: state || undefined, type: type || undefined });
+      if (type) registryResults = registryResults.filter(e => e.type === type);
+      const top = registryResults.slice(0, 20);
+
+      if (top.length === 0) {
         return { content: [{ type: 'text', text: `No jurisdictions found matching query=${query || ''} state=${state || ''} type=${type || ''}` }] };
       }
 
-      const lines = results.map((j) => `${j.id} — ${j.name} (${j.publisher.name})`);
+      const lines = top.map((e) => `${e.id} — ${e.name} (${e.publisher}) [${e.status}]`);
       return { content: [{ type: 'text', text: lines.join('\n') }] };
     }
   );
@@ -128,30 +142,64 @@ export function createMcpServer(store: CodeStore): McpServer {
 
   server.tool(
     'search_code',
-    'Search for sections containing specific terms within a jurisdiction\'s legal code.',
+    'Search for sections containing specific terms. Provide a jurisdiction ID to search within one jurisdiction, or omit it to search across all cached jurisdictions (optionally filtered by state).',
     {
-      jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-mountain-view"'),
+      jurisdiction: z.string().optional().describe('Jurisdiction ID, e.g. "ca-mountain-view". Omit to search across all cached jurisdictions.'),
+      state: z.string().optional().describe('Two-letter state code to filter cross-jurisdiction search, e.g. "CA"'),
       query: z.string().describe('Search terms to look for in code text'),
       max_results: z.number().optional().describe('Maximum results to return (default: 10)'),
     },
-    async ({ jurisdiction, query, max_results }) => {
-      const j = store.getJurisdiction(jurisdiction);
-      if (!j) {
-        return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found.` }] };
-      }
-
+    async ({ jurisdiction, state, query, max_results }) => {
       const limit = max_results ?? 10;
-      const results = store.search(jurisdiction, query, limit).map((r) => ({
-        ...r,
-        url: permalinkUrl(j, r.path),
-      }));
 
-      if (results.length === 0) {
-        return { content: [{ type: 'text', text: `No sections found matching "${query}" in ${jurisdiction}.` }] };
+      // Single-jurisdiction search
+      if (jurisdiction) {
+        const j = store.getJurisdiction(jurisdiction);
+        if (!j) {
+          return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found.` }] };
+        }
+
+        const results = store.search(jurisdiction, query, limit).map((r) => ({
+          ...r,
+          url: permalinkUrl(j, r.path),
+        }));
+
+        if (results.length === 0) {
+          return { content: [{ type: 'text', text: `No sections found matching "${query}" in ${jurisdiction}.` }] };
+        }
+
+        const lines = results.map((m) =>
+          `${m.path}\n  ${m.num} ${m.heading}\n  ${m.url}\n  ${m.snippet}`
+        );
+        return { content: [{ type: 'text', text: lines.join('\n\n') }] };
       }
 
-      const lines = results.map((m) =>
-        `${m.path}\n  ${m.num} ${m.heading}\n  ${m.url}\n  ${m.snippet}`
+      // Cross-jurisdiction search
+      const jurisdictions = store.listJurisdictions({ state: state || undefined });
+      const allResults: Array<{ jurisdictionId: string; jurisdictionName: string; path: string; num: string; heading: string; snippet: string; url: string }> = [];
+
+      for (const j of jurisdictions) {
+        if (!store.hasSearchIndex(j.id)) continue;
+        const results = store.search(j.id, query, limit);
+        for (const r of results) {
+          allResults.push({
+            jurisdictionId: j.id,
+            jurisdictionName: j.name,
+            ...r,
+            url: permalinkUrl(j, r.path),
+          });
+          if (allResults.length >= limit) break;
+        }
+        if (allResults.length >= limit) break;
+      }
+
+      if (allResults.length === 0) {
+        const scope = state ? `cached jurisdictions in ${state}` : 'all cached jurisdictions';
+        return { content: [{ type: 'text', text: `No sections found matching "${query}" across ${scope}.` }] };
+      }
+
+      const lines = allResults.map((m) =>
+        `[${m.jurisdictionName}] ${m.path}\n  ${m.num} ${m.heading}\n  ${m.url}\n  ${m.snippet}`
       );
       return { content: [{ type: 'text', text: lines.join('\n\n') }] };
     }

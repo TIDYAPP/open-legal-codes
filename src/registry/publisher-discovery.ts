@@ -26,17 +26,19 @@ function slugify(text: string): string {
 export async function discoverPublisher(
   name: string,
   state: string,
-  opts?: { fips?: string; lat?: number; lng?: number; population?: number },
+  opts?: { fips?: string; lat?: number; lng?: number; population?: number; type?: 'city' | 'county' },
 ): Promise<RegistryEntry | null> {
   const slug = slugify(name);
   const id = `${state.toLowerCase()}-${slug}`;
 
   console.log(`[discovery] Looking up publisher for ${name}, ${state}...`);
 
+  const type = opts?.type || inferType(name);
+
   // 1. Try Municode
   const municodeResult = await tryMunicode(name, state);
   if (municodeResult) {
-    const entry = buildEntry(id, name, state, 'municode', municodeResult.sourceId, municodeResult.sourceUrl, opts);
+    const entry = buildEntry(id, name, state, 'municode', municodeResult.sourceId, municodeResult.sourceUrl, { ...opts, type });
     console.log(`[discovery] Found ${name}, ${state} on Municode`);
     await persistEntry(entry);
     return entry;
@@ -45,7 +47,7 @@ export async function discoverPublisher(
   // 2. Try AMLegal
   const amlegalResult = await tryAmlegal(name, state);
   if (amlegalResult) {
-    const entry = buildEntry(id, name, state, 'amlegal', amlegalResult.sourceId, amlegalResult.sourceUrl, opts);
+    const entry = buildEntry(id, name, state, 'amlegal', amlegalResult.sourceId, amlegalResult.sourceUrl, { ...opts, type });
     console.log(`[discovery] Found ${name}, ${state} on AMLegal`);
     await persistEntry(entry);
     return entry;
@@ -99,6 +101,13 @@ async function tryAmlegal(name: string, state: string): Promise<{ sourceId: stri
   return null;
 }
 
+function inferType(name: string): 'city' | 'county' {
+  const lower = name.toLowerCase();
+  if (lower.includes('city and county') || lower.includes('city & county')) return 'city';
+  if (lower.includes('county')) return 'county';
+  return 'city';
+}
+
 function buildEntry(
   id: string,
   name: string,
@@ -106,12 +115,12 @@ function buildEntry(
   publisher: string,
   sourceId: string,
   sourceUrl: string,
-  opts?: { fips?: string; lat?: number; lng?: number; population?: number },
+  opts?: { fips?: string; lat?: number; lng?: number; population?: number; type?: 'city' | 'county' },
 ): RegistryEntry {
   return {
     id,
     name: `${name}, ${state}`,
-    type: 'city',
+    type: opts?.type || 'city',
     state,
     fips: opts?.fips || null,
     lat: opts?.lat || null,

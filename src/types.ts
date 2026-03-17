@@ -5,7 +5,7 @@
 export type JurisdictionType = 'federal' | 'state' | 'county' | 'city' | 'hoa';
 
 export interface PublisherInfo {
-  name: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo' | 'manual';
+  name: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo' | 'ny-openleg' | 'manual';
   /** Publisher's internal ID for this code (e.g., Municode clientId) */
   sourceId: string;
   /** Canonical URL on publisher site */
@@ -153,7 +153,7 @@ export interface RawContent {
 }
 
 export interface CrawlerAdapter {
-  readonly publisherName: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo' | 'manual';
+  readonly publisherName: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo' | 'ny-openleg' | 'manual';
   /** Discover all available jurisdictions from this publisher */
   listJurisdictions(state?: string): AsyncIterable<Jurisdiction>;
   /** Fetch the table of contents tree for a jurisdiction */
