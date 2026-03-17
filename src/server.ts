@@ -1,3 +1,11 @@
+// Prevent unhandled errors from crashing the server
+process.on('unhandledRejection', (reason) => {
+  console.error('[FATAL] Unhandled Promise Rejection:', reason);
+});
+process.on('uncaughtException', (error) => {
+  console.error('[FATAL] Uncaught Exception:', error);
+});
+
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { compress } from 'hono/compress';

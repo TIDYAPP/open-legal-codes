@@ -17,15 +17,20 @@ export function createMcpRoutes(store: CodeStore): Hono {
   // Each request gets its own stateless transport + server instance.
   // This is fine because all tools are read-only and fast.
   app.post('/', async (c) => {
-    const server = createMcpServer(store);
-    const transport = new WebStandardStreamableHTTPServerTransport({
-      sessionIdGenerator: undefined, // stateless
-    });
+    try {
+      const server = createMcpServer(store);
+      const transport = new WebStandardStreamableHTTPServerTransport({
+        sessionIdGenerator: undefined, // stateless
+      });
 
-    await server.connect(transport);
+      await server.connect(transport);
 
-    const response = await transport.handleRequest(c.req.raw);
-    return response;
+      const response = await transport.handleRequest(c.req.raw);
+      return response;
+    } catch (err: any) {
+      console.error('[MCP] Request error:', err.message);
+      return c.json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null }, 500);
+    }
   });
 
   // GET for SSE stream (optional, for server-initiated notifications)
