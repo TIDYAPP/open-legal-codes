@@ -2,8 +2,9 @@ services:
   api:
     build: .
     restart: unless-stopped
+    network_mode: host
     volumes:
-      - codes_data:/app/codes
+      - /root/codes:/app/codes
     environment:
       - PORT=3100
       - CORS_ORIGINS=${CORS_ORIGINS:-https://openlegalcodes.org,http://localhost:3000}
@@ -11,17 +12,12 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
-    depends_on:
-      - api
-    ports:
-      - "80:80"
-      - "443:443"
+    network_mode: host
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
 
 volumes:
-  codes_data:
   caddy_data:
   caddy_config:
