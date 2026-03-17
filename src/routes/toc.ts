@@ -1,10 +1,8 @@
 import { Hono } from 'hono';
 import type { TocNode } from '../types.js';
 import { store } from '../store/index.js';
-import { crawlTracker } from '../crawl-tracker.js';
-import { registryStore } from '../registry/store.js';
-import { triggerAutoCrawl } from '../auto-crawl.js';
 import { BRANDING } from '../branding.js';
+import { resolveJurisdiction, crawlingResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
 
 export const tocRoutes = new Hono();
 
@@ -39,46 +37,11 @@ tocRoutes.get('/:id/toc', (c) => {
 
   const toc = store.getToc(id);
   if (!toc) {
-    const jurisdiction = store.getJurisdiction(id);
-    if (!jurisdiction) {
-      // Check registry and trigger auto-crawl if known
-      const entry = registryStore.getById(id);
-      if (entry) {
-        triggerAutoCrawl(entry);
-        const status = crawlTracker.getStatus(id);
-        return c.json(
-          {
-            status: 'CRAWL_IN_PROGRESS',
-            message: `Data for '${id}' is being fetched.`,
-            progress: status ? { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed } : { phase: 'toc', total: 0, completed: 0 },
-            startedAt: status?.startedAt || new Date().toISOString(),
-            retryAfter: 30,
-          },
-          202
-        );
-      }
-      return c.json(
-        { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
-        404
-      );
-    }
-    const status = crawlTracker.getStatus(id);
-    if (status) {
-      return c.json(
-        {
-          status: 'CRAWL_IN_PROGRESS',
-          message: `Data for '${id}' is being fetched. This can take up to 10 minutes.`,
-          progress: { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed },
-          startedAt: status.startedAt,
-          retryAfter: 30,
-        },
-        202
-      );
-    }
-    return c.json(
-      { error: { code: 'NOT_FOUND', message: `No table of contents available for '${id}'` } },
-      404
-    );
+    const resolved = resolveJurisdiction(id);
+    if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
+    if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
+    // cached but no TOC yet — check if still crawling
+    return notFoundOrCrawling(c, id, `No table of contents available for '${id}'`);
   }
 
   const children = depth ? limitDepth(toc.children, depth) : toc.children;
@@ -97,57 +60,18 @@ tocRoutes.get('/:id/toc/*', (c) => {
   const id = c.req.param('id');
   const path = c.req.path.split('/toc/')[1] || '';
 
-  const jurisdiction = store.getJurisdiction(id);
-  if (!jurisdiction) {
-    // Check registry and trigger auto-crawl if known
-    const entry = registryStore.getById(id);
-    if (entry) {
-      triggerAutoCrawl(entry);
-      const status = crawlTracker.getStatus(id);
-      return c.json(
-        {
-          status: 'CRAWL_IN_PROGRESS',
-          message: `Data for '${id}' is being fetched.`,
-          progress: status ? { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed } : { phase: 'toc', total: 0, completed: 0 },
-          startedAt: status?.startedAt || new Date().toISOString(),
-          retryAfter: 30,
-        },
-        202
-      );
-    }
-    return c.json(
-      { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
-      404
-    );
-  }
+  const resolved = resolveJurisdiction(id);
+  if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
+  if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
 
   const toc = store.getToc(id);
   if (!toc) {
-    const status = crawlTracker.getStatus(id);
-    if (status) {
-      return c.json(
-        {
-          status: 'CRAWL_IN_PROGRESS',
-          message: `Data for '${id}' is being fetched. This can take up to 10 minutes.`,
-          progress: { phase: status.progress.phase, total: status.progress.total, completed: status.progress.completed },
-          startedAt: status.startedAt,
-          retryAfter: 30,
-        },
-        202
-      );
-    }
-    return c.json(
-      { error: { code: 'NOT_FOUND', message: `No table of contents available for '${id}'` } },
-      404
-    );
+    return notFoundOrCrawling(c, id, `No table of contents available for '${id}'`);
   }
 
   const node = findNode(toc.children, path);
   if (!node) {
-    return c.json(
-      { error: { code: 'NOT_FOUND', message: `Path '${path}' not found in '${id}'` } },
-      404
-    );
+    return notFoundResponse(c, `Path '${path}' not found in '${id}'`);
   }
 
   return c.json({

@@ -61,6 +61,16 @@ api.route('/lookup', lookupRoutes);
 api.route('/search', globalSearchRoutes);
 api.route('/registry', registryRoutes);
 
+api.get('/status', (c) =>
+  c.json({
+    status: 'ok',
+    uptime_seconds: Math.floor((Date.now() - startTime) / 1000),
+    registry_total: registryStore.size,
+    cached_total: store.listJurisdictions().length,
+    timestamp: new Date().toISOString(),
+  })
+);
+
 app.route('/api/v1', api);
 
 // MCP Streamable HTTP endpoint (zero-install MCP access)

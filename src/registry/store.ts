@@ -130,10 +130,13 @@ export class RegistryStore {
       pubList.push(entry);
       this.byPublisher.set(entry.publisher, pubList);
 
-      // bySlug index — keyed as "{state}-{slugified-name}"
-      if (entry.state) {
-        const slug = slugify(stripStateSuffix(stripPrefix(entry.name)));
-        const slugKey = `${entry.state.toLowerCase()}-${slug}`;
+      // bySlug index — keyed as "{state}-{slugified-name}" or "federal-{id-slug}" for federal entries
+      const slugKey = entry.state
+        ? `${entry.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(entry.name)))}`
+        : entry.type === 'federal'
+          ? `federal-${entry.id.replace(/^us-/, '')}`
+          : null;
+      if (slugKey) {
         const existing = this.bySlug.get(slugKey);
         if (!existing) {
           this.bySlug.set(slugKey, entry);
@@ -348,8 +351,10 @@ export class RegistryStore {
       list.push(entry);
       this.byState.set(entry.state, list);
 
-      const slug = slugify(stripStateSuffix(stripPrefix(entry.name)));
-      const slugKey = `${entry.state.toLowerCase()}-${slug}`;
+      const slugKey = `${entry.state.toLowerCase()}-${slugify(stripStateSuffix(stripPrefix(entry.name)))}`;
+      this.bySlug.set(slugKey, entry);
+    } else if (entry.type === 'federal') {
+      const slugKey = `federal-${entry.id.replace(/^us-/, '')}`;
       this.bySlug.set(slugKey, entry);
     }
     const pubList = this.byPublisher.get(entry.publisher) || [];

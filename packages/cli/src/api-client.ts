@@ -39,6 +39,10 @@ export interface SearchResult {
 
 export interface CrawlingResponse {
   crawling: true;
+  status: string;
+  message: string;
+  progress: { phase: string; total: number; completed: number };
+  startedAt: string;
   retryAfter: number;
 }
 
@@ -68,8 +72,8 @@ export class ApiClient {
     const response = await fetch(url.toString());
 
     if (response.status === 202) {
-      const retryAfter = parseInt(response.headers.get('retry-after') || '30', 10);
-      return { crawling: true, retryAfter } as CrawlingResponse;
+      const body = await response.json();
+      return { crawling: true, ...body } as CrawlingResponse;
     }
 
     if (!response.ok) {

@@ -54,7 +54,7 @@ describe('GET /api/v1/jurisdictions', () => {
 });
 
 describe('GET /api/v1/jurisdictions/:id', () => {
-  it('returns single jurisdiction', async () => {
+  it.skipIf(!hasCachedData)('returns single jurisdiction', async () => {
     const res = await fetch('/api/v1/jurisdictions/ca-mountain-view');
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -168,7 +168,7 @@ describe.skipIf(!hasCachedData)('GET /api/v1/jurisdictions/:id/search', () => {
 });
 
 describe('GET /api/v1/lookup', () => {
-  it('finds jurisdiction by city and state', async () => {
+  it.skipIf(!hasCachedData)('finds jurisdiction by city and state', async () => {
     const res = await fetch('/api/v1/lookup?city=Mountain+View&state=CA');
     expect(res.status).toBe(200);
     const body = await res.json();

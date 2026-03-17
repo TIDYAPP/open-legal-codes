@@ -1,11 +1,83 @@
 import { Hono } from 'hono';
+import type { Context } from 'hono';
 import { store } from '../store/index.js';
+import type { Jurisdiction } from '../types.js';
+import type { RegistryEntry } from '../registry/types.js';
 import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { triggerAutoCrawl } from '../auto-crawl.js';
 import { discoverPublisher } from '../registry/publisher-discovery.js';
 
 export const lookupRoutes = new Hono();
+
+/** Build the standard "ready" response for a cached jurisdiction. */
+function readyResponse(c: Context, jurisdiction: Jurisdiction) {
+  const toc = store.getToc(jurisdiction.id);
+  return c.json({
+    data: {
+      status: 'ready',
+      id: jurisdiction.id,
+      name: jurisdiction.name,
+      state: jurisdiction.state,
+      type: jurisdiction.type,
+      children: toc?.children || [],
+      lastCrawled: jurisdiction.lastCrawled || null,
+      publisher: jurisdiction.publisher?.name || null,
+      publisherUrl: jurisdiction.publisher?.url || null,
+    },
+  });
+}
+
+/** Check crawl status, check fresh cache, or trigger auto-crawl. Returns a 202 response. */
+function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
+  const crawlStatus = crawlTracker.getStatus(entry.id);
+  if (crawlStatus) {
+    return c.json({
+      data: {
+        status: 'crawling',
+        name: entry.name,
+        type: entry.type,
+        progress: {
+          phase: crawlStatus.progress.phase,
+          total: crawlStatus.progress.total,
+          completed: crawlStatus.progress.completed,
+        },
+        retryAfter: 15,
+      },
+    }, 202);
+  }
+
+  // Check if it became cached since server start
+  const freshCached = store.getJurisdiction(entry.id);
+  if (freshCached) {
+    return readyResponse(c, freshCached);
+  }
+
+  triggerAutoCrawl(entry);
+  return c.json({
+    data: {
+      status: 'crawling',
+      name: entry.name,
+      type: entry.type,
+      progress: { phase: 'toc', total: 0, completed: 0 },
+      retryAfter: 15,
+    },
+  }, 202);
+}
+
+/** Try to resolve a discoverable (census-only) entry to a real publisher. Returns null if no publisher found. */
+async function tryDiscover(entry: RegistryEntry, state: string, type?: 'county' | 'city'): Promise<RegistryEntry | null> {
+  if (entry.status !== 'discoverable') return entry;
+  const name = entry.name.replace(/,\s*[A-Z]{2}$/, '');
+  const discovered = await discoverPublisher(name, state, {
+    fips: entry.fips || undefined,
+    lat: entry.lat || undefined,
+    lng: entry.lng || undefined,
+    population: entry.population || undefined,
+    ...(type ? { type } : {}),
+  });
+  return discovered || null;
+}
 
 lookupRoutes.get('/', async (c) => {
   const slug = c.req.query('slug');
@@ -37,91 +109,16 @@ lookupRoutes.get('/', async (c) => {
     // Check if cached in store (try to find by slug match)
     const storeResults = store.listJurisdictions({ state });
     const cachedMatch = storeResults.find(j => toSlug(j.name) === slug);
+    if (cachedMatch) return readyResponse(c, cachedMatch);
 
-    if (cachedMatch) {
-      const toc = store.getToc(cachedMatch.id);
-      return c.json({
-        data: {
-          status: 'ready',
-          id: cachedMatch.id,
-          name: cachedMatch.name,
-          state: cachedMatch.state,
-          type: cachedMatch.type,
-          children: toc?.children || [],
-          lastCrawled: cachedMatch.lastCrawled || null,
-          publisher: cachedMatch.publisher?.name || null,
-          publisherUrl: cachedMatch.publisher?.url || null,
-        },
-      });
-    }
-
-    // Check if crawl is active for any matching entry
+    // Check registry
     let registryEntry = registryStore.getBySlug(state, slug);
-
-    // If this is a census-only entry, try to discover the publisher
-    if (registryEntry && registryEntry.status === 'discoverable') {
-      const cityName = registryEntry.name.replace(/,\s*[A-Z]{2}$/, '');
-      const discovered = await discoverPublisher(cityName, state, {
-        fips: registryEntry.fips || undefined,
-        lat: registryEntry.lat || undefined,
-        lng: registryEntry.lng || undefined,
-        population: registryEntry.population || undefined,
-      });
-      if (discovered) {
-        registryEntry = discovered;
-      } else {
+    if (registryEntry) {
+      const resolved = await tryDiscover(registryEntry, state);
+      if (!resolved) {
         return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
       }
-    }
-
-    if (registryEntry) {
-      const crawlStatus = crawlTracker.getStatus(registryEntry.id);
-      if (crawlStatus) {
-        return c.json({
-          data: {
-            status: 'crawling',
-            name: registryEntry.name,
-            type: registryEntry.type,
-            progress: {
-              phase: crawlStatus.progress.phase,
-              total: crawlStatus.progress.total,
-              completed: crawlStatus.progress.completed,
-            },
-            retryAfter: 15,
-          },
-        }, 202);
-      }
-
-      // Also check if it became cached since server start (store was reloaded)
-      const freshCached = store.getJurisdiction(registryEntry.id);
-      if (freshCached) {
-        const toc = store.getToc(freshCached.id);
-        return c.json({
-          data: {
-            status: 'ready',
-            id: freshCached.id,
-            name: freshCached.name,
-            state: freshCached.state,
-            type: freshCached.type,
-            children: toc?.children || [],
-            lastCrawled: freshCached.lastCrawled || null,
-            publisher: freshCached.publisher?.name || null,
-            publisherUrl: freshCached.publisher?.url || null,
-          },
-        });
-      }
-
-      // Trigger auto-crawl
-      triggerAutoCrawl(registryEntry);
-      return c.json({
-        data: {
-          status: 'crawling',
-          name: registryEntry.name,
-          type: registryEntry.type,
-          progress: { phase: 'toc', total: 0, completed: 0 },
-          retryAfter: 15,
-        },
-      }, 202);
+      return crawlingOrTrigger(c, resolved);
     }
 
     return c.json({ data: { status: 'not_found' } });
@@ -134,72 +131,16 @@ lookupRoutes.get('/', async (c) => {
     // Check cached store first
     const storeResults = store.listJurisdictions({ state });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(cityLower));
-
-    if (cachedMatch) {
-      const toc = store.getToc(cachedMatch.id);
-      return c.json({
-        data: {
-          status: 'ready',
-          id: cachedMatch.id,
-          name: cachedMatch.name,
-          state: cachedMatch.state,
-          type: cachedMatch.type,
-          children: toc?.children || [],
-          lastCrawled: cachedMatch.lastCrawled || null,
-          publisher: cachedMatch.publisher?.name || null,
-          publisherUrl: cachedMatch.publisher?.url || null,
-        },
-      });
-    }
+    if (cachedMatch) return readyResponse(c, cachedMatch);
 
     // Check registry (includes census fallback)
     const registryResults = registryStore.findByName(city, state);
     if (registryResults.length > 0) {
-      let entry = registryResults[0]; // Best match (sorted by publisher priority)
-
-      // If best match is census-only, try to discover the publisher
-      if (entry.status === 'discoverable') {
-        const cityName = entry.name.replace(/,\s*[A-Z]{2}$/, '');
-        const discovered = await discoverPublisher(cityName, state, {
-          fips: entry.fips || undefined,
-          lat: entry.lat || undefined,
-          lng: entry.lng || undefined,
-          population: entry.population || undefined,
-        });
-        if (discovered) {
-          entry = discovered;
-        } else {
-          return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
-        }
+      const resolved = await tryDiscover(registryResults[0], state);
+      if (!resolved) {
+        return c.json({ data: { status: 'not_found', message: 'No online legal code found for this jurisdiction' } });
       }
-
-      const crawlStatus = crawlTracker.getStatus(entry.id);
-      if (crawlStatus) {
-        return c.json({
-          data: {
-            status: 'crawling',
-            name: entry.name,
-            type: entry.type,
-            progress: {
-              phase: crawlStatus.progress.phase,
-              total: crawlStatus.progress.total,
-              completed: crawlStatus.progress.completed,
-            },
-            retryAfter: 15,
-          },
-        }, 202);
-      }
-
-      triggerAutoCrawl(entry);
-      return c.json({
-        data: {
-          status: 'crawling',
-          name: entry.name,
-          type: entry.type,
-          progress: { phase: 'toc', total: 0, completed: 0 },
-          retryAfter: 15,
-        },
-      }, 202);
+      return crawlingOrTrigger(c, resolved);
     }
 
     return c.json({ data: { status: 'not_found' } });
@@ -212,73 +153,17 @@ lookupRoutes.get('/', async (c) => {
     // Check cached store first
     const storeResults = store.listJurisdictions({ state, type: 'county' });
     const cachedMatch = storeResults.find(j => j.name.toLowerCase().includes(countyLower));
-
-    if (cachedMatch) {
-      const toc = store.getToc(cachedMatch.id);
-      return c.json({
-        data: {
-          status: 'ready',
-          id: cachedMatch.id,
-          name: cachedMatch.name,
-          state: cachedMatch.state,
-          type: cachedMatch.type,
-          children: toc?.children || [],
-          lastCrawled: cachedMatch.lastCrawled || null,
-          publisher: cachedMatch.publisher?.name || null,
-          publisherUrl: cachedMatch.publisher?.url || null,
-        },
-      });
-    }
+    if (cachedMatch) return readyResponse(c, cachedMatch);
 
     // Check registry — search for county name, filter to county type
     const registryResults = registryStore.findByName(county, state)
       .filter(e => e.type === 'county');
     if (registryResults.length > 0) {
-      let entry = registryResults[0];
-
-      if (entry.status === 'discoverable') {
-        const countyName = entry.name.replace(/,\s*[A-Z]{2}$/, '');
-        const discovered = await discoverPublisher(countyName, state, {
-          fips: entry.fips || undefined,
-          lat: entry.lat || undefined,
-          lng: entry.lng || undefined,
-          population: entry.population || undefined,
-          type: 'county',
-        });
-        if (discovered) {
-          entry = discovered;
-        } else {
-          return c.json({ data: { status: 'not_found', message: 'No online legal code found for this county' } });
-        }
+      const resolved = await tryDiscover(registryResults[0], state, 'county');
+      if (!resolved) {
+        return c.json({ data: { status: 'not_found', message: 'No online legal code found for this county' } });
       }
-
-      const crawlStatus = crawlTracker.getStatus(entry.id);
-      if (crawlStatus) {
-        return c.json({
-          data: {
-            status: 'crawling',
-            name: entry.name,
-            type: entry.type,
-            progress: {
-              phase: crawlStatus.progress.phase,
-              total: crawlStatus.progress.total,
-              completed: crawlStatus.progress.completed,
-            },
-            retryAfter: 15,
-          },
-        }, 202);
-      }
-
-      triggerAutoCrawl(entry);
-      return c.json({
-        data: {
-          status: 'crawling',
-          name: entry.name,
-          type: entry.type,
-          progress: { phase: 'toc', total: 0, completed: 0 },
-          retryAfter: 15,
-        },
-      }, 202);
+      return crawlingOrTrigger(c, resolved);
     }
 
     return c.json({ data: { status: 'not_found' } });
