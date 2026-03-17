@@ -60,6 +60,16 @@ export async function runCrawl(
   }
   const tocTree = transformToc(rawToc, jurisdiction.id, jurisdiction.name);
 
+  // Phase 2: Fetch sections
+  const contentNodes = flattenContentNodes(tocTree);
+
+  // Guard: reject empty TOC before writing anything so we don't cache a bad result.
+  // An empty TOC usually means the publisher API returned the wrong data or the
+  // crawler is broken. Throwing here lets auto-crawl retry after its cooldown.
+  if (contentNodes.length === 0) {
+    throw new Error(`Empty TOC for ${jurisdiction.name} (${sourceId}) — no content sections found, aborting to prevent bad cache entry`);
+  }
+
   // Write TOC and meta
   await writer.writeToc(jurisdiction.id, tocTree);
   await writer.writeMeta(jurisdiction.id, {
@@ -71,16 +81,9 @@ export async function runCrawl(
     publisher: jurisdiction.publisher,
   });
 
-  // Phase 2: Fetch sections
-  const contentNodes = flattenContentNodes(tocTree);
   progress.phase = 'sections';
   progress.total = contentNodes.length;
   console.log(`[crawl] Found ${contentNodes.length} content sections to fetch`);
-
-  if (contentNodes.length === 0) {
-    console.warn(`[crawl] Warning: TOC for ${jurisdiction.name} has zero content sections — structure cached but no section content available`);
-    progress.errors.push({ path: '', error: 'TOC contains zero content sections' });
-  }
   onProgress?.(progress);
   crawlTracker.updateProgress(jurisdiction.id, progress);
 

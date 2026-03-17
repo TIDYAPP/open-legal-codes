@@ -2,8 +2,10 @@ import type { CrawlerAdapter, RawTocNode, RawContent } from './types.js';
 import type { Jurisdiction } from '../types.js';
 import { HttpClient } from './http-client.js';
 import * as cheerio from 'cheerio';
+import { parsePdf, type PdfSection } from '../converter/pdf-to-html.js';
 
 const SITE_BASE = 'https://statutes.capitol.texas.gov';
+const API_BASE = 'https://tcss.legis.texas.gov/api';
 
 /**
  * Texas Statutes — ~27 codes
@@ -45,6 +47,25 @@ const TX_CODES: Array<{ code: string; abbrev: string; name: string }> = [
   { code: 'WA', abbrev: 'wa', name: 'Water Code' },
 ];
 
+interface TexasCodeCatalogResponse {
+  StatuteCode: Array<{
+    codeID: string;
+    code: string;
+    CodeName: string;
+  }>;
+}
+
+interface TexasHeadingNode {
+  name: string;
+  children: TexasHeadingNode[] | null;
+  value: string;
+  valuePath: string;
+  expandable: boolean;
+  pdfLink: string | null;
+  docLink: string | null;
+  htmLink: string | null;
+}
+
 /**
  * Texas Statutes Crawler Adapter
  *
@@ -58,6 +79,8 @@ const TX_CODES: Array<{ code: string; abbrev: string; name: string }> = [
 export class TexasStatutesCrawler implements CrawlerAdapter {
   readonly publisherName = 'tx-statutes' as const;
   private http: HttpClient;
+  private codeIdByCodePromise: Promise<Map<string, string>> | null = null;
+  private pdfCache = new Map<string, PdfSection[]>();
 
   constructor(http?: HttpClient) {
     this.http = http ?? new HttpClient({ minDelayMs: 1500 });
@@ -84,115 +107,84 @@ export class TexasStatutesCrawler implements CrawlerAdapter {
   }
 
   async fetchToc(sourceId: string): Promise<RawTocNode[]> {
-    const tocUrl = `${SITE_BASE}/Docs/${sourceId}/htm/toc.htm`;
-    console.log(`[tx-statutes] Fetching TOC for ${sourceId} from ${tocUrl}`);
-
     try {
-      const html = await this.http.getHtml(tocUrl);
-      const $ = cheerio.load(html);
-      return this.parseTocPage($, sourceId);
+      const codeId = await this.resolveCodeId(sourceId);
+      const tocUrl = `${API_BASE}/StatuteCode/GetTopLevelHeadings/${encodeURIComponent(`S/${codeId}`)}/${sourceId}/1/true/false`;
+      console.log(`[tx-statutes] Fetching TOC for ${sourceId} from ${tocUrl}`);
+
+      const headings = await this.http.getJson<TexasHeadingNode[]>(tocUrl);
+      return headings.map((node) => this.headingToRawNode(sourceId, node));
     } catch (err) {
       console.error(`[tx-statutes] Failed to fetch TOC for ${sourceId}:`, err);
       return [];
     }
   }
 
-  /**
-   * Parse the TOC page HTML into a tree of RawTocNodes.
-   *
-   * Texas TOC pages typically list chapters/titles as links.
-   * Links point to chapter pages like "{CODE}.{chapter}.htm".
-   * We treat each link as a leaf node with content.
-   */
-  private parseTocPage($: cheerio.CheerioAPI, sourceId: string): RawTocNode[] {
-    const result: RawTocNode[] = [];
-    const seen = new Set<string>();
-
-    // Look for links to chapter/section pages within the TOC
-    // Texas TOC pages use relative links like "{CODE}.{number}.htm"
-    const codePrefix = sourceId.toLowerCase();
-    $('a[href]').each((_i, el) => {
-      const link = $(el);
-      const href = link.attr('href') || '';
-      const title = link.text().trim();
-
-      if (!title || title.length < 3) return;
-
-      // Match links that look like chapter pages: {CODE}.{something}.htm
-      // Also accept relative paths within the /Docs/{CODE}/htm/ directory
-      const normalizedHref = href.toLowerCase();
-      if (
-        !normalizedHref.endsWith('.htm') &&
-        !normalizedHref.endsWith('.html')
-      ) {
-        return;
-      }
-
-      // Skip self-references and navigation links
-      if (normalizedHref === 'toc.htm' || normalizedHref.includes('toc.htm')) {
-        return;
-      }
-
-      // Extract just the filename portion for the node ID
-      const filename = href.split('/').pop() || href;
-      const nodeId = `${sourceId}|${filename}`;
-
-      if (seen.has(nodeId)) return;
-      seen.add(nodeId);
-
-      const level = guessLevelFromTitle(title);
-
-      result.push({
-        id: nodeId,
-        title,
-        level,
-        hasContent: true,
-        children: [],
-      });
-    });
-
-    // If we found links, try to build a hierarchy from heading structure
-    // Otherwise return the flat list
-    if (result.length === 0) {
-      // Fallback: try to find content in list items or table cells
-      $('li a[href], td a[href]').each((_i, el) => {
-        const link = $(el);
-        const href = link.attr('href') || '';
-        const title = link.text().trim();
-
-        if (!title || title.length < 3) return;
-        if (!href.endsWith('.htm') && !href.endsWith('.html')) return;
-
-        const filename = href.split('/').pop() || href;
-        const nodeId = `${sourceId}|${filename}`;
-
-        if (seen.has(nodeId)) return;
-        seen.add(nodeId);
-
-        result.push({
-          id: nodeId,
-          title,
-          level: guessLevelFromTitle(title),
-          hasContent: true,
-          children: [],
+  private async resolveCodeId(sourceId: string): Promise<string> {
+    if (!this.codeIdByCodePromise) {
+      this.codeIdByCodePromise = this.http
+        .getJson<TexasCodeCatalogResponse>(`${SITE_BASE}/assets/StatuteCodeTree.json`)
+        .then((catalog) => {
+          const mapping = new Map<string, string>();
+          for (const item of catalog.StatuteCode) {
+            mapping.set(item.code, item.codeID);
+          }
+          return mapping;
         });
-      });
     }
 
-    return result;
+    const mapping = await this.codeIdByCodePromise;
+    const codeId = mapping.get(sourceId);
+    if (!codeId) {
+      throw new Error(`Texas code ID not found for ${sourceId}`);
+    }
+    return codeId;
+  }
+
+  private headingToRawNode(sourceId: string, node: TexasHeadingNode): RawTocNode {
+    const children = (node.children ?? []).map((child) => this.headingToRawNode(sourceId, child));
+    const sourcePath = node.pdfLink || node.htmLink || node.valuePath;
+
+    return {
+      id: `${sourceId}|${sourcePath}`,
+      title: node.name.trim(),
+      level: guessLevelFromTitle(node.name),
+      hasContent: Boolean(node.pdfLink || node.htmLink),
+      children,
+    };
   }
 
   async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    // sectionId format: "{CODE}|{filename}" e.g. "PE|PE.1.htm"
+    // sectionId format: "{CODE}|{path}" e.g. "LG|/LG/pdf/LG.53.pdf"
     const parts = sectionId.split('|');
-    const code = parts[0] || sourceId;
-    const filename = parts[1] || sectionId;
+    const resourcePath = parts[1] || sectionId;
 
-    // Build the full URL — the filename is relative to /Docs/{CODE}/htm/
-    const url = `${SITE_BASE}/Docs/${code}/htm/${filename}`;
+    const url = resourcePath.startsWith('http')
+      ? resourcePath
+      : `${SITE_BASE}${resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`}`;
     console.log(`[tx-statutes] Fetching section ${sectionId} from ${url}`);
 
     try {
+      if (resourcePath.toLowerCase().endsWith('.pdf')) {
+        let sections = this.pdfCache.get(url);
+        if (!sections) {
+          const buffer = await this.http.getBuffer(url);
+          const parsed = await parsePdf(buffer);
+          sections = parsed.sections;
+          this.pdfCache.set(url, sections);
+        }
+
+        const html = sections
+          .map((section) => `<h2>${escapeHtml(section.title)}</h2>\n${section.html}`)
+          .join('\n');
+
+        return {
+          html,
+          fetchedAt: new Date().toISOString(),
+          sourceUrl: url,
+        };
+      }
+
       const html = await this.http.getHtml(url);
       const $ = cheerio.load(html);
       const cleanHtml = extractContent($);
@@ -255,4 +247,12 @@ function guessLevelFromTitle(title: string): string {
   if (t.startsWith('part ')) return 'part';
   if (/^\d/.test(t)) return 'section';
   return 'title';
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

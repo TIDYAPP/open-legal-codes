@@ -3,6 +3,7 @@ import type { JurisdictionType } from '../types.js';
 import { store } from '../store/index.js';
 import { BRANDING } from '../branding.js';
 import { permalinkUrl } from '../permalink.js';
+import { isUsableCachedJurisdiction } from '../cached-jurisdictions.js';
 import { resolveJurisdiction, crawlingResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
 
 export const searchRoutes = new Hono();
@@ -77,7 +78,7 @@ globalSearchRoutes.get('/', (c) => {
   const jurisdictions = store.listJurisdictions({
     state: state || undefined,
     type: type || undefined,
-  });
+  }).filter(isUsableCachedJurisdiction);
 
   const allResults: Array<{
     jurisdictionId: string;

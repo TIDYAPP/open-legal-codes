@@ -18,6 +18,10 @@ interface ManualSource {
   type: JurisdictionType;
   state: string | null;
   parentId: string | null;
+  fips?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  population?: number | null;
   sourceUrl: string;
   documents: ManualDocument[];
 }
@@ -64,7 +68,7 @@ export class ManualCrawler implements CrawlerAdapter {
         type: source.type,
         state: source.state,
         parentId: source.parentId,
-        fips: null,
+        fips: source.fips ?? null,
         publisher: {
           name: 'manual' as const,
           sourceId: source.id,
