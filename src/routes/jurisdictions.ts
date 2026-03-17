@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { JurisdictionType } from '../types.js';
 import { store } from '../store/index.js';
 import { registryStore } from '../registry/store.js';
+import { crawlTracker } from '../crawl-tracker.js';
 import { BRANDING } from '../branding.js';
 
 export const jurisdictionsRoutes = new Hono();
@@ -77,15 +78,48 @@ jurisdictionsRoutes.get('/:id', (c) => {
   const id = c.req.param('id');
   const jurisdiction = store.getJurisdiction(id);
 
-  if (!jurisdiction) {
+  if (jurisdiction) {
+    return c.json({
+      data: {
+        ...jurisdiction,
+        status: 'cached',
+      },
+      meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
+    });
+  }
+
+  const registryEntry = registryStore.getById(id);
+  if (!registryEntry) {
     return c.json(
       { error: { code: 'NOT_FOUND', message: `Jurisdiction '${id}' not found` } },
       404
     );
   }
 
+  const crawlStatus = crawlTracker.getStatus(id);
+  const status = crawlStatus
+    ? 'crawling'
+    : (registryEntry.status === 'cached' ? 'available' : registryEntry.status);
   return c.json({
-    data: jurisdiction,
+    data: {
+      id: registryEntry.id,
+      name: registryEntry.name,
+      type: registryEntry.type,
+      state: registryEntry.state,
+      parentId: null,
+      fips: registryEntry.fips,
+      publisher: {
+        name: registryEntry.publisher,
+        sourceId: registryEntry.sourceId,
+        url: registryEntry.sourceUrl,
+      },
+      lastCrawled: '',
+      lastUpdated: '',
+      sourceUrl: registryEntry.sourceUrl,
+      population: registryEntry.population,
+      lastScanned: registryEntry.lastScanned,
+      status,
+    },
     meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
 });

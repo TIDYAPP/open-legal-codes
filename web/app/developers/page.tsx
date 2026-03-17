@@ -17,7 +17,7 @@ export default function DevelopersPage() {
       </p>
       <div className="code-block">{`GET /jurisdictions                              # List all jurisdictions
 GET /jurisdictions?state=CA                     # Filter by state
-GET /jurisdictions/:id                          # Jurisdiction metadata
+GET /jurisdictions/:id                          # Jurisdiction metadata + availability status
 GET /jurisdictions/:id/toc?depth=2              # Table of contents
 GET /jurisdictions/:id/code/:path               # Section text + permalink
 GET /jurisdictions/:id/search?q=parking         # Keyword search

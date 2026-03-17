@@ -12,11 +12,13 @@ import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 
 const hasCachedData = existsSync(join(process.cwd(), 'codes', 'ca-mountain-view', '_toc.json'));
+let uncachedRegistryId: string | undefined;
 
 // Initialize store before tests
 beforeAll(() => {
   store.initialize();
   registryStore.initialize();
+  uncachedRegistryId = registryStore.query().find((entry) => !store.getJurisdiction(entry.id))?.id;
 });
 
 // Build a test app matching server.ts
@@ -60,6 +62,17 @@ describe('GET /api/v1/jurisdictions/:id', () => {
     const body = await res.json();
     expect(body.data.id).toBe('ca-mountain-view');
     expect(body.data.name).toBe('Mountain View, CA');
+  });
+
+  it.skipIf(!uncachedRegistryId)('returns registry metadata for a known uncached jurisdiction', async () => {
+    const res = await fetch(`/api/v1/jurisdictions/${uncachedRegistryId}`);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.id).toBe(uncachedRegistryId);
+    expect(body.data.publisher).toHaveProperty('name');
+    expect(body.data.publisher).toHaveProperty('sourceId');
+    expect(body.data.publisher).toHaveProperty('url');
+    expect(['available', 'cached', 'discoverable', 'crawling']).toContain(body.data.status);
   });
 
   it('returns 404 for unknown jurisdiction', async () => {
