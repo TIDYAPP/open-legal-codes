@@ -5,6 +5,7 @@
  */
 
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright-core';
+import { existsSync } from 'node:fs';
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -41,8 +42,10 @@ export class PlaywrightHttpClient {
 
     this.launchPromise = (async () => {
       console.log('[playwright] Launching Chromium...');
+      const executablePath = resolveChromiumExecutable();
       this.browser = await chromium.launch({
         headless: true,
+        ...(executablePath ? { executablePath } : {}),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -136,6 +139,17 @@ export class PlaywrightHttpClient {
     this.launchPromise = null;
     console.log('[playwright] Browser closed');
   }
+}
+
+function resolveChromiumExecutable(): string | undefined {
+  const candidates = [
+    process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    process.env.CHROMIUM_PATH,
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+  ].filter(Boolean) as string[];
+
+  return candidates.find((candidate) => existsSync(candidate));
 }
 
 /**
