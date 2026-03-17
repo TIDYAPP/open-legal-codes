@@ -43,7 +43,7 @@ searchRoutes.get('/:id/search', (c) => {
   }));
 
   // Search is deterministic for a cached jurisdiction — cache 1 hour at edge
-  c.header('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: {
       jurisdiction: id,
@@ -109,7 +109,7 @@ globalSearchRoutes.get('/', (c) => {
   const totalSearchable = jurisdictions.filter(j => store.hasSearchIndex(j.id)).length;
 
   // Global search changes as new jurisdictions are cached — shorter TTL
-  c.header('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: {
       query,

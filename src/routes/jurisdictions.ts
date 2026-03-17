@@ -31,7 +31,7 @@ jurisdictionsRoutes.get('/', (c) => {
   // If ?cached=true, return only cached jurisdictions (old behavior)
   if (cached === 'true') {
     const data = store.listJurisdictions({ type, state, publisher });
-    c.header('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
     return c.json({
       data,
       meta: { total: data.length, limit: data.length, offset: 0, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
@@ -65,7 +65,7 @@ jurisdictionsRoutes.get('/', (c) => {
     population: e.population,
   }));
 
-  c.header('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=86400');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data,
     meta: { total, limit, offset, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
@@ -81,7 +81,7 @@ jurisdictionsRoutes.get('/:id', (c) => {
   const jurisdiction = store.getJurisdiction(id);
 
   if (jurisdiction) {
-    c.header('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+    c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
     return c.json({
       data: {
         ...jurisdiction,
@@ -104,7 +104,7 @@ jurisdictionsRoutes.get('/:id', (c) => {
     ? 'crawling'
     : (registryEntry.status === 'cached' ? 'available' : registryEntry.status);
   // Don't cache crawling status; cache available/discoverable for 30 min
-  c.header('Cache-Control', crawlStatus ? 'no-store' : 'public, s-maxage=1800, stale-while-revalidate=86400');
+  c.header('Cache-Control', crawlStatus ? 'no-store' : 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: {
       id: registryEntry.id,
