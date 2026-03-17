@@ -40,6 +40,7 @@ registryRoutes.get('/', (c) => {
     });
   }
 
+  c.header('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=86400');
   return c.json({
     data,
     meta: { total: data.length, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },

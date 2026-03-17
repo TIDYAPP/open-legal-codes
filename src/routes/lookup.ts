@@ -13,6 +13,7 @@ export const lookupRoutes = new Hono();
 /** Build the standard "ready" response for a cached jurisdiction. */
 function readyResponse(c: Context, jurisdiction: Jurisdiction) {
   const toc = store.getToc(jurisdiction.id);
+  c.header('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
   return c.json({
     data: {
       status: 'ready',
@@ -30,6 +31,7 @@ function readyResponse(c: Context, jurisdiction: Jurisdiction) {
 
 /** Check crawl status, check fresh cache, or trigger auto-crawl. Returns a 202 response. */
 function crawlingOrTrigger(c: Context, entry: RegistryEntry) {
+  c.header('Cache-Control', 'no-store');
   const crawlStatus = crawlTracker.getStatus(entry.id);
   if (crawlStatus) {
     return c.json({
