@@ -23,7 +23,6 @@ export class BrowserbaseHttpClient {
   private minDelayMs: number;
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
-  private page: Page | null = null;
   private sessionId: string | null = null;
   private lastRequestTime = 0;
   private connecting: Promise<void> | null = null;
@@ -46,13 +45,13 @@ export class BrowserbaseHttpClient {
     this.lastRequestTime = Date.now();
   }
 
-  private async ensureSession(): Promise<Page> {
-    if (this.page) return this.page;
+  private async ensureContext(): Promise<BrowserContext> {
+    if (this.context) return this.context;
 
     // Prevent concurrent session creation
     if (this.connecting) {
       await this.connecting;
-      return this.page!;
+      return this.context!;
     }
 
     this.connecting = (async () => {
@@ -87,13 +86,26 @@ export class BrowserbaseHttpClient {
       // Get the default context and page
       const contexts = this.browser.contexts();
       this.context = contexts[0] || await this.browser.newContext();
-      const pages = this.context.pages();
-      this.page = pages[0] || await this.context.newPage();
     })();
 
     await this.connecting;
     this.connecting = null;
-    return this.page!;
+    return this.context!;
+  }
+
+  private async withPage<T>(task: (page: Page) => Promise<T>): Promise<T> {
+    const context = await this.ensureContext();
+    const page = await context.newPage();
+
+    try {
+      return await task(page);
+    } finally {
+      try {
+        await page.close();
+      } catch {
+        // Ignore page teardown errors on shutdown/races.
+      }
+    }
   }
 
   private buildUrl(url: string, params?: Record<string, string>): string {
@@ -103,23 +115,24 @@ export class BrowserbaseHttpClient {
 
   async getHtml(url: string, params?: Record<string, string>): Promise<string> {
     const fullUrl = this.buildUrl(url, params);
-    const page = await this.ensureSession();
     await this.throttle();
 
-    console.log(`[browserbase] Navigating to ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
+    return this.withPage(async (page) => {
+      console.log(`[browserbase] Navigating to ${fullUrl}`);
+      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
 
-    // Brief wait for any post-load JS
-    await sleep(2000);
+      // Brief wait for any post-load JS
+      await sleep(2000);
 
-    const html = await page.evaluate(() => document.documentElement.outerHTML);
+      const html = await page.evaluate(() => document.documentElement.outerHTML);
 
-    if (!html || html.length < 100) {
-      throw new Error(`Empty or blocked response from ${fullUrl}`);
-    }
+      if (!html || html.length < 100) {
+        throw new Error(`Empty or blocked response from ${fullUrl}`);
+      }
 
-    console.log(`[browserbase] Got ${html.length} chars from ${fullUrl}`);
-    return html;
+      console.log(`[browserbase] Got ${html.length} chars from ${fullUrl}`);
+      return html;
+    });
   }
 
   async get(url: string, params?: Record<string, string>): Promise<Response> {
@@ -132,20 +145,17 @@ export class BrowserbaseHttpClient {
 
   async getJson<T>(url: string, params?: Record<string, string>): Promise<T> {
     const fullUrl = this.buildUrl(url, params);
-    const page = await this.ensureSession();
     await this.throttle();
 
-    console.log(`[browserbase] Fetching JSON from ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
-    const text = await page.evaluate(() => document.body.innerText);
-    return JSON.parse(text) as T;
+    return this.withPage(async (page) => {
+      console.log(`[browserbase] Fetching JSON from ${fullUrl}`);
+      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60_000 });
+      const text = await page.evaluate(() => document.body.innerText);
+      return JSON.parse(text) as T;
+    });
   }
 
   async dispose(): Promise<void> {
-    if (this.page) {
-      try { await this.page.close(); } catch { /* ignore */ }
-      this.page = null;
-    }
     if (this.browser) {
       try { await this.browser.close(); } catch { /* ignore */ }
       this.browser = null;
