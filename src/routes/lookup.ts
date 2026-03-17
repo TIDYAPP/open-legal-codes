@@ -13,7 +13,7 @@ export const lookupRoutes = new Hono();
 /** Build the standard "ready" response for a cached jurisdiction. */
 function readyResponse(c: Context, jurisdiction: Jurisdiction) {
   const toc = store.getToc(jurisdiction.id);
-  c.header('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: {
       status: 'ready',

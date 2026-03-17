@@ -40,7 +40,7 @@ registryRoutes.get('/', (c) => {
     });
   }
 
-  c.header('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=86400');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data,
     meta: { total: data.length, timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
@@ -53,7 +53,7 @@ registryRoutes.get('/', (c) => {
  * Cached for 1 hour since registry changes infrequently.
  */
 registryRoutes.get('/geo', (c) => {
-  c.header('Cache-Control', 'public, max-age=3600');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
 
   const data = registryStore.getGeoEntries();
   return c.json({

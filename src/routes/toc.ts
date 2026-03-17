@@ -47,7 +47,7 @@ tocRoutes.get('/:id/toc', (c) => {
   const children = depth ? limitDepth(toc.children, depth) : toc.children;
 
   // TOC only changes on re-crawl — cache for 1 day at edge
-  c.header('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: { ...toc, children },
     meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
@@ -76,7 +76,7 @@ tocRoutes.get('/:id/toc/*', (c) => {
     return notFoundResponse(c, `Path '${path}' not found in '${id}'`);
   }
 
-  c.header('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+  c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: node,
     meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
