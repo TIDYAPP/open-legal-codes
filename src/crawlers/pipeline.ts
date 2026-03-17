@@ -1,4 +1,6 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
+import pLimit from 'p-limit';
 import type { CrawlerAdapter } from './types.js';
 import type { Jurisdiction, TocNode } from '../types.js';
 import { transformToc, flattenContentNodes } from './toc-transformer.js';
@@ -9,6 +11,10 @@ import { crawlTracker } from '../crawl-tracker.js';
 export interface CrawlOptions {
   jurisdiction: Jurisdiction;
   codesDir?: string;
+  /** Max concurrent section fetches (default: 5) */
+  concurrency?: number;
+  /** Re-fetch sections even if already cached (default: false) */
+  force?: boolean;
 }
 
 export interface CrawlProgress {
@@ -44,7 +50,14 @@ export async function runCrawl(
   onProgress?.(progress);
   crawlTracker.updateProgress(jurisdiction.id, progress);
 
-  const rawToc = await crawler.fetchToc(sourceId);
+  // Heartbeat: keep tracker alive during long TOC fetches so stale-cleanup doesn't fire
+  const tocHeartbeat = setInterval(() => crawlTracker.updateProgress(jurisdiction.id, progress), 60_000);
+  let rawToc: Awaited<ReturnType<typeof crawler.fetchToc>>;
+  try {
+    rawToc = await crawler.fetchToc(sourceId);
+  } finally {
+    clearInterval(tocHeartbeat);
+  }
   const tocTree = transformToc(rawToc, jurisdiction.id, jurisdiction.name);
 
   // Write TOC and meta
@@ -71,13 +84,26 @@ export async function runCrawl(
   onProgress?.(progress);
   crawlTracker.updateProgress(jurisdiction.id, progress);
 
-  for (const node of contentNodes) {
+  const limit = pLimit(options.concurrency ?? 5);
+  const force = options.force ?? false;
+
+  await Promise.all(contentNodes.map((node) => limit(async () => {
     progress.currentPath = node.path;
 
     if (!node.sourceNodeId) {
       progress.errors.push({ path: node.path, error: 'Missing sourceNodeId' });
       progress.completed++;
-      continue;
+      onProgress?.(progress);
+      crawlTracker.updateProgress(jurisdiction.id, progress);
+      return;
+    }
+
+    // Skip sections already cached on disk (unless force re-crawl)
+    if (!force && existsSync(join(codesDir, jurisdiction.id, `${node.path}.html`))) {
+      progress.completed++;
+      onProgress?.(progress);
+      crawlTracker.updateProgress(jurisdiction.id, progress);
+      return;
     }
 
     try {
@@ -102,7 +128,7 @@ export async function runCrawl(
     progress.completed++;
     onProgress?.(progress);
     crawlTracker.updateProgress(jurisdiction.id, progress);
-  }
+  })));
 
   // Phase 3: Update registry
   const now = new Date().toISOString();
