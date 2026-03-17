@@ -27,7 +27,7 @@ function registryEntryToJurisdiction(entry: RegistryEntry): Jurisdiction {
 const AUTO_CRAWL_TIMEOUT_MS = 30 * 60 * 1000;
 
 /** Max concurrent auto-crawls — keeps memory spike from parallel store.initialize() calls in check */
-const MAX_CONCURRENT_CRAWLS = 3;
+const MAX_CONCURRENT_CRAWLS = 10;
 let activeCrawlCount = 0;
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
