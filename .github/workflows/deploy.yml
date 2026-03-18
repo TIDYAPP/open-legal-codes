@@ -13,10 +13,13 @@ jobs:
     steps:
       - name: Deploy to Hetzner
         uses: appleboy/ssh-action@v1
+        env:
+          COURTLISTENER_API_TOKEN: ${{ secrets.COURTLISTENER_API_TOKEN }}
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          envs: COURTLISTENER_API_TOKEN
           script: |
             cd /opt/open-legal-codes
             git pull origin main
@@ -25,6 +28,11 @@ jobs:
             # Seed registry/census files into persistent volume (always update from repo)
             cp -f data/registry.json data/census-places.json data/manual-sources.json data/amlegal-known.json /root/data/ 2>/dev/null || true
             cp -rf data/census /root/data/ 2>/dev/null || true
+            # Update CourtListener token in .env (preserve other vars)
+            touch .env
+            grep -v '^COURTLISTENER_API_TOKEN=' .env > .env.tmp || true
+            echo "COURTLISTENER_API_TOKEN=${COURTLISTENER_API_TOKEN}" >> .env.tmp
+            mv .env.tmp .env
             # Stop standalone containers from pre-compose era (if any)
             docker stop openlegalcodes-api 2>/dev/null && docker rm openlegalcodes-api 2>/dev/null || true
             docker stop caddy 2>/dev/null && docker rm caddy 2>/dev/null || true
