@@ -207,7 +207,7 @@ Agent generates initial plan, then checks each step:
 
 Instead of a generic plan that misses local requirements, the agent produces one that's grounded in what the law actually says — and flags the gotchas that trip people up.
 
-## Case Law Citations (Beta)
+## Case Law Citations
 
 Open Legal Codes answers *"what does the law say?"* — but knowing what the law says is only half the picture. Courts interpret statutes through their opinions, and those interpretations shape what the law actually means in practice. To help connect these two halves, we link each statute to court opinions that have cited it.
 
