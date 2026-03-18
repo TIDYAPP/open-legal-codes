@@ -5,12 +5,14 @@ services:
     network_mode: host
     volumes:
       - /root/codes:/app/codes
+      - /root/data:/app/data
     environment:
       - PORT=3100
       - CORS_ORIGINS=${CORS_ORIGINS:-https://openlegalcodes.org,http://localhost:3000}
       - NODE_OPTIONS=--max-old-space-size=3072
       - BROWSERBASE_API_KEY=${BROWSERBASE_API_KEY:-}
       - BROWSERBASE_PROJECT_ID=${BROWSERBASE_PROJECT_ID:-}
+      - COURTLISTENER_API_TOKEN=${COURTLISTENER_API_TOKEN:-}
 
   caddy:
     image: caddy:2-alpine
