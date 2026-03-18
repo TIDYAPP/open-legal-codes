@@ -207,17 +207,21 @@ Agent generates initial plan, then checks each step:
 
 Instead of a generic plan that misses local requirements, the agent produces one that's grounded in what the law actually says — and flags the gotchas that trip people up.
 
-## Case Law Citations
+## Case Law Citations (Beta)
 
-For every code section, Open Legal Codes attempts to show court opinions that have cited or interpreted that law. We search [CourtListener](https://www.courtlistener.com/) (a free, open legal database from the [Free Law Project](https://free.law/)) for opinions that reference each statute, and display them in reverse chronological order.
+Open Legal Codes answers *"what does the law say?"* — but knowing what the law says is only half the picture. Courts interpret statutes through their opinions, and those interpretations shape what the law actually means in practice. To help connect these two halves, we link each statute to court opinions that have cited it.
 
-**We do not store or host case law.** Every citation links directly to the full opinion on CourtListener. We are solely linking to their records.
+**This feature is powered by [CourtListener](https://www.courtlistener.com/), a free and open legal database maintained by the [Free Law Project](https://free.law/).** CourtListener is an extraordinary public resource — they collect, archive, and make searchable millions of court opinions from across the US federal and state court systems. We are deeply grateful for their work.
 
-**These citations are likely imperfect.** We match statutes to opinions using Bluebook citation formats (e.g., "42 U.S.C. § 1983", "Cal. Gov. Code § 12965"), but courts cite laws inconsistently and our matching is best-effort. Some relevant opinions will be missed, and some results may be tangential. This works best for federal and state statutes where citation formats are standardized. Municipal codes are not yet supported because there is no standard way courts cite them.
+**We do not store, host, or reproduce case law.** Every citation links directly to the full opinion on CourtListener. We are solely building an automated index that connects our structured statute text to their court opinion database. If you find CourtListener useful, please consider [supporting the Free Law Project](https://free.law/donate/).
+
+**How it works:** For each statute section, we generate [Bluebook citation](https://en.wikipedia.org/wiki/Bluebook) strings (e.g., "42 U.S.C. § 1983", "Cal. Gov. Code § 12965") and search CourtListener for opinions that reference them. Results are displayed in reverse chronological order — most recent opinions first.
+
+**These citations are likely imperfect.** Courts cite statutes inconsistently, and our automated matching will miss relevant opinions and may include tangential results. This works best for federal and state statutes where citation formats are standardized. Municipal codes are not yet supported because there is no standard way courts cite them.
 
 **Nothing here constitutes legal advice or a legal opinion.** This is an automated, best-guess linkage between legal codes and court records. Always consult a qualified attorney for legal matters.
 
-Case law is available via the API (`GET /jurisdictions/:id/caselaw/*path`), CLI (`caselaw` command), MCP (`get_case_law` tool), and the web UI (expand "Citing Court Opinions" on any code section page).
+Case law is available via the API (`GET /jurisdictions/:id/caselaw/*path`), CLI (`caselaw` command), MCP (`get_case_law` tool), and the web UI.
 
 Requires a free CourtListener API token (`COURTLISTENER_API_TOKEN` environment variable). Get one at [courtlistener.com](https://www.courtlistener.com/sign-in/).
 
@@ -338,6 +342,12 @@ The text of the law is public domain. The Supreme Court ruled in [Georgia v. Pub
 **Case law citations are best-effort and do not constitute legal advice.** We link to court opinions on CourtListener using automated citation matching. These links may be incomplete, imprecise, or miss relevant cases entirely. Nothing provided by this service should be interpreted as a legal opinion. Always consult a qualified attorney.
 
 This project's source code is MIT licensed.
+
+## Acknowledgments
+
+Case law citations are made possible by **[CourtListener](https://www.courtlistener.com/)** and the **[Free Law Project](https://free.law/)**. CourtListener provides free, open access to millions of court opinions from federal and state courts across the United States. We search their database to find opinions that cite specific statutes and link directly to their records — we do not host, reproduce, or redistribute any court opinions.
+
+The Free Law Project is a 501(c)(3) non-profit that believes legal information should be free and accessible to everyone. Their work makes projects like this possible. If you benefit from the case law features in Open Legal Codes, please consider [supporting the Free Law Project](https://free.law/donate/).
 
 ## Sponsor
 

@@ -20,6 +20,8 @@ jobs:
           script: |
             cd /opt/open-legal-codes
             git pull origin main
+            # Ensure persistent data directories exist
+            mkdir -p /root/data /root/codes
             # Stop standalone containers from pre-compose era (if any)
             docker stop openlegalcodes-api 2>/dev/null && docker rm openlegalcodes-api 2>/dev/null || true
             docker stop caddy 2>/dev/null && docker rm caddy 2>/dev/null || true

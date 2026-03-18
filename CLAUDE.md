@@ -30,6 +30,7 @@ npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i
 npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
 npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "parking"
 npx tsx src/cli.ts caselaw --jurisdiction ca-gov --path title-2/.../section-12965
+npx tsx src/cli.ts report --jurisdiction ca-mountain-view --path part-i/section-100 --type bad_citation --description "Wrong section number"
 npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
 npx tsx src/cli.ts list --state CA
 ```
@@ -88,8 +89,10 @@ SQLite database with WAL mode for concurrent reads. Tables:
 - `toc_nodes` — flattened table of contents with parent references
 - `sections` — HTML, XML, and plain text content
 - `sections_fts` — FTS5 full-text search index (auto-synced via triggers)
-- `caselaw_cache` — CourtListener search result metadata
-- `caselaw_results` — individual case law results per section
+- `court_decisions` — CourtListener opinion metadata (one row per cluster)
+- `court_decision_statute_references` — many-to-many: which decisions cite which statutes
+- `caselaw_search_log` — tracks when CourtListener was last checked per statute
+- `feedback` — user-submitted issue reports (bad citations, outdated text, etc.)
 
 `CodeStore` (`src/store/index.ts`) provides read access. `CodeWriter` (`src/store/writer.ts`) handles writes during crawls.
 
@@ -101,9 +104,9 @@ SQLite database with WAL mode for concurrent reads. Tables:
 - **Subsequent requests**: served from SQLite in milliseconds.
 - **The more a jurisdiction is used, the faster it gets.**
 
-### Case Law (`src/caselaw/`)
+### Case Law (`src/caselaw/`) — Beta
 
-For every code section, we attempt to show court opinions that cited or interpreted it, displayed in reverse chronological order. We search [CourtListener](https://www.courtlistener.com/) (Free Law Project) using Bluebook citation formats and link directly to their records. **We do not store or host case law — we solely link to CourtListener.**
+For every code section, we attempt to show court opinions that cited or interpreted it, displayed in reverse chronological order. Case law data is powered by **[CourtListener](https://www.courtlistener.com/)** from the **[Free Law Project](https://free.law/)** — we search their database using Bluebook citation formats and link directly to their records. **We do not store, host, or reproduce case law — we solely link to CourtListener.** All credit for court opinion data goes to the Free Law Project.
 
 These citations are best-effort and likely imperfect. Courts cite statutes inconsistently, and our automated matching will miss relevant opinions and may include tangential results. Nothing here constitutes legal advice.
 
@@ -128,6 +131,22 @@ Base URL: `https://openlegalcodes.org/api/v1`
 - `GET /search?q=keyword&state=CA` — cross-jurisdiction keyword search (searches all cached jurisdictions)
 - `GET /lookup?city=X&state=Y` — find jurisdiction by name
 - `GET /lookup?county=X&state=Y` — find county jurisdiction by name
+- `POST /jurisdictions/:id/feedback` — submit an issue report (`{ path, reportType, description }`)
+- `GET /jurisdictions/:id/feedback?status=pending&limit=50` — list feedback for a jurisdiction
+- `GET /feedback?status=pending` — list all feedback across jurisdictions
+
+### User Feedback (`src/routes/feedback.ts` + `src/scripts/triage-feedback.ts`)
+
+Users can report issues with any code section (bad citation, out-of-date text, wrong text, or other). Reports are stored in the `feedback` SQLite table and triaged daily.
+
+**Submitting feedback** (3 ways):
+- **Web UI**: "Report an issue" button on every code section page — inline form with type dropdown and description
+- **API**: `POST /api/v1/jurisdictions/:id/feedback` with `{ path, reportType, description }` — rate-limited to 10/hr per IP
+- **CLI**: `npx tsx src/cli.ts report --jurisdiction <id> --path <path> --type <type> --description "..."`
+
+Report types: `bad_citation`, `out_of_date`, `wrong_text`, `other`
+
+**Daily triage** (`src/scripts/triage-feedback.ts`): Runs via GitHub Actions cron at 8am UTC. Uses Claude to check for prompt injection, triage genuine issues, and creates a GitHub PR with findings. Requires `ANTHROPIC_API_KEY` and `GITHUB_TOKEN`.
 
 ### Converter (`src/converter/`)
 
@@ -162,11 +181,12 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 ### Infrastructure
 - Data store: **working** — SQLite with FTS5 full-text search
 - HTTP API routes: **working** — all responses include permalink URLs
-- CLI: **working** — query, toc, search, caselaw, crawl, list commands; supports all publishers via `--publisher`
+- User feedback: **working** — report issues via web UI, API, or CLI; daily triage via Claude + GitHub Actions
+- CLI: **working** — query, toc, search, caselaw, report, crawl, list commands; supports all publishers via `--publisher`
 - MCP server: **working** — 6 tools with type/query filters, responses include source URLs
 - Case law: **working** — CourtListener integration for federal and state statutes
 - Web app: **working** — Next.js in `web/`, browse/search/view codes with case law citations
 - Claude Code skills: **working** — `.claude/skills/` for query, search, crawl
-- Tests: **working** — 81 tests across 15 test files (vitest)
+- Tests: **working** — 90 tests across 16 test files (vitest)
 - Search: **working** — FTS5 full-text search, cross-jurisdiction search via `/search?q=&state=`
 - Deployment: **ready** — Dockerfile, docker-compose, Caddy, GitHub Actions CI/CD
