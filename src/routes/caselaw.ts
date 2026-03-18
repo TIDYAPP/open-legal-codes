@@ -51,7 +51,7 @@ caselawRoutes.get('/:id/caselaw/*', async (c) => {
         fromCache: result.fromCache,
         note: result.supported
           ? 'Case law sourced from CourtListener (Free Law Project). We link to opinions — we do not host them.'
-          : 'Case law lookup is not yet available for municipal codes due to non-standardized citation formats.',
+          : 'Could not generate a citation query for this path. Case law lookup requires a recognized section number and is currently supported for federal and state statutes.',
       },
       meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
     });
