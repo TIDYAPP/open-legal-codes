@@ -193,5 +193,20 @@
     },
     "lastCrawled": "2026-03-17T17:50:58.356Z",
     "lastUpdated": "2026-03-17T17:50:58.356Z"
+  },
+  {
+    "id": "ca-newport-beach",
+    "name": "Newport Beach, CA",
+    "type": "city",
+    "state": "CA",
+    "publisher": {
+      "name": "codepublishing",
+      "sourceId": "CA/NewportBeach",
+      "url": "https://www.codepublishing.com/CA/NewportBeach/"
+    },
+    "lastCrawled": "2026-03-18T05:03:52.491Z",
+    "lastUpdated": "2026-03-18T05:03:52.491Z",
+    "sourceUrl": "https://www.codepublishing.com/CA/NewportBeach/",
+    "status": "available"
   }
 ]

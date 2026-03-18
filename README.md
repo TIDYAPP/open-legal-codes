@@ -10,21 +10,41 @@ US municipal law is public domain ([Georgia v. Public.Resource.Org, 2020](https:
 
 If an AI agent tells you "Mountain View prohibits keeping more than 3 dogs," there's no way to verify that against the actual law text — until now.
 
-## Quick Start
+## Install
+
+### npm
 
 ```bash
-git clone https://github.com/mchusma/open-legal-codes.git
+npm install -g open-legal-codes
+```
+
+Or with the TIDY-scoped package:
+
+```bash
+npm install -g @tidydotcom/open-legal-codes
+```
+
+### Homebrew (macOS/Linux)
+
+```bash
+brew install tidyapp/tap/open-legal-codes
+```
+
+### From Source
+
+```bash
+git clone https://github.com/tidyapp/open-legal-codes.git
 cd open-legal-codes
 npm install
 npm run dev          # API server at http://localhost:3100
 ```
 
-Crawl a jurisdiction, then query it:
+## Quick Start
 
 ```bash
-npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
-npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "dog"
-npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path chapter-5/article-i/section-sec.-5.1
+open-legal-codes search --jurisdiction ca-mountain-view --query "dog"
+open-legal-codes query --jurisdiction ca-mountain-view --path chapter-5/article-i/section-sec.-5.1
+open-legal-codes crawl --jurisdiction ca-mountain-view   # warm the cache
 ```
 
 ## How It Works
@@ -46,15 +66,26 @@ The primary use case is AI agents that need to ground their answers in actual la
 
 ### Claude Desktop (MCP Server)
 
-Add to your `claude_desktop_config.json`:
+After installing via npm or Homebrew, add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "legal-codes": {
+      "command": "open-legal-codes-mcp"
+    }
+  }
+}
+```
+
+Or without installing:
 
 ```json
 {
   "mcpServers": {
     "legal-codes": {
       "command": "npx",
-      "args": ["tsx", "src/mcp.ts"],
-      "cwd": "/path/to/open-legal-codes"
+      "args": ["-y", "-p", "open-legal-codes", "open-legal-codes-mcp"]
     }
   }
 }
@@ -208,11 +239,11 @@ Example response:
 ## CLI Reference
 
 ```bash
-npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
-npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
-npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "rental"
-npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
-npx tsx src/cli.ts list --state CA
+open-legal-codes query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+open-legal-codes toc --jurisdiction ca-mountain-view --depth 2
+open-legal-codes search --jurisdiction ca-mountain-view --query "rental"
+open-legal-codes crawl --jurisdiction ca-mountain-view
+open-legal-codes list --state CA
 ```
 
 ## Architecture
@@ -235,13 +266,16 @@ Publisher APIs          Cache (filesystem)        Consumers
 
 ### Publisher Coverage
 
-| Publisher | Status | Coverage | Parent |
-|-----------|--------|----------|--------|
-| **Municode** | Working | ~4,200 municipalities | CivicPlus |
-| **American Legal** | Adapter built | ~3,500 municipalities | ICC |
-| **eCode360 (General Code)** | Not started | ~4,400 municipalities | ICC |
+| Publisher | Status | Coverage |
+|-----------|--------|----------|
+| **Municode** | Working | ~4,200 cities + counties |
+| **American Legal** | Working | ~3,500 municipalities |
+| **eCode360 (General Code)** | Working | ~4,400 cities + counties |
+| **eCFR** | Working | All 49 CFR titles (federal) |
+| **CA Leginfo** | Working | All 30 California state codes |
+| **NY Open Legislation** | Working | All New York state laws |
 
-These three cover the vast majority of US municipal codes (~8,000-10,000 jurisdictions).
+37,000+ jurisdictions across municipal, county, state, and federal levels.
 
 ## Development
 

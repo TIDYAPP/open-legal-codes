@@ -1,6 +1,8 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'Developers — Open Legal Codes',
-  description: 'REST API, MCP server, and CLI for US legal codes.',
+  description: 'Install via npm or Homebrew, use the REST API, MCP server, or CLI to access US legal codes.',
 };
 
 export default function DevelopersPage() {
@@ -10,6 +12,31 @@ export default function DevelopersPage() {
       <p className="subtitle">
         No signup. No API key. No rate limits.
       </p>
+
+      <h2>Install</h2>
+
+      <h3>npm</h3>
+      <div className="code-block">{`npm install -g open-legal-codes`}</div>
+      <p className="text-sm text-muted mt-8 mb-8">
+        Or with the TIDY-scoped package:
+      </p>
+      <div className="code-block">{`npm install -g @tidydotcom/open-legal-codes`}</div>
+
+      <h3>Homebrew (macOS / Linux)</h3>
+      <div className="code-block">{`brew install tidyapp/tap/open-legal-codes`}</div>
+
+      <h3>curl (no install needed)</h3>
+      <div className="code-block">{`# Search for a term
+curl 'https://openlegalcodes.org/api/v1/jurisdictions/ca-mountain-view/search?q=dog&limit=5'
+
+# Get a specific section
+curl 'https://openlegalcodes.org/api/v1/jurisdictions/ca-mountain-view/code/chapter-5/article-i/section-sec.-5.1'
+
+# Find a jurisdiction by name
+curl 'https://openlegalcodes.org/api/v1/lookup?city=Mountain+View&state=CA'`}</div>
+
+      <h3>npx (one-off, no install)</h3>
+      <div className="code-block">{`npx open-legal-codes search --jurisdiction ca-mountain-view --query "dog"`}</div>
 
       <h2>REST API</h2>
       <p className="text-sm text-muted mb-8">
@@ -79,11 +106,15 @@ GET /lookup?address=306+Desert+Falls+East,+Palm+Desert,+CA  # Address lookup`}</
       </p>
 
       <h2>CLI</h2>
-      <div className="code-block">{`npx open-legal-codes query  --jurisdiction ca-mountain-view --path part-i/article-i/section-100
-npx open-legal-codes toc    --jurisdiction ca-mountain-view --depth 2
-npx open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
-npx open-legal-codes list   --state CA
-npx open-legal-codes lookup --city "Mountain View" --state CA`}</div>
+      <p className="text-sm text-muted mb-8">
+        After installing via npm or Homebrew:
+      </p>
+      <div className="code-block">{`open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
+open-legal-codes query  --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+open-legal-codes toc    --jurisdiction ca-mountain-view --depth 2
+open-legal-codes list   --state CA
+open-legal-codes lookup --city "Mountain View" --state CA
+open-legal-codes crawl  --jurisdiction ca-mountain-view   # warm the cache`}</div>
     </div>
   );
 }
