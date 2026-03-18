@@ -13,6 +13,7 @@ import { getUsableCachedJurisdiction } from '../cached-jurisdictions.js';
 export type ResolveResult =
   | { status: 'cached'; jurisdiction: Jurisdiction }
   | { status: 'crawling'; id: string; progress: { phase: string; total: number; completed: number }; startedAt: string }
+  | { status: 'crawl_failed'; id: string; error: string; retryAfterSeconds: number }
   | { status: 'not_found' };
 
 /** Resolve a jurisdiction by ID: check cache, check crawl status, check registry + auto-crawl. */
@@ -36,6 +37,18 @@ export function resolveJurisdiction(id: string): ResolveResult {
   // Known in registry? Trigger auto-crawl.
   const entry = registryStore.getById(id);
   if (entry) {
+    // Check for recent failure before triggering — avoids infinite 202 loop
+    const recentFailure = crawlTracker.getRecentFailure(id);
+    if (recentFailure) {
+      const cooldownRemaining = Math.max(0, Math.round((10 * 60 * 1000 - (Date.now() - recentFailure.failedAt)) / 1000));
+      return {
+        status: 'crawl_failed',
+        id,
+        error: recentFailure.error,
+        retryAfterSeconds: cooldownRemaining,
+      };
+    }
+
     triggerAutoCrawl(entry);
     const status = crawlTracker.getStatus(id);
     return {
@@ -63,6 +76,20 @@ export function crawlingResponse(c: Context, result: Extract<ResolveResult, { st
       retryAfter: 30,
     },
     202,
+  );
+}
+
+/** Return a 503 response for a jurisdiction whose crawl recently failed. */
+export function crawlFailedResponse(c: Context, result: Extract<ResolveResult, { status: 'crawl_failed' }>) {
+  c.header('Cache-Control', 'no-store');
+  return c.json(
+    {
+      status: 'CRAWL_FAILED',
+      message: `Data fetch for '${result.id}' failed. Will retry automatically.`,
+      error: result.error,
+      retryAfter: result.retryAfterSeconds,
+    },
+    503,
   );
 }
 

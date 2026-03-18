@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import type { TocNode } from '../types.js';
 import { store } from '../store/index.js';
 import { BRANDING } from '../branding.js';
-import { resolveJurisdiction, crawlingResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
+import { resolveJurisdiction, crawlingResponse, crawlFailedResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
 
 export const tocRoutes = new Hono();
 
@@ -38,6 +38,7 @@ tocRoutes.get('/:id/toc', (c) => {
   const resolved = resolveJurisdiction(id);
   if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
   if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
+  if (resolved.status === 'crawl_failed') return crawlFailedResponse(c, resolved);
 
   const toc = store.getToc(id);
   if (!toc) return notFoundOrCrawling(c, id, `No table of contents available for '${id}'`);
@@ -63,6 +64,7 @@ tocRoutes.get('/:id/toc/*', (c) => {
   const resolved = resolveJurisdiction(id);
   if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
   if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
+  if (resolved.status === 'crawl_failed') return crawlFailedResponse(c, resolved);
 
   const toc = store.getToc(id);
   if (!toc) {
