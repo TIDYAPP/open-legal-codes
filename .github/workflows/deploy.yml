@@ -22,6 +22,9 @@ jobs:
             git pull origin main
             # Ensure persistent data directories exist
             mkdir -p /root/data /root/codes
+            # Seed registry/census files into persistent volume (always update from repo)
+            cp -f data/registry.json data/census-places.json data/manual-sources.json data/amlegal-known.json /root/data/ 2>/dev/null || true
+            cp -rf data/census /root/data/ 2>/dev/null || true
             # Stop standalone containers from pre-compose era (if any)
             docker stop openlegalcodes-api 2>/dev/null && docker rm openlegalcodes-api 2>/dev/null || true
             docker stop caddy 2>/dev/null && docker rm caddy 2>/dev/null || true
