@@ -104,7 +104,7 @@ SQLite database with WAL mode for concurrent reads. Tables:
 - **Subsequent requests**: served from SQLite in milliseconds.
 - **The more a jurisdiction is used, the faster it gets.**
 
-### Case Law (`src/caselaw/`) — Beta
+### Case Law (`src/caselaw/`)
 
 For every code section, we attempt to show court opinions that cited or interpreted it, displayed in reverse chronological order. Case law data is powered by **[CourtListener](https://www.courtlistener.com/)** from the **[Free Law Project](https://free.law/)** — we search their database using Bluebook citation formats and link directly to their records. **We do not store, host, or reproduce case law — we solely link to CourtListener.** All credit for court opinion data goes to the Free Law Project.
 

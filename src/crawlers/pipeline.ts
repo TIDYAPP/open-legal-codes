@@ -42,6 +42,9 @@ export async function runCrawl(
     errors: [],
   };
 
+  // Ensure jurisdiction row exists before writing TOC/sections (FK constraints)
+  await writer.updateRegistry(jurisdiction);
+
   // Register active crawl
   crawlTracker.start(jurisdiction.id);
 
