@@ -58,6 +58,50 @@ export default function FAQPage() {
           Municode (~4,000), American Legal (~3,500), eCode360 (~4,400), plus federal
           regulations and California state statutes.
         </p>
+
+        <h2>What are the case law citations?</h2>
+        <p>
+          For every statute, we show court opinions that have cited it &mdash; displayed
+          in reverse chronological order (most recent first). This helps connect the text
+          of the law with how courts have interpreted it in practice.
+        </p>
+
+        <h2>Where does the case law data come from?</h2>
+        <p>
+          All case law data comes from{' '}
+          <a href="https://www.courtlistener.com" target="_blank" rel="noopener noreferrer">
+            CourtListener
+          </a>
+          , a free and open legal database maintained by the{' '}
+          <a href="https://free.law" target="_blank" rel="noopener noreferrer">
+            Free Law Project
+          </a>
+          . CourtListener is an extraordinary public resource &mdash; they collect, archive,
+          and make searchable millions of court opinions from across the US federal and state
+          court systems. We link directly to their records. We do not store, host, or reproduce
+          any court opinions. If you find this useful, please consider{' '}
+          <a href="https://free.law/donate/" target="_blank" rel="noopener noreferrer">
+            supporting the Free Law Project
+          </a>
+          .
+        </p>
+
+        <h2>How accurate are the case law citations?</h2>
+        <p>
+          They are best-effort and likely imperfect. We match statutes to court opinions
+          using standard citation formats (e.g., &quot;Cal. Pen. Code &sect; 187&quot;),
+          but courts cite laws inconsistently. Our automated matching will miss relevant
+          opinions and may include tangential results. This works best for federal and
+          state statutes where citation formats are standardized. Municipal codes are not
+          yet supported because there is no standard way courts cite them.
+        </p>
+
+        <h2>Is this legal advice?</h2>
+        <p>
+          No. Nothing provided by Open Legal Codes constitutes legal advice or a legal opinion.
+          The statute text and case law citations are provided as-is for informational purposes.
+          Always consult a qualified attorney for legal matters.
+        </p>
       </div>
     </div>
   );
