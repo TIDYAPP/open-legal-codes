@@ -161,6 +161,7 @@ function runMigrations(db: Database.Database): void {
     `);
   }
 
+
   // FTS5 virtual table — CREATE VIRTUAL TABLE doesn't support IF NOT EXISTS,
   // so we check for existence first.
   const hasFts = db.prepare(
