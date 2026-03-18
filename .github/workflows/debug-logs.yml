@@ -1,0 +1,25 @@
+name: Debug - Get Server Logs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get container logs
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/open-legal-codes
+            echo "=== Container Status ==="
+            docker compose ps
+            echo ""
+            echo "=== API Container Logs (last 100 lines) ==="
+            docker compose logs api --tail 100
+            echo ""
+            echo "=== Caddy Logs (last 20 lines) ==="
+            docker compose logs caddy --tail 20
