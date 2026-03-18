@@ -1,15 +1,15 @@
-import { join } from 'node:path';
-import { existsSync } from 'node:fs';
 import pLimit from 'p-limit';
 import type { CrawlerAdapter } from './types.js';
-import type { Jurisdiction, TocNode } from '../types.js';
+import type { Jurisdiction } from '../types.js';
 import { transformToc, flattenContentNodes } from './toc-transformer.js';
 import { htmlToUslm } from '../converter/html-to-uslm.js';
 import { CodeWriter } from '../store/writer.js';
+import { getDb } from '../store/db.js';
 import { crawlTracker } from '../crawl-tracker.js';
 
 export interface CrawlOptions {
   jurisdiction: Jurisdiction;
+  /** @deprecated No longer used — data is stored in SQLite */
   codesDir?: string;
   /** Max concurrent section fetches (default: 5) */
   concurrency?: number;
@@ -30,8 +30,8 @@ export async function runCrawl(
   options: CrawlOptions,
   onProgress?: (progress: CrawlProgress) => void,
 ): Promise<CrawlProgress> {
-  const codesDir = options.codesDir || join(process.cwd(), 'codes');
-  const writer = new CodeWriter(codesDir);
+  const db = getDb();
+  const writer = new CodeWriter(db);
   const jurisdiction = options.jurisdiction;
   const sourceId = jurisdiction.publisher.sourceId;
 
@@ -64,8 +64,6 @@ export async function runCrawl(
   const contentNodes = flattenContentNodes(tocTree);
 
   // Guard: reject empty TOC before writing anything so we don't cache a bad result.
-  // An empty TOC usually means the publisher API returned the wrong data or the
-  // crawler is broken. Throwing here lets auto-crawl retry after its cooldown.
   if (contentNodes.length === 0) {
     throw new Error(`Empty TOC for ${jurisdiction.name} (${sourceId}) — no content sections found, aborting to prevent bad cache entry`);
   }
@@ -90,6 +88,11 @@ export async function runCrawl(
   const limit = pLimit(options.concurrency ?? 3);
   const force = options.force ?? false;
 
+  // Prepared statement to check if section already exists in DB
+  const sectionExists = db.prepare(
+    'SELECT 1 FROM sections WHERE jurisdiction_id = ? AND path = ?'
+  );
+
   await Promise.all(contentNodes.map((node) => limit(async () => {
     progress.currentPath = node.path;
 
@@ -101,8 +104,8 @@ export async function runCrawl(
       return;
     }
 
-    // Skip sections already cached on disk (unless force re-crawl)
-    if (!force && existsSync(join(codesDir, jurisdiction.id, `${node.path}.html`))) {
+    // Skip sections already in DB (unless force re-crawl)
+    if (!force && sectionExists.get(jurisdiction.id, node.path)) {
       progress.completed++;
       onProgress?.(progress);
       crawlTracker.updateProgress(jurisdiction.id, progress);

@@ -94,6 +94,44 @@ export async function searchCode(
   return data.data;
 }
 
+// --- Case Law ---
+
+export interface CaseLawResult {
+  clusterId: number;
+  caseName: string;
+  court: string;
+  dateFiled: string;
+  url: string;
+  snippet: string;
+  citation: string;
+  citeCount: number;
+}
+
+export interface CaseLawResponse {
+  cases: CaseLawResult[];
+  totalCount: number;
+  citationQueries: string[];
+  supported: boolean;
+  note: string;
+}
+
+export async function getCaseLaw(
+  id: string,
+  path: string,
+  limit = 20,
+  offset = 0,
+): Promise<CaseLawResponse> {
+  const res = await fetch(
+    `${API_BASE}/api/v1/jurisdictions/${id}/caselaw/${path}?limit=${limit}&offset=${offset}`,
+    { cache: 'no-store' },
+  );
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data;
+}
+
 // --- Registry / Map ---
 
 export interface GeoEntry {
@@ -148,4 +186,25 @@ export interface RegistryEntry {
 export async function getRegistryEntries(): Promise<RegistryEntry[]> {
   const data = await apiFetch('/api/v1/registry');
   return data.data;
+}
+
+// --- Feedback ---
+
+export async function submitFeedback(
+  jurisdictionId: string,
+  path: string,
+  reportType: string,
+  description: string,
+): Promise<{ id: number; status: string }> {
+  const res = await fetch(`${API_BASE}/api/v1/jurisdictions/${jurisdictionId}/feedback`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, reportType, description }),
+  });
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({}));
+    throw new Error(json?.error?.message || `API error: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data;
 }

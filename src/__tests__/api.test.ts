@@ -8,6 +8,7 @@ import { codeRoutes } from '../routes/code.js';
 import { searchRoutes } from '../routes/search.js';
 import { lookupRoutes } from '../routes/lookup.js';
 import { store } from '../store/index.js';
+import { getDb } from '../store/db.js';
 import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 
@@ -260,30 +261,20 @@ describe('empty cached TOC auto-recovery', () => {
     censusMatch: null,
     lastScanned: '',
   };
-  const cachedJurisdiction = {
-    id: testId,
-    name: testEntry.name,
-    type: testEntry.type,
-    state: testEntry.state,
-    parentId: null,
-    fips: testEntry.fips,
-    publisher: { name: 'manual' as const, sourceId: testId, url: testEntry.sourceUrl },
-    lastCrawled: '2026-03-17T00:00:00.000Z',
-    lastUpdated: '2026-03-17T00:00:00.000Z',
-  };
 
   afterEach(() => {
     crawlTracker.finish(testId);
-    const jurisdictions = (store as any).jurisdictions as Map<string, unknown>;
-    const tocTrees = (store as any).tocTrees as Map<string, unknown>;
+    // Clean up: remove the test jurisdiction from SQLite
+    const db = getDb();
+    db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ?').run(testId);
+    db.prepare('DELETE FROM sections WHERE jurisdiction_id = ?').run(testId);
+    db.prepare('DELETE FROM jurisdictions WHERE id = ?').run(testId);
+    // Clean up registry store
     const entries = (registryStore as any).entries as Array<{ id: string }>;
     const byId = (registryStore as any).byId as Map<string, unknown>;
     const byState = (registryStore as any).byState as Map<string, Array<{ id: string }>>;
     const byPublisher = (registryStore as any).byPublisher as Map<string, Array<{ id: string }>>;
     const bySlug = (registryStore as any).bySlug as Map<string, unknown>;
-
-    jurisdictions.delete(testId);
-    tocTrees.delete(testId);
     (registryStore as any).entries = entries.filter((entry) => entry.id !== testId);
     byId.delete(testId);
     bySlug.delete('ts-auto-recrawl-city');
@@ -292,15 +283,12 @@ describe('empty cached TOC auto-recovery', () => {
   });
 
   it('treats cached jurisdictions with empty TOCs as crawlable instead of ready', async () => {
-    const jurisdictions = (store as any).jurisdictions as Map<string, unknown>;
-    const tocTrees = (store as any).tocTrees as Map<string, unknown>;
-
-    jurisdictions.set(testId, cachedJurisdiction);
-    tocTrees.set(testId, {
-      jurisdiction: testId,
-      title: 'Auto Recrawl City Code',
-      children: [],
-    });
+    // Insert jurisdiction into SQLite with NO toc_nodes (simulates empty TOC)
+    const db = getDb();
+    db.prepare(`
+      INSERT OR REPLACE INTO jurisdictions (id, name, type, state, parent_id, fips, publisher_name, publisher_source_id, publisher_url, last_crawled, last_updated)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(testId, 'Auto Recrawl City, TS', 'city', 'TS', null, '99999', 'manual', testId, 'https://example.com/auto-recrawl-city', '2026-03-17T00:00:00.000Z', '2026-03-17T00:00:00.000Z');
     registryStore.addEntry(testEntry);
 
     const lookupRes = await fetch('/api/v1/lookup?city=Auto+Recrawl+City&state=TS');

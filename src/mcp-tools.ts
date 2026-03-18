@@ -12,6 +12,7 @@ import { registryStore } from './registry/store.js';
 import type { TocNode } from './types.js';
 import { BRANDING } from './branding.js';
 import { permalinkUrl } from './permalink.js';
+import { getCaseLaw } from './caselaw/index.js';
 
 export function createMcpServer(store: CodeStore): McpServer {
   const server = new McpServer({
@@ -202,6 +203,46 @@ export function createMcpServer(store: CodeStore): McpServer {
         `[${m.jurisdictionName}] ${m.path}\n  ${m.num} ${m.heading}\n  ${m.url}\n  ${m.snippet}`
       );
       return { content: [{ type: 'text', text: lines.join('\n\n') }] };
+    }
+  );
+
+  // ── get_case_law ──
+  server.tool(
+    'get_case_law',
+    'Find court opinions that cite a specific code section. Returns case names, dates, courts, and links to full opinions on CourtListener. Works for federal and state statutes; not yet available for municipal codes.',
+    {
+      jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-gov", "us-usc-title-42"'),
+      path: z.string().describe('Code section path, e.g. "title-2/.../section-12965"'),
+      limit: z.number().optional().default(10).describe('Max results to return (default 10)'),
+    },
+    async ({ jurisdiction: jurisdictionId, path, limit }) => {
+      const jurisdiction = store.getJurisdiction(jurisdictionId);
+      if (!jurisdiction) {
+        return { content: [{ type: 'text', text: `Jurisdiction "${jurisdictionId}" not found. Use lookup_jurisdiction to find the right ID.` }] };
+      }
+
+      const tocNode = store.getTocNode(jurisdictionId, path);
+
+      try {
+        const result = await getCaseLaw(jurisdiction, path, tocNode || undefined, { limit });
+
+        if (!result.supported) {
+          return { content: [{ type: 'text', text: `Case law lookup is not yet available for municipal codes (non-standardized citation formats). This works for federal and state statutes.` }] };
+        }
+
+        if (result.results.length === 0) {
+          return { content: [{ type: 'text', text: `No citing opinions found for ${result.queries.map(q => q.label).join(', ')}.` }] };
+        }
+
+        const header = `${jurisdiction.name} — ${tocNode?.num || path}\nCitation queries: ${result.queries.map(q => q.label).join(', ')}\nTotal results: ${result.totalCount}\n`;
+        const lines = result.results.map((r, i) =>
+          `${i + 1}. ${r.caseName} (${r.court}, ${r.dateFiled})\n   ${r.citation}${r.citeCount ? ` — cited by ${r.citeCount} opinions` : ''}\n   ${r.url}`
+        );
+
+        return { content: [{ type: 'text', text: header + '\n' + lines.join('\n\n') }] };
+      } catch (err: any) {
+        return { content: [{ type: 'text', text: `Error: ${err.message}` }] };
+      }
     }
   );
 

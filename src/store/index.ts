@@ -1,118 +1,37 @@
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import type Database from 'better-sqlite3';
 import type { Jurisdiction, TocTree, TocNode } from '../types.js';
-import { SearchIndex } from './search-index.js';
-import type { SearchResult } from './search-index.js';
-
-export type { SearchResult };
+import { getDb } from './db.js';
+export interface SearchResult {
+  path: string;
+  num: string;
+  heading: string;
+  snippet: string;
+  url: string;
+}
 
 /**
- * CodeStore — reads jurisdiction metadata, TOC trees, and code files.
- * On initialization, loads all data into memory including a search index
- * so queries never hit disk. This supports high-concurrency scenarios
- * (100+ concurrent searches) without blocking on file I/O.
+ * CodeStore — reads jurisdiction metadata, TOC trees, and code content from SQLite.
+ *
+ * Replaces the previous filesystem + in-memory Map implementation.
+ * All reads go directly to SQLite (WAL mode enables concurrent reads).
+ * Search uses FTS5 full-text search.
  */
 export class CodeStore {
-  private codesDir: string;
-  private jurisdictions: Map<string, Jurisdiction> = new Map();
-  private tocTrees: Map<string, TocTree> = new Map();
-  private searchIndex: SearchIndex;
+  private db: Database.Database;
 
-  constructor(codesDir?: string) {
-    this.codesDir = codesDir || join(process.cwd(), 'codes');
-    this.searchIndex = new SearchIndex(this.codesDir);
+  constructor(db?: Database.Database) {
+    this.db = db || getDb();
   }
 
-  /** Load jurisdictions, TOC trees, and search index into memory.
-   *  Builds into temp variables then swaps atomically so readers never see partial state. */
-  initialize(): void {
-    const registryPath = join(this.codesDir, 'jurisdictions.json');
-    if (!existsSync(registryPath)) {
-      console.warn(`[CodeStore] No jurisdictions.json found at ${registryPath}`);
-      return;
-    }
+  /** No-op — SQLite is always ready. Kept for backward compatibility. */
+  initialize(): void {}
 
-    const raw = readFileSync(registryPath, 'utf-8');
-    let jurisdictions: Jurisdiction[];
-    try {
-      jurisdictions = JSON.parse(raw);
-    } catch (err: any) {
-      console.error(`[CodeStore] Failed to parse jurisdictions.json: ${err.message}`);
-      console.error(`[CodeStore] File may be corrupt — skipping load. Fix or regenerate the file.`);
-      return;
-    }
-
-    const newJurisdictions = new Map<string, Jurisdiction>();
-    const newTocTrees = new Map<string, TocTree>();
-
-    for (const j of jurisdictions) {
-      const tocPath = join(this.codesDir, j.id, '_toc.json');
-      if (existsSync(tocPath)) {
-        try {
-          const toc = JSON.parse(readFileSync(tocPath, 'utf-8')) as TocTree;
-          if (!Array.isArray(toc.children) || toc.children.length === 0) {
-            console.warn(`[CodeStore] Skipping ${j.id}: empty _toc.json`);
-            continue;
-          }
-          newTocTrees.set(j.id, toc);
-          newJurisdictions.set(j.id, j);
-        } catch (err: any) {
-          console.error(`[CodeStore] Skipping ${j.id}: corrupt _toc.json (${err.message})`);
-        }
-      }
-    }
-
-    // Atomic swap
-    this.jurisdictions = newJurisdictions;
-    this.tocTrees = newTocTrees;
-
-    // Build new search index
-    const newIndex = new SearchIndex(this.codesDir);
-    newIndex.buildAll(this.tocTrees);
-    this.searchIndex = newIndex;
-
-    console.log(`[CodeStore] Loaded ${this.jurisdictions.size} jurisdictions`);
-  }
-
-  /**
-   * Incrementally load or reload a single jurisdiction after its crawl completes.
-   * Much faster than full initialize() — reads one _toc.json and rebuilds one
-   * jurisdiction's search index instead of reloading everything.
-   */
-  loadOneJurisdiction(id: string): void {
-    const registryPath = join(this.codesDir, 'jurisdictions.json');
-    if (!existsSync(registryPath)) return;
-
-    let jurisdictions: Jurisdiction[];
-    try {
-      jurisdictions = JSON.parse(readFileSync(registryPath, 'utf-8'));
-    } catch {
-      return;
-    }
-
-    const j = jurisdictions.find((x) => x.id === id);
-    if (!j) return;
-
-    const tocPath = join(this.codesDir, id, '_toc.json');
-    if (!existsSync(tocPath)) return;
-
-    try {
-      const toc = JSON.parse(readFileSync(tocPath, 'utf-8')) as TocTree;
-      if (!Array.isArray(toc.children) || toc.children.length === 0) {
-        console.warn(`[CodeStore] Skipping ${id}: empty _toc.json`);
-        return;
-      }
-      this.jurisdictions.set(id, j);
-      this.tocTrees.set(id, toc);
-      this.searchIndex.buildForJurisdiction(id, toc);
-      console.log(`[CodeStore] Loaded ${id}`);
-    } catch (err: any) {
-      console.error(`[CodeStore] Failed to load ${id}: ${err.message}`);
-    }
-  }
+  /** No-op — SQLite is always current. Kept for backward compatibility. */
+  loadOneJurisdiction(_id: string): void {}
 
   getJurisdiction(id: string): Jurisdiction | undefined {
-    return this.jurisdictions.get(id);
+    const row = this.db.prepare('SELECT * FROM jurisdictions WHERE id = ?').get(id) as any;
+    return row ? rowToJurisdiction(row) : undefined;
   }
 
   listJurisdictions(filters?: {
@@ -120,100 +39,320 @@ export class CodeStore {
     state?: string;
     publisher?: string;
   }): Jurisdiction[] {
-    let results = Array.from(this.jurisdictions.values());
+    const conditions: string[] = [];
+    const params: any[] = [];
 
     if (filters?.type) {
-      results = results.filter((j) => j.type === filters.type);
+      conditions.push('type = ?');
+      params.push(filters.type);
     }
     if (filters?.state) {
-      results = results.filter(
-        (j) => j.state?.toLowerCase() === filters.state!.toLowerCase()
-      );
+      conditions.push('LOWER(state) = LOWER(?)');
+      params.push(filters.state);
     }
     if (filters?.publisher) {
-      results = results.filter(
-        (j) => j.publisher.name === filters.publisher
-      );
+      conditions.push('publisher_name = ?');
+      params.push(filters.publisher);
     }
 
-    return results;
+    // Only return jurisdictions that have TOC data (i.e., have been crawled)
+    conditions.push('EXISTS (SELECT 1 FROM toc_nodes WHERE jurisdiction_id = jurisdictions.id)');
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const rows = this.db.prepare(`SELECT * FROM jurisdictions ${where}`).all(...params) as any[];
+    return rows.map(rowToJurisdiction);
   }
 
   getToc(jurisdictionId: string): TocTree | undefined {
-    return this.tocTrees.get(jurisdictionId);
+    const rows = this.db.prepare(
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? ORDER BY sort_order'
+    ).all(jurisdictionId) as TocNodeRow[];
+
+    if (rows.length === 0) return undefined;
+
+    const jurisdiction = this.getJurisdiction(jurisdictionId);
+    const tree = buildTocTree(rows, jurisdiction?.name || jurisdictionId);
+    tree.jurisdiction = jurisdictionId;
+    return tree;
   }
 
   hasUsableToc(jurisdictionId: string): boolean {
-    const toc = this.tocTrees.get(jurisdictionId);
-    return !!toc && Array.isArray(toc.children) && toc.children.length > 0;
+    const row = this.db.prepare(
+      'SELECT EXISTS(SELECT 1 FROM toc_nodes WHERE jurisdiction_id = ?) as has_toc'
+    ).get(jurisdictionId) as { has_toc: number };
+    return row.has_toc === 1;
   }
 
-  /** Find a TOC node by path (for metadata lookups) */
   getTocNode(jurisdictionId: string, codePath: string): TocNode | undefined {
-    const toc = this.tocTrees.get(jurisdictionId);
-    if (!toc) return undefined;
-    return this.findNodeByPath(toc.children, codePath);
+    const row = this.db.prepare(
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND path = ?'
+    ).get(jurisdictionId, codePath) as TocNodeRow | undefined;
+
+    if (!row) return undefined;
+
+    // Also fetch children
+    const children = this.db.prepare(
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND parent_path = ? ORDER BY sort_order'
+    ).all(jurisdictionId, codePath) as TocNodeRow[];
+
+    return rowToTocNode(row, children);
   }
 
-  private findNodeByPath(nodes: TocNode[], targetPath: string): TocNode | undefined {
-    for (const node of nodes) {
-      if (node.path === targetPath) return node;
-      if (targetPath.startsWith(node.path + '/') && node.children) {
-        const found = this.findNodeByPath(node.children, targetPath);
-        if (found) return found;
-      }
-    }
-    return undefined;
-  }
-
-  /** Read a USLM XML file from disk by jurisdiction and path */
-  getCodeXml(jurisdictionId: string, codePath: string): string | null {
-    const filePath = join(this.codesDir, jurisdictionId, `${codePath}.xml`);
-    if (!existsSync(filePath)) {
-      return null;
-    }
-    return readFileSync(filePath, 'utf-8');
-  }
-
-  /** Read the original HTML file from disk */
-  getCodeHtml(jurisdictionId: string, codePath: string): string | null {
-    const filePath = join(this.codesDir, jurisdictionId, `${codePath}.html`);
-    if (!existsSync(filePath)) {
-      return null;
-    }
-    return readFileSync(filePath, 'utf-8');
-  }
-
-  /** Get plain text content — uses in-memory index first, falls back to disk */
   getCodeText(jurisdictionId: string, codePath: string): string | null {
-    // Try index first (no disk I/O)
-    const indexed = this.searchIndex.getText(jurisdictionId, codePath);
-    if (indexed !== null) return indexed;
-
-    // Fall back to disk for non-indexed content
-    const html = this.getCodeHtml(jurisdictionId, codePath);
-    if (!html) return null;
-    return html
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&nbsp;/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    const row = this.db.prepare(
+      'SELECT text FROM sections WHERE jurisdiction_id = ? AND path = ?'
+    ).get(jurisdictionId, codePath) as { text: string | null } | undefined;
+    return row?.text ?? null;
   }
 
-  /** Search for keywords within a jurisdiction. Uses in-memory index — no disk I/O. */
+  getCodeHtml(jurisdictionId: string, codePath: string): string | null {
+    const row = this.db.prepare(
+      'SELECT html FROM sections WHERE jurisdiction_id = ? AND path = ?'
+    ).get(jurisdictionId, codePath) as { html: string | null } | undefined;
+    return row?.html ?? null;
+  }
+
+  getCodeXml(jurisdictionId: string, codePath: string): string | null {
+    const row = this.db.prepare(
+      'SELECT xml FROM sections WHERE jurisdiction_id = ? AND path = ?'
+    ).get(jurisdictionId, codePath) as { xml: string | null } | undefined;
+    return row?.xml ?? null;
+  }
+
+  /**
+   * Full-text search using FTS5.
+   *
+   * FTS5 uses tokenized word matching (better than the old substring search).
+   * The snippet() function provides highlighted context automatically.
+   */
   search(jurisdictionId: string, query: string, limit = 20): SearchResult[] {
-    return this.searchIndex.search(jurisdictionId, query, limit);
+    if (!query.trim()) return [];
+
+    // Escape FTS5 special characters and build a prefix query
+    const ftsQuery = sanitizeFtsQuery(query);
+    if (!ftsQuery) return [];
+
+    try {
+      const rows = this.db.prepare(`
+        SELECT
+          s.jurisdiction_id,
+          s.path,
+          s.num,
+          s.heading,
+          snippet(sections_fts, 2, '', '', '...', 20) as snippet
+        FROM sections_fts f
+        JOIN sections s ON s.rowid = f.rowid
+        WHERE sections_fts MATCH ?
+          AND s.jurisdiction_id = ?
+        LIMIT ?
+      `).all(ftsQuery, jurisdictionId, limit) as any[];
+
+      return rows.map((r: any) => ({
+        path: r.path,
+        num: r.num || '',
+        heading: r.heading || '',
+        snippet: r.snippet || '',
+        url: `https://openlegalcodes.org/${jurisdictionId}/${r.path}`,
+      }));
+    } catch {
+      // FTS query syntax error — fall back to empty results
+      return [];
+    }
   }
 
-  /** Check if a jurisdiction has search index */
   hasSearchIndex(jurisdictionId: string): boolean {
-    return this.searchIndex.hasIndex(jurisdictionId);
+    const row = this.db.prepare(
+      'SELECT EXISTS(SELECT 1 FROM sections WHERE jurisdiction_id = ? AND text IS NOT NULL) as has_index'
+    ).get(jurisdictionId) as { has_index: number };
+    return row.has_index === 1;
+  }
+
+  listFeedback(filters?: {
+    status?: string;
+    jurisdictionId?: string;
+    limit?: number;
+    offset?: number;
+  }): FeedbackRow[] {
+    const conditions: string[] = [];
+    const params: any[] = [];
+
+    if (filters?.status) {
+      conditions.push('status = ?');
+      params.push(filters.status);
+    }
+    if (filters?.jurisdictionId) {
+      conditions.push('jurisdiction_id = ?');
+      params.push(filters.jurisdictionId);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const limit = Math.min(filters?.limit || 50, 200);
+    const offset = filters?.offset || 0;
+    params.push(limit, offset);
+
+    return this.db.prepare(
+      `SELECT * FROM feedback ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`
+    ).all(...params) as FeedbackRow[];
+  }
+
+  getFeedback(id: number): FeedbackRow | undefined {
+    return this.db.prepare('SELECT * FROM feedback WHERE id = ?').get(id) as FeedbackRow | undefined;
+  }
+
+  countRecentFeedback(ipAddress: string, windowMinutes: number): number {
+    const row = this.db.prepare(
+      `SELECT COUNT(*) as cnt FROM feedback
+       WHERE ip_address = ? AND created_at > datetime('now', '-' || ? || ' minutes')`
+    ).get(ipAddress, windowMinutes) as { cnt: number };
+    return row.cnt;
   }
 }
 
-export const store = new CodeStore();
+export interface FeedbackRow {
+  id: number;
+  jurisdiction_id: string;
+  path: string;
+  report_type: string;
+  description: string;
+  status: string;
+  triage_notes: string | null;
+  created_at: string;
+  resolved_at: string | null;
+  ip_address: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Row mapping helpers
+// ---------------------------------------------------------------------------
+
+interface TocNodeRow {
+  jurisdiction_id: string;
+  path: string;
+  slug: string;
+  parent_path: string | null;
+  level: string;
+  num: string;
+  heading: string;
+  has_content: number;
+  sort_order: number;
+}
+
+function rowToJurisdiction(row: any): Jurisdiction {
+  return {
+    id: row.id,
+    name: row.name,
+    type: row.type,
+    state: row.state,
+    parentId: row.parent_id,
+    fips: row.fips,
+    publisher: {
+      name: row.publisher_name,
+      sourceId: row.publisher_source_id,
+      url: row.publisher_url,
+    },
+    lastCrawled: row.last_crawled,
+    lastUpdated: row.last_updated,
+  };
+}
+
+function rowToTocNode(row: TocNodeRow, childRows?: TocNodeRow[]): TocNode {
+  const node: TocNode = {
+    slug: row.slug,
+    path: row.path,
+    level: row.level as any,
+    num: row.num,
+    heading: row.heading,
+    hasContent: row.has_content === 1,
+  };
+
+  if (childRows && childRows.length > 0) {
+    node.children = childRows.map(r => rowToTocNode(r));
+  }
+
+  return node;
+}
+
+function buildTocTree(rows: TocNodeRow[], title: string): TocTree {
+  // Build a map of path → node with empty children arrays
+  const nodeMap = new Map<string, TocNode & { children: TocNode[] }>();
+
+  for (const row of rows) {
+    nodeMap.set(row.path, {
+      slug: row.slug,
+      path: row.path,
+      level: row.level as any,
+      num: row.num,
+      heading: row.heading,
+      hasContent: row.has_content === 1,
+      children: [],
+    });
+  }
+
+  // Build tree by linking children to parents
+  const roots: TocNode[] = [];
+  for (const row of rows) {
+    const node = nodeMap.get(row.path)!;
+    if (row.parent_path === null) {
+      roots.push(node);
+    } else {
+      const parent = nodeMap.get(row.parent_path);
+      if (parent) {
+        parent.children.push(node);
+      } else {
+        // Orphaned node — attach to root
+        roots.push(node);
+      }
+    }
+  }
+
+  // Strip empty children arrays to match the original format
+  function cleanChildren(node: TocNode): void {
+    if (node.children && node.children.length === 0) {
+      delete node.children;
+    } else if (node.children) {
+      node.children.forEach(cleanChildren);
+    }
+  }
+  roots.forEach(cleanChildren);
+
+  return { jurisdiction: '', title, children: roots };
+}
+
+/**
+ * Sanitize a user query for FTS5 MATCH syntax.
+ * Wraps each token in quotes to treat them as literals,
+ * avoiding syntax errors from special characters.
+ */
+function sanitizeFtsQuery(query: string): string {
+  // Split into tokens, wrap each in double quotes for literal matching
+  const tokens = query.trim().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return '';
+  return tokens.map(t => `"${t.replace(/"/g, '""')}"`).join(' ');
+}
+
+// Lazy singleton — DB connection deferred until first use.
+// Properties are writable+configurable so vi.spyOn() works.
+let _store: CodeStore | null = null;
+function getStore(): CodeStore {
+  if (!_store) _store = new CodeStore();
+  return _store;
+}
+
+export const store: CodeStore = Object.create(CodeStore.prototype, {
+  initialize: { value() { getStore().initialize(); }, writable: true, configurable: true },
+  loadOneJurisdiction: { value(id: string) { getStore().loadOneJurisdiction(id); }, writable: true, configurable: true },
+  getJurisdiction: { value(id: string) { return getStore().getJurisdiction(id); }, writable: true, configurable: true },
+  listJurisdictions: { value(f?: any) { return getStore().listJurisdictions(f); }, writable: true, configurable: true },
+  getToc: { value(id: string) { return getStore().getToc(id); }, writable: true, configurable: true },
+  hasUsableToc: { value(id: string) { return getStore().hasUsableToc(id); }, writable: true, configurable: true },
+  getTocNode: { value(id: string, p: string) { return getStore().getTocNode(id, p); }, writable: true, configurable: true },
+  getCodeText: { value(id: string, p: string) { return getStore().getCodeText(id, p); }, writable: true, configurable: true },
+  getCodeHtml: { value(id: string, p: string) { return getStore().getCodeHtml(id, p); }, writable: true, configurable: true },
+  getCodeXml: { value(id: string, p: string) { return getStore().getCodeXml(id, p); }, writable: true, configurable: true },
+  search: { value(id: string, q: string, l?: number) { return getStore().search(id, q, l); }, writable: true, configurable: true },
+  hasSearchIndex: { value(id: string) { return getStore().hasSearchIndex(id); }, writable: true, configurable: true },
+  listFeedback: { value(f?: any) { return getStore().listFeedback(f); }, writable: true, configurable: true },
+  getFeedback: { value(id: number) { return getStore().getFeedback(id); }, writable: true, configurable: true },
+  countRecentFeedback: { value(ip: string, m: number) { return getStore().countRecentFeedback(ip, m); }, writable: true, configurable: true },
+});
+
