@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { store } from '../store/index.js';
 import { BRANDING } from '../branding.js';
 import { permalinkUrl } from '../permalink.js';
-import { resolveJurisdiction, crawlingResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
+import { resolveJurisdiction, crawlingResponse, crawlFailedResponse, notFoundResponse, notFoundOrCrawling } from './resolve.js';
 
 export const codeRoutes = new Hono();
 
@@ -19,6 +19,7 @@ codeRoutes.get('/:id/code/*', (c) => {
   const resolved = resolveJurisdiction(id);
   if (resolved.status === 'not_found') return notFoundResponse(c, `Jurisdiction '${id}' not found`);
   if (resolved.status === 'crawling') return crawlingResponse(c, resolved);
+  if (resolved.status === 'crawl_failed') return crawlFailedResponse(c, resolved);
 
   const { jurisdiction } = resolved;
 

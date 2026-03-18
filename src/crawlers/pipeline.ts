@@ -133,13 +133,19 @@ export async function runCrawl(
     crawlTracker.updateProgress(jurisdiction.id, progress);
   })));
 
-  // Phase 3: Update registry
-  const now = new Date().toISOString();
-  await writer.updateRegistry({
-    ...jurisdiction,
-    lastCrawled: now,
-    lastUpdated: now,
-  });
+  // Phase 3: Update registry (only if at least some sections succeeded)
+  const successCount = progress.completed - progress.errors.length;
+  if (successCount > 0) {
+    const now = new Date().toISOString();
+    await writer.updateRegistry({
+      ...jurisdiction,
+      lastCrawled: now,
+      lastUpdated: now,
+    });
+  } else if (progress.errors.length > 0) {
+    console.warn(`[crawl] All ${progress.errors.length} sections failed for ${jurisdiction.name} — not marking as cached`);
+    throw new Error(`Crawl failed: all ${progress.errors.length} section fetches failed for ${jurisdiction.name}`);
+  }
 
   progress.phase = 'done';
   onProgress?.(progress);
