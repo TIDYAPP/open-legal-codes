@@ -151,6 +151,39 @@ const CA_CODE_BLUEBOOK: Record<string, string> = {
   WIC: 'Welf. & Inst.',
 };
 
+// Full code names used by courts in long-form citations (e.g., "Penal Code section 187")
+const CA_CODE_FULL_NAME: Record<string, string> = {
+  BPC: 'Business and Professions',
+  CIV: 'Civil',
+  CCP: 'Code of Civil Procedure',
+  COM: 'Commercial',
+  CORP: 'Corporations',
+  EDC: 'Education',
+  ELEC: 'Elections',
+  EVID: 'Evidence',
+  FAM: 'Family',
+  FIN: 'Financial',
+  FGC: 'Fish and Game',
+  FAC: 'Food and Agricultural',
+  GOV: 'Government',
+  HNC: 'Harbors and Navigation',
+  HSC: 'Health and Safety',
+  INS: 'Insurance',
+  LAB: 'Labor',
+  MVC: 'Military and Veterans',
+  PEN: 'Penal',
+  PROB: 'Probate',
+  PCC: 'Public Contract',
+  PRC: 'Public Resources',
+  PUC: 'Public Utilities',
+  RTC: 'Revenue and Taxation',
+  SHC: 'Streets and Highways',
+  UIC: 'Unemployment Insurance',
+  VEH: 'Vehicle',
+  WAT: 'Water',
+  WIC: 'Welfare and Institutions',
+};
+
 function buildCaliforniaQueries(
   sourceId: string, // e.g., "GOV"
   codePath: string,
@@ -162,10 +195,21 @@ function buildCaliforniaQueries(
   const section = extractSectionNumber(codePath, tocNode);
   if (!section) return [];
 
-  return [
+  const queries: CitationQuery[] = [
     { query: `"Cal. ${abbrev} Code § ${section}"`, label: `Cal. ${abbrev} Code § ${section}` },
     { query: `"California ${abbrev} Code § ${section}"`, label: `California ${abbrev} Code § ${section}` },
   ];
+
+  // Add long-form variant courts often use (e.g., "Penal Code section 12022.53")
+  const fullName = CA_CODE_FULL_NAME[sourceId.toUpperCase()];
+  if (fullName) {
+    queries.push({
+      query: `"${fullName} Code section ${section}"`,
+      label: `${fullName} Code section ${section}`,
+    });
+  }
+
+  return queries;
 }
 
 // ---------------------------------------------------------------------------

@@ -71,8 +71,9 @@ describe('buildCitationQueries', () => {
         publisher: { name: 'ca-leginfo', sourceId: 'GOV', url: '' },
       });
       const queries = buildCitationQueries(j, 'title-2/division-3/section-12965');
-      expect(queries.length).toBe(2);
+      expect(queries.length).toBe(3);
       expect(queries[0].label).toBe('Cal. Gov. Code § 12965');
+      expect(queries[2].label).toBe('Government Code section 12965');
     });
 
     it('generates California Penal Code queries', () => {
@@ -81,8 +82,9 @@ describe('buildCitationQueries', () => {
         publisher: { name: 'ca-leginfo', sourceId: 'PEN', url: '' },
       });
       const queries = buildCitationQueries(j, 'part-1/title-8/section-187');
-      expect(queries.length).toBe(2);
+      expect(queries.length).toBe(3);
       expect(queries[0].label).toBe('Cal. Pen. Code § 187');
+      expect(queries[2].label).toBe('Penal Code section 187');
     });
   });
 
