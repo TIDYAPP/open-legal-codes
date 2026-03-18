@@ -31,9 +31,25 @@ export default function FAQPage() {
 
         <h2>How current is the data?</h2>
         <p>
-          Content is fetched on first request and cached. The cache records when each
-          section was last retrieved. We don&apos;t do full versioning &mdash; we show the
-          current text as of the last fetch.
+          Content is fetched from the publisher on first request and cached. The cache
+          records when each section was last retrieved &mdash; we show the current text
+          as of the last fetch, not a versioned history. To see exactly when a jurisdiction
+          was last synced, check the <code>lastCrawled</code> field in{' '}
+          <code>GET /jurisdictions/:id</code>. This is also shown in the browse interface
+          next to each jurisdiction. We don&apos;t currently monitor for changes
+          automatically &mdash; see the <a href="/#roadmap">roadmap</a> for what&apos;s
+          coming.
+        </p>
+
+        <h2>How does search work?</h2>
+        <p>
+          Search is full-text across all indexed sections of a jurisdiction &mdash; not
+          just titles or headings. Use <code>GET /jurisdictions/:id/search?q=keyword</code>{' '}
+          to search within a single jurisdiction. The global{' '}
+          <code>GET /search?q=keyword&amp;state=CA</code> endpoint searches across all
+          jurisdictions that have already been cached. It does not search the full 37,000+
+          catalog &mdash; only the subset that has been crawled. Use{' '}
+          <code>GET /jurisdictions?cached=true</code> to see what&apos;s available.
         </p>
 
         <h2>What jurisdictions are covered?</h2>

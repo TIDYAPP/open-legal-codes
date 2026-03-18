@@ -44,11 +44,20 @@ curl 'https://openlegalcodes.org/api/v1/lookup?city=Mountain+View&state=CA'`}</d
       </p>
       <div className="code-block">{`GET /jurisdictions                              # List all jurisdictions
 GET /jurisdictions?state=CA                     # Filter by state
-GET /jurisdictions/:id                          # Jurisdiction metadata + availability status
+GET /jurisdictions?cached=true                  # Only cached (ready) jurisdictions
+GET /jurisdictions/:id                          # Jurisdiction metadata + lastCrawled timestamp
 GET /jurisdictions/:id/toc?depth=2              # Table of contents
 GET /jurisdictions/:id/code/:path               # Section text + permalink
-GET /jurisdictions/:id/search?q=parking         # Keyword search
+GET /jurisdictions/:id/search?q=parking         # Full-text search within a jurisdiction
+GET /search?q=parking&state=CA                  # Search across all cached jurisdictions
 GET /lookup?city=Mountain+View&state=CA         # Find by name`}</div>
+      <p className="text-sm text-muted mt-8">
+        Search is full-text across all indexed sections &mdash; not just headings.
+        The global <code>/search</code> endpoint only covers cached jurisdictions;
+        use <code>/jurisdictions?cached=true</code> to see what&apos;s available.
+        Check <code>lastCrawled</code> in <code>/jurisdictions/:id</code> to see
+        when a jurisdiction was last synced.
+      </p>
 
       <h2>How caching works</h2>
       <p>
