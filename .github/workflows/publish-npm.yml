@@ -1,0 +1,80 @@
+name: Publish to npm
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CLI package
+        working-directory: packages/cli
+        run: npm run build
+
+      - name: Sync version from tag
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "Publishing version $VERSION"
+          cd packages/cli
+          npm version "$VERSION" --no-git-tag-version
+          cd ../cli-wrapper
+          npm version "$VERSION" --no-git-tag-version
+          # Pin wrapper dependency to exact version
+          node -e "
+            const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8'));
+            pkg.dependencies['@tidydotcom/open-legal-codes'] = '$VERSION';
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Publish @tidydotcom/open-legal-codes
+        working-directory: packages/cli
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish open-legal-codes (wrapper)
+        working-directory: packages/cli-wrapper
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  update-homebrew:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for npm propagation
+        run: sleep 30
+
+      - name: Get tarball SHA256
+        id: sha
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          URL="https://registry.npmjs.org/@tidydotcom/open-legal-codes/-/open-legal-codes-${VERSION}.tgz"
+          SHA=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Update Homebrew formula
+        uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          formula-name: open-legal-codes
+          homebrew-tap: tidyapp/homebrew-tap
+          download-url: ${{ steps.sha.outputs.url }}
+          download-sha256: ${{ steps.sha.outputs.sha256 }}
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}

@@ -39,9 +39,22 @@ export default function HomePage() {
         </ol>
       </div>
 
-      <h2>Integration</h2>
+      <h2>Get started</h2>
+
+      <h3>Install</h3>
+      <div className="code-block">{`# npm
+npm install -g open-legal-codes
+
+# Homebrew (macOS / Linux)
+brew install tidyapp/tap/open-legal-codes
+
+# No install needed — just use npx or curl
+npx open-legal-codes search --jurisdiction wa-seattle --query "landlord"
+curl 'https://openlegalcodes.org/api/v1/lookup?city=Seattle&state=WA'`}</div>
+
+      <h3>MCP server (for AI agents)</h3>
       <div className="prose">
-        <p>Add the MCP server to Claude Desktop or Claude Code:</p>
+        <p>Add to Claude Desktop, Claude Code, or any MCP client:</p>
       </div>
       <div className="code-block">{`{
   "mcpServers": {
@@ -51,13 +64,12 @@ export default function HomePage() {
   }
 }`}</div>
 
-      <div className="prose mt-24">
-        <p>Or use the REST API directly:</p>
-      </div>
+      <h3>REST API</h3>
       <div className="code-block">{`GET /api/v1/jurisdictions?state=CA          # List jurisdictions
 GET /api/v1/jurisdictions/:id/toc           # Table of contents
 GET /api/v1/jurisdictions/:id/code/:path    # Section text + permalink
-GET /api/v1/jurisdictions/:id/search?q=dog  # Keyword search`}</div>
+GET /api/v1/jurisdictions/:id/search?q=dog  # Keyword search
+GET /api/v1/lookup?city=Miami&state=FL      # Find by city name`}</div>
 
       <p className="text-sm text-muted mt-16">
         <a href="/developers">Full API docs, CLI, and MCP tool reference &rarr;</a>

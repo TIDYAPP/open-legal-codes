@@ -32,9 +32,11 @@
     "government"
   ],
   "license": "MIT",
+  "homepage": "https://openlegalcodes.org",
   "workspaces": [
     "web",
-    "packages/cli"
+    "packages/cli",
+    "packages/cli-wrapper"
   ],
   "dependencies": {
     "@browserbasehq/sdk": "^2.7.0",

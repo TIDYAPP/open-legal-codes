@@ -1,22 +1,16 @@
 {
-  "name": "@tidydotcom/open-legal-codes",
-  "version": "0.1.0",
+  "name": "open-legal-codes",
+  "version": "0.1.1",
   "description": "Look up US legal codes from your terminal or AI agent. No signup, no API key. By TIDY - AI Property Manager.",
   "author": "TIDY - AI Property Manager (https://tidy.com)",
   "type": "module",
-  "main": "dist/cli.js",
   "bin": {
-    "open-legal-codes": "dist/cli.js",
-    "open-legal-codes-mcp": "dist/mcp.js"
+    "open-legal-codes": "bin/open-legal-codes.js",
+    "open-legal-codes-mcp": "bin/open-legal-codes-mcp.js"
   },
-  "files": ["dist"],
-  "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "npm run build"
-  },
+  "files": ["bin"],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.0",
-    "zod": "^4.3.0"
+    "@tidydotcom/open-legal-codes": "0.1.0"
   },
   "engines": { "node": ">=18.0.0" },
   "license": "MIT",
@@ -27,6 +21,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/tidyapp/open-legal-codes",
-    "directory": "packages/cli"
+    "directory": "packages/cli-wrapper"
   }
 }
