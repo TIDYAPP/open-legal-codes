@@ -1,12 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 import { MunicodeCrawler } from '../crawlers/municode.js';
 import { transformToc, flattenContentNodes } from '../crawlers/toc-transformer.js';
 import { CodeWriter } from '../store/writer.js';
 import { CodeStore } from '../store/index.js';
+import { createDb } from '../store/db.js';
+import type Database from 'better-sqlite3';
 
 // Mountain View, CA — ClientID 17072, known to work with Municode API
 const SOURCE_ID = '17072';
@@ -39,19 +37,17 @@ describe.skipIf(!process.env.INTEGRATION)('Municode adapter - live API', () => {
 
 describe.skipIf(!process.env.INTEGRATION)('Municode - mini crawl round-trip', () => {
   const crawler = new MunicodeCrawler();
-  let tmpDir: string;
+  let db: Database.Database;
 
-  beforeAll(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'olc-test-'));
+  beforeAll(() => {
+    db = createDb(':memory:');
   });
 
-  afterAll(async () => {
-    if (tmpDir) {
-      await rm(tmpDir, { recursive: true, force: true });
-    }
+  afterAll(() => {
+    db?.close();
   });
 
-  it('fetches a section, writes to disk, reads back through CodeStore', async () => {
+  it('fetches a section, writes to DB, reads back through CodeStore', async () => {
     // Fetch section content
     const content = await crawler.fetchSection(SOURCE_ID, KNOWN_LEAF_NODE_ID);
     expect(content.html.length).toBeGreaterThan(0);
@@ -67,33 +63,22 @@ describe.skipIf(!process.env.INTEGRATION)('Municode - mini crawl round-trip', ()
     const tocTree = transformToc(rawToc, JURISDICTION_ID, JURISDICTION_NAME);
     expect(tocTree.children.length).toBe(1);
 
-    // Write TOC, meta, and the section
-    const writer = new CodeWriter(tmpDir);
-    await writer.writeMeta(JURISDICTION_ID, {
+    // Write jurisdiction, TOC, and section to SQLite
+    const writer = new CodeWriter(db);
+
+    await writer.updateRegistry({
       id: JURISDICTION_ID,
       name: JURISDICTION_NAME,
       type: 'city',
       state: 'CA',
-      codeName: `${JURISDICTION_NAME} Municipal Code`,
+      parentId: 'ca',
+      fips: '0649670',
       publisher: { name: 'municode', sourceId: SOURCE_ID, url: '' },
-    });
-    await writer.writeToc(JURISDICTION_ID, tocTree);
+      lastCrawled: '',
+      lastUpdated: '',
+    } as any);
 
-    // Write jurisdictions.json for CodeStore
-    await writeFile(
-      join(tmpDir, 'jurisdictions.json'),
-      JSON.stringify([{
-        id: JURISDICTION_ID,
-        name: JURISDICTION_NAME,
-        type: 'city',
-        state: 'CA',
-        parentId: 'ca',
-        fips: '0649670',
-        publisher: { name: 'municode', sourceId: SOURCE_ID, url: '' },
-        lastCrawled: '',
-        lastUpdated: '',
-      }]),
-    );
+    await writer.writeToc(JURISDICTION_ID, tocTree);
 
     // Convert and write section
     const contentNodes = flattenContentNodes(tocTree);
@@ -110,15 +95,8 @@ describe.skipIf(!process.env.INTEGRATION)('Municode - mini crawl round-trip', ()
 
     await writer.writeSection(JURISDICTION_ID, node.path, xml, content.html);
 
-    // Verify files exist
-    expect(existsSync(join(tmpDir, JURISDICTION_ID, '_meta.json'))).toBe(true);
-    expect(existsSync(join(tmpDir, JURISDICTION_ID, '_toc.json'))).toBe(true);
-    expect(existsSync(join(tmpDir, JURISDICTION_ID, `${node.path}.html`))).toBe(true);
-    expect(existsSync(join(tmpDir, JURISDICTION_ID, `${node.path}.xml`))).toBe(true);
-
     // Read back through CodeStore
-    const store = new CodeStore(tmpDir);
-    store.initialize();
+    const store = new CodeStore(db);
 
     const jurisdiction = store.getJurisdiction(JURISDICTION_ID);
     expect(jurisdiction).toBeDefined();

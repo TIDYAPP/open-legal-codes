@@ -100,6 +100,7 @@ Available tools:
 | `get_table_of_contents` | Browse a jurisdiction's code structure |
 | `get_code_text` | Get the text of a specific code section |
 | `search_code` | Exact keyword search within a jurisdiction |
+| `get_case_law` | Find court opinions citing a code section |
 
 ### Claude Code
 
@@ -206,6 +207,20 @@ Agent generates initial plan, then checks each step:
 
 Instead of a generic plan that misses local requirements, the agent produces one that's grounded in what the law actually says — and flags the gotchas that trip people up.
 
+## Case Law Citations
+
+For every code section, Open Legal Codes attempts to show court opinions that have cited or interpreted that law. We search [CourtListener](https://www.courtlistener.com/) (a free, open legal database from the [Free Law Project](https://free.law/)) for opinions that reference each statute, and display them in reverse chronological order.
+
+**We do not store or host case law.** Every citation links directly to the full opinion on CourtListener. We are solely linking to their records.
+
+**These citations are likely imperfect.** We match statutes to opinions using Bluebook citation formats (e.g., "42 U.S.C. § 1983", "Cal. Gov. Code § 12965"), but courts cite laws inconsistently and our matching is best-effort. Some relevant opinions will be missed, and some results may be tangential. This works best for federal and state statutes where citation formats are standardized. Municipal codes are not yet supported because there is no standard way courts cite them.
+
+**Nothing here constitutes legal advice or a legal opinion.** This is an automated, best-guess linkage between legal codes and court records. Always consult a qualified attorney for legal matters.
+
+Case law is available via the API (`GET /jurisdictions/:id/caselaw/*path`), CLI (`caselaw` command), MCP (`get_case_law` tool), and the web UI (expand "Citing Court Opinions" on any code section page).
+
+Requires a free CourtListener API token (`COURTLISTENER_API_TOKEN` environment variable). Get one at [courtlistener.com](https://www.courtlistener.com/sign-in/).
+
 ## REST API
 
 Base URL: `https://openlegalcodes.org/api/v1`
@@ -217,6 +232,7 @@ Base URL: `https://openlegalcodes.org/api/v1`
 | `GET /jurisdictions/:id/toc` | Table of contents (`?depth=2`) |
 | `GET /jurisdictions/:id/toc/*path` | TOC subtree at a path |
 | `GET /jurisdictions/:id/code/*path` | Code text (`?format=text\|xml\|html`) |
+| `GET /jurisdictions/:id/caselaw/*path` | Citing court opinions (`?limit=20&offset=0`) |
 | `GET /jurisdictions/:id/search` | Keyword search (`?q=rental&limit=20`) |
 | `GET /lookup` | Find jurisdiction (`?city=Mountain+View&state=CA`) |
 
@@ -242,6 +258,7 @@ Example response:
 open-legal-codes query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
 open-legal-codes toc --jurisdiction ca-mountain-view --depth 2
 open-legal-codes search --jurisdiction ca-mountain-view --query "rental"
+open-legal-codes caselaw --jurisdiction ca-gov --path title-2/.../section-12965
 open-legal-codes crawl --jurisdiction ca-mountain-view
 open-legal-codes list --state CA
 ```
@@ -249,19 +266,21 @@ open-legal-codes list --state CA
 ## Architecture
 
 ```
-Publisher APIs          Cache (filesystem)        Consumers
+Publisher APIs          SQLite                    Consumers
 ┌──────────────┐       ┌──────────────────┐      ┌─────────────────┐
-│ Municode     │──┐    │ codes/           │      │ REST API        │
-│ American Legal│──┼──▶│   {jurisdiction}/ │──▶──│ CLI             │
-│ (future...)  │──┘    │     sections...   │      │ MCP Server      │
-└──────────────┘       │     _meta.json    │      │ Web UI          │
-                       │     _toc.json     │      └─────────────────┘
-                       └──────────────────┘
+│ Municode     │──┐    │ openlegalcodes.db│      │ REST API        │
+│ American Legal│──┼──▶│   jurisdictions  │──▶──│ CLI             │
+│ eCFR, etc.   │──┘    │   toc_nodes      │      │ MCP Server      │
+└──────────────┘       │   sections (FTS5)│      │ Web UI          │
+                       └──────┬───────────┘      └─────────────────┘
+                              │
+CourtListener API ──▶ caselaw_results
 ```
 
 - **Publisher adapters** (`src/crawlers/`) handle each publisher's quirks
-- **Cache** is filesystem-based — no database needed
-- **Search index** is built in memory at startup for fast keyword search
+- **SQLite** stores all data — jurisdictions, TOC trees, code content, and case law citations
+- **FTS5** provides full-text search (no in-memory index needed)
+- **Case law** links to CourtListener — we don't store or host opinions
 - **CDN-ready** — static code sections are cacheable; only `/search` and `/lookup` need origin
 
 ### Publisher Coverage
@@ -293,12 +312,12 @@ npm run web              # Web UI (port 3000)
 ## Production Deployment
 
 ```
-Client → CDN (Cloudflare) → Origin (Node.js + Hono) → codes/ (filesystem)
+Client → CDN (Cloudflare) → Origin (Node.js + Hono) → SQLite (data/openlegalcodes.db)
 ```
 
 - Static code sections are CDN-cacheable with long TTLs
-- Only `/search` and `/lookup` hit origin
-- No database — the filesystem cache is the database
+- Only `/search`, `/lookup`, and `/caselaw` hit origin
+- SQLite with WAL mode for concurrent reads
 - Pre-warm jurisdictions you care about with `crawl`
 
 ## Contributing
@@ -315,6 +334,8 @@ Submit a PR. If you have ideas for improvement, open an issue.
 ## Legal
 
 The text of the law is public domain. The Supreme Court ruled in [Georgia v. Public.Resource.Org (2020)](https://en.wikipedia.org/wiki/Georgia_v._Public.Resource.Org,_Inc.) that government-authored legal codes cannot be copyrighted. We're not replacing publishers — we're making it easy for everyone to know what the laws actually are.
+
+**Case law citations are best-effort and do not constitute legal advice.** We link to court opinions on CourtListener using automated citation matching. These links may be incomplete, imprecise, or miss relevant cases entirely. Nothing provided by this service should be interpreted as a legal opinion. Always consult a qualified attorney.
 
 This project's source code is MIT licensed.
 

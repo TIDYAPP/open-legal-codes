@@ -1,0 +1,23 @@
+name: Daily Feedback Triage
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # 8am UTC daily
+  workflow_dispatch: {} # manual trigger
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run triage on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/open-legal-codes
+            git pull origin main
+            export ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
+            export GITHUB_TOKEN="${{ secrets.TRIAGE_GITHUB_TOKEN }}"
+            npx tsx src/scripts/triage-feedback.ts

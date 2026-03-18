@@ -20,6 +20,8 @@ import { CodeStore } from './store/index.js';
 import { buildCatalog } from './registry/catalog-builder.js';
 import { loadCensusData } from './registry/census-loader.js';
 import { matchRegistryToCensus } from './registry/matcher.js';
+import { getCaseLaw } from './caselaw/index.js';
+import { CodeWriter, stripHtml } from './store/writer.js';
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -75,6 +77,9 @@ Commands:
   query   --jurisdiction <id> --path <code-path>   Get the text of a code section
   toc     --jurisdiction <id> [--depth N]           Browse table of contents
   search  --jurisdiction <id> --query <terms>       Search code text
+  caselaw --jurisdiction <id> --path <code-path>   Find citing court opinions
+  report  --jurisdiction <id> --path <path> --type <type> [--description "..."]
+                                                    Report a bad result (types: bad_citation, out_of_date, wrong_text, other)
   crawl   --jurisdiction <id>                       Crawl a jurisdiction from publisher
   list    [--state XX] [--publisher NAME]           List available jurisdictions
   catalog [--publisher NAME] [--state XX]           Scan publishers to build registry
@@ -179,6 +184,90 @@ async function main() {
         console.log(`    ${r.snippet}\n`);
       }
       console.log(`${results.length} sections found.`);
+      break;
+    }
+
+    case 'caselaw': {
+      const jurisdictionId = getArg('jurisdiction');
+      const codePath = getArg('path');
+      if (!jurisdictionId || !codePath) {
+        console.error('Usage: open-legal-codes caselaw --jurisdiction <id> --path <code-path> [--limit N]');
+        process.exit(1);
+      }
+
+      const store = new CodeStore();
+
+      const jurisdiction = store.getJurisdiction(jurisdictionId);
+      if (!jurisdiction) {
+        console.error(`Jurisdiction "${jurisdictionId}" not found.`);
+        process.exit(1);
+      }
+
+      const tocNode = store.getTocNode(jurisdictionId, codePath);
+      const limit = getArg('limit') ? parseInt(getArg('limit')!, 10) : 20;
+
+      try {
+        const result = await getCaseLaw(jurisdiction, codePath, tocNode || undefined, { limit });
+
+        if (!result.supported) {
+          console.log('Case law lookup is not yet available for this jurisdiction type (municipal codes lack standardized citation formats).');
+          break;
+        }
+
+        if (tocNode) {
+          console.log(`${jurisdiction.name}`);
+          console.log(`${tocNode.num}${tocNode.heading ? ' — ' + tocNode.heading : ''}`);
+        }
+        console.log(`Searching CourtListener for: ${result.queries.map(q => q.label).join(', ')}`);
+        console.log('---');
+
+        if (result.results.length === 0) {
+          console.log('No citing opinions found.');
+        } else {
+          for (let i = 0; i < result.results.length; i++) {
+            const r = result.results[i];
+            console.log(`${i + 1}. ${r.caseName} (${r.court}, ${r.dateFiled})`);
+            if (r.citation) console.log(`   ${r.citation}${r.citeCount ? ` — cited by ${r.citeCount} opinions` : ''}`);
+            console.log(`   ${r.url}`);
+            if (r.snippet) console.log(`   ${stripHtml(r.snippet)}`);
+            console.log('');
+          }
+          console.log(`Showing ${result.results.length} of ${result.totalCount} results.`);
+        }
+      } catch (err: any) {
+        console.error(`Error: ${err.message}`);
+        process.exit(1);
+      }
+      break;
+    }
+
+    case 'report': {
+      const jurisdictionId = getArg('jurisdiction');
+      const codePath = getArg('path');
+      const reportType = getArg('type');
+      const description = getArg('description') || '';
+
+      if (!jurisdictionId || !codePath || !reportType) {
+        console.error('Usage: open-legal-codes report --jurisdiction <id> --path <path> --type <type> [--description "..."]');
+        console.error('Types: bad_citation, out_of_date, wrong_text, other');
+        process.exit(1);
+      }
+
+      const validTypes = ['bad_citation', 'out_of_date', 'wrong_text', 'other'];
+      if (!validTypes.includes(reportType)) {
+        console.error(`Invalid type "${reportType}". Must be one of: ${validTypes.join(', ')}`);
+        process.exit(1);
+      }
+
+      const writer = new CodeWriter();
+      const feedbackId = writer.createFeedback({
+        jurisdictionId,
+        path: codePath,
+        reportType,
+        description,
+      });
+
+      console.log(`Report #${feedbackId} submitted. Thank you for the feedback.`);
       break;
     }
 

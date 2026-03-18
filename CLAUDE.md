@@ -29,6 +29,7 @@ npm run web:build        # Build Next.js frontend
 npx tsx src/cli.ts query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
 npx tsx src/cli.ts toc --jurisdiction ca-mountain-view --depth 2
 npx tsx src/cli.ts search --jurisdiction ca-mountain-view --query "parking"
+npx tsx src/cli.ts caselaw --jurisdiction ca-gov --path title-2/.../section-12965
 npx tsx src/cli.ts crawl --jurisdiction ca-mountain-view
 npx tsx src/cli.ts list --state CA
 ```
@@ -42,7 +43,7 @@ This repo includes `.claude/skills/` for Claude Code integration:
 
 ### MCP Server
 
-5 tools for AI agents: `lookup_jurisdiction`, `list_jurisdictions`, `get_table_of_contents`, `get_code_text`, `search_code`.
+6 tools for AI agents: `lookup_jurisdiction`, `list_jurisdictions`, `get_table_of_contents`, `get_code_text`, `search_code`, `get_case_law`.
 
 Configure in `claude_desktop_config.json`:
 ```json
@@ -59,7 +60,9 @@ Configure in `claude_desktop_config.json`:
 ## Architecture
 
 ```
-Publisher Adapters → Cache (filesystem) → Consumers (API / CLI / MCP / Web)
+Publisher Adapters → SQLite (data/openlegalcodes.db) → Consumers (API / CLI / MCP / Web)
+                                    ↕
+                          CourtListener API → Case Law Cache
 ```
 
 ### Publisher Adapters (`src/crawlers/`)
@@ -78,21 +81,39 @@ Each publisher gets its own adapter implementing `CrawlerAdapter` (defined in `s
 
 The crawl pipeline (`pipeline.ts`) orchestrates: fetch TOC → transform → fetch all sections → write to cache.
 
-### Cache (`codes/` + `src/store/`)
+### Data Store (`src/store/` + `data/openlegalcodes.db`)
 
-Filesystem-based. Each jurisdiction gets a directory under `codes/`:
-- `_meta.json` — jurisdiction metadata, source info
-- `_toc.json` — table of contents tree
-- `{path}.html` — original HTML from publisher
-- `{path}.xml` — converted XML
+SQLite database with WAL mode for concurrent reads. Tables:
+- `jurisdictions` — cached jurisdiction metadata
+- `toc_nodes` — flattened table of contents with parent references
+- `sections` — HTML, XML, and plain text content
+- `sections_fts` — FTS5 full-text search index (auto-synced via triggers)
+- `caselaw_cache` — CourtListener search result metadata
+- `caselaw_results` — individual case law results per section
 
-`CodeStore` (`src/store/index.ts`) provides read access with an in-memory search index.
+`CodeStore` (`src/store/index.ts`) provides read access. `CodeWriter` (`src/store/writer.ts`) handles writes during crawls.
+
+**Migration from filesystem**: `npx tsx src/store/migrate-from-files.ts` imports existing `codes/` directory data into SQLite.
 
 ### How Caching Works
 
-- **First request**: scrapes the publisher, caches to disk. Takes up to ~1 minute.
-- **Subsequent requests**: served from cache in milliseconds.
+- **First request**: scrapes the publisher, writes to SQLite. Takes up to ~1 minute.
+- **Subsequent requests**: served from SQLite in milliseconds.
 - **The more a jurisdiction is used, the faster it gets.**
+
+### Case Law (`src/caselaw/`)
+
+For every code section, we attempt to show court opinions that cited or interpreted it, displayed in reverse chronological order. We search [CourtListener](https://www.courtlistener.com/) (Free Law Project) using Bluebook citation formats and link directly to their records. **We do not store or host case law — we solely link to CourtListener.**
+
+These citations are best-effort and likely imperfect. Courts cite statutes inconsistently, and our automated matching will miss relevant opinions and may include tangential results. Nothing here constitutes legal advice.
+
+- `citation-map.ts` — maps jurisdiction + path to Bluebook citation strings
+- `courtlistener.ts` — CourtListener API client
+- `index.ts` — service orchestrator with SQLite caching (30-day TTL)
+
+Supported: federal (USC, CFR) and state statutes. Not yet supported: municipal codes (no standardized citation format).
+
+Requires `COURTLISTENER_API_TOKEN` environment variable (free from courtlistener.com).
 
 ### HTTP API (`src/routes/`)
 
@@ -102,6 +123,7 @@ Base URL: `https://openlegalcodes.org/api/v1`
 - `GET /jurisdictions/:id` — single jurisdiction metadata
 - `GET /jurisdictions/:id/toc` — table of contents (with `?depth=N`)
 - `GET /jurisdictions/:id/code/*path` — code content (includes `url` permalink)
+- `GET /jurisdictions/:id/caselaw/*path?limit=20&offset=0` — citing court opinions from CourtListener
 - `GET /jurisdictions/:id/search?q=keyword` — keyword search (results include `url` links)
 - `GET /search?q=keyword&state=CA` — cross-jurisdiction keyword search (searches all cached jurisdictions)
 - `GET /lookup?city=X&state=Y` — find jurisdiction by name
@@ -138,12 +160,13 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - **City/Municipal**: Municode + American Legal + eCode360
 
 ### Infrastructure
-- Cache/storage: **working** — reads and writes jurisdiction data
+- Data store: **working** — SQLite with FTS5 full-text search
 - HTTP API routes: **working** — all responses include permalink URLs
-- CLI: **working** — query, toc, search, crawl, list commands; supports all publishers via `--publisher`
-- MCP server: **working** — 5 tools with type/query filters, responses include source URLs
-- Web app: **working** — Next.js in `web/`, browse/search/view codes
+- CLI: **working** — query, toc, search, caselaw, crawl, list commands; supports all publishers via `--publisher`
+- MCP server: **working** — 6 tools with type/query filters, responses include source URLs
+- Case law: **working** — CourtListener integration for federal and state statutes
+- Web app: **working** — Next.js in `web/`, browse/search/view codes with case law citations
 - Claude Code skills: **working** — `.claude/skills/` for query, search, crawl
-- Tests: **working** — 118 tests across 12 test files (vitest)
-- Search: **working** — in-memory index, exact keyword matching, cross-jurisdiction search via `/search?q=&state=`
+- Tests: **working** — 81 tests across 15 test files (vitest)
+- Search: **working** — FTS5 full-text search, cross-jurisdiction search via `/search?q=&state=`
 - Deployment: **ready** — Dockerfile, docker-compose, Caddy, GitHub Actions CI/CD

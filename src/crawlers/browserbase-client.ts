@@ -13,7 +13,6 @@
 
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright-core';
 import { HttpClient } from './http-client.js';
-import { PlaywrightHttpClient } from './playwright-client.js';
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,7 +22,6 @@ export class BrowserbaseHttpClient {
   private minDelayMs: number;
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
-  private sessionId: string | null = null;
   private lastRequestTime = 0;
   private connecting: Promise<void> | null = null;
 
@@ -75,7 +73,6 @@ export class BrowserbaseHttpClient {
       }
 
       const session = await createRes.json() as { id: string; connectUrl?: string };
-      this.sessionId = session.id;
       console.log(`[browserbase] Session created: ${session.id}`);
 
       // Step 2: Connect Playwright via CDP
@@ -170,14 +167,17 @@ export class BrowserbaseHttpClient {
  * HTTP client that tries plain fetch first, falls back to Browserbase
  * when the request is blocked (403, Cloudflare challenge, empty response).
  * Lazily creates the Browserbase session only when needed.
+ *
+ * If Browserbase credentials are not configured, throws an error instead
+ * of silently falling back to local Playwright. Set BROWSERBASE_API_KEY
+ * and BROWSERBASE_PROJECT_ID env vars to enable browser-based crawling.
  */
 export class FallbackHttpClient {
   private plainHttp: HttpClient;
   private bbClient: BrowserbaseHttpClient | null = null;
-  private pwClient: PlaywrightHttpClient | null = null;
   private bbAvailable: boolean;
   private bbOptions: { minDelayMs?: number };
-  private automationMode: 'browserbase' | 'playwright' | null = null;
+  private useBrowserbase = false;
 
   constructor(options?: { minDelayMs?: number }) {
     this.plainHttp = new HttpClient({ minDelayMs: options?.minDelayMs ?? 500 });
@@ -195,43 +195,15 @@ export class FallbackHttpClient {
     return this.bbClient;
   }
 
-  private getPlaywright(): PlaywrightHttpClient {
-    if (!this.pwClient) {
-      this.pwClient = new PlaywrightHttpClient(this.bbOptions);
+  private switchToBrowserbase(reason: string): void {
+    if (!this.bbAvailable) {
+      throw new Error(
+        `Browser automation required (${reason}) but Browserbase is not configured. ` +
+        `Set BROWSERBASE_API_KEY and BROWSERBASE_PROJECT_ID env vars.`
+      );
     }
-    return this.pwClient;
-  }
-
-  private async getAutomationHtml(url: string, params?: Record<string, string>): Promise<string> {
-    if (this.automationMode === 'browserbase' && this.bbAvailable) {
-      return this.getBrowserbase().getHtml(url, params);
-    }
-    if (this.automationMode === 'playwright') {
-      return this.getPlaywright().getHtml(url, params);
-    }
-    throw new Error('No browser automation fallback is active');
-  }
-
-  private async getAutomationJson<T>(url: string, params?: Record<string, string>): Promise<T> {
-    if (this.automationMode === 'browserbase' && this.bbAvailable) {
-      return this.getBrowserbase().getJson<T>(url, params);
-    }
-    if (this.automationMode === 'playwright') {
-      return this.getPlaywright().getJson<T>(url, params);
-    }
-    throw new Error('No browser automation fallback is active');
-  }
-
-  private chooseAutomationMode(reason: string): 'browserbase' | 'playwright' {
-    if (this.bbAvailable) {
-      console.log(`[fallback] ${reason}, switching to Browserbase`);
-      this.automationMode = 'browserbase';
-      return this.automationMode;
-    }
-
-    console.log(`[fallback] ${reason}, switching to local Playwright`);
-    this.automationMode = 'playwright';
-    return this.automationMode;
+    console.log(`[fallback] ${reason}, switching to Browserbase`);
+    this.useBrowserbase = true;
   }
 
   private isBlocked(html: string): boolean {
@@ -244,21 +216,21 @@ export class FallbackHttpClient {
   }
 
   async getHtml(url: string, params?: Record<string, string>): Promise<string> {
-    if (this.automationMode) {
-      return this.getAutomationHtml(url, params);
+    if (this.useBrowserbase) {
+      return this.getBrowserbase().getHtml(url, params);
     }
 
     try {
       const html = await this.plainHttp.getHtml(url, params);
       if (this.isBlocked(html)) {
-        this.chooseAutomationMode('Plain HTTP returned a blocked response');
-        return this.getAutomationHtml(url, params);
+        this.switchToBrowserbase('Plain HTTP returned a blocked response');
+        return this.getBrowserbase().getHtml(url, params);
       }
       return html;
     } catch (err: any) {
       if (err.message?.includes('403') || err.message?.includes('503')) {
-        this.chooseAutomationMode(`Plain HTTP failed (${err.message})`);
-        return this.getAutomationHtml(url, params);
+        this.switchToBrowserbase(`Plain HTTP failed (${err.message})`);
+        return this.getBrowserbase().getHtml(url, params);
       }
       throw err;
     }
@@ -273,16 +245,16 @@ export class FallbackHttpClient {
   }
 
   async getJson<T>(url: string, params?: Record<string, string>): Promise<T> {
-    if (this.automationMode) {
-      return this.getAutomationJson<T>(url, params);
+    if (this.useBrowserbase) {
+      return this.getBrowserbase().getJson<T>(url, params);
     }
 
     try {
       return await this.plainHttp.getJson<T>(url, params);
     } catch (err: any) {
       if (err.message?.includes('403') || err.message?.includes('503')) {
-        this.chooseAutomationMode(`Plain HTTP JSON failed (${err.message})`);
-        return this.getAutomationJson<T>(url, params);
+        this.switchToBrowserbase(`Plain HTTP JSON failed (${err.message})`);
+        return this.getBrowserbase().getJson<T>(url, params);
       }
       throw err;
     }
@@ -291,9 +263,6 @@ export class FallbackHttpClient {
   async dispose(): Promise<void> {
     if (this.bbClient) {
       await this.bbClient.dispose();
-    }
-    if (this.pwClient) {
-      await this.pwClient.dispose();
     }
   }
 }
