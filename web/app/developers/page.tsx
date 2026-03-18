@@ -48,6 +48,7 @@ GET /jurisdictions?cached=true                  # Only cached (ready) jurisdicti
 GET /jurisdictions/:id                          # Jurisdiction metadata + lastCrawled timestamp
 GET /jurisdictions/:id/toc?depth=2              # Table of contents
 GET /jurisdictions/:id/code/:path               # Section text + permalink
+GET /jurisdictions/:id/caselaw/:path            # Court opinions citing this statute
 GET /jurisdictions/:id/search?q=parking         # Full-text search within a jurisdiction
 GET /search?q=parking&state=CA                  # Search across all cached jurisdictions
 GET /lookup?city=Mountain+View&state=CA         # Find by name`}</div>
@@ -57,6 +58,42 @@ GET /lookup?city=Mountain+View&state=CA         # Find by name`}</div>
         use <code>/jurisdictions?cached=true</code> to see what&apos;s available.
         Check <code>lastCrawled</code> in <code>/jurisdictions/:id</code> to see
         when a jurisdiction was last synced.
+      </p>
+
+      <h2>Case law</h2>
+      <p>
+        For any statute, you can look up court opinions that have cited it.
+        Results are returned in reverse chronological order (most recent first) with
+        pagination via <code>limit</code> and <code>offset</code>.
+      </p>
+      <div className="code-block">{`# Court opinions citing California Penal Code § 187 (murder)
+GET /jurisdictions/ca-pen/caselaw/part-1/title-8/section-187?limit=20&offset=0
+
+# Response
+{
+  "data": {
+    "supported": true,
+    "totalCount": 356,
+    "cases": [
+      {
+        "caseName": "People v. Smith",
+        "court": "California Court of Appeal",
+        "dateFiled": "2026-01-15",
+        "url": "https://www.courtlistener.com/opinion/...",
+        "citation": "...",
+        "citeCount": 3
+      }
+    ]
+  }
+}`}</div>
+      <p className="text-sm text-muted mt-8">
+        Case law is powered by{' '}
+        <a href="https://www.courtlistener.com" target="_blank" rel="noopener noreferrer">CourtListener</a>{' '}
+        from the <a href="https://free.law" target="_blank" rel="noopener noreferrer">Free Law Project</a>.
+        We link directly to their records &mdash; we do not host or reproduce case law.
+        Citations are matched automatically using standard citation formats and are
+        likely imperfect. Currently supported for federal and state statutes.
+        Nothing here constitutes legal advice.
       </p>
 
       <h2>How caching works</h2>
@@ -111,19 +148,20 @@ GET /lookup?address=306+Desert+Falls+East,+Palm+Desert,+CA  # Address lookup`}</
   }
 }`}</div>
       <p className="text-sm text-muted mt-16">
-        Tools: <code>lookup_jurisdiction</code>, <code>list_jurisdictions</code>, <code>get_table_of_contents</code>, <code>get_code_text</code>, <code>search_code</code>
+        Tools: <code>lookup_jurisdiction</code>, <code>list_jurisdictions</code>, <code>get_table_of_contents</code>, <code>get_code_text</code>, <code>search_code</code>, <code>get_case_law</code>
       </p>
 
       <h2>CLI</h2>
       <p className="text-sm text-muted mb-8">
         After installing via npm or Homebrew:
       </p>
-      <div className="code-block">{`open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
-open-legal-codes query  --jurisdiction ca-mountain-view --path part-i/article-i/section-100
-open-legal-codes toc    --jurisdiction ca-mountain-view --depth 2
-open-legal-codes list   --state CA
-open-legal-codes lookup --city "Mountain View" --state CA
-open-legal-codes crawl  --jurisdiction ca-mountain-view   # warm the cache`}</div>
+      <div className="code-block">{`open-legal-codes search  --jurisdiction ca-mountain-view --query "parking"
+open-legal-codes query   --jurisdiction ca-mountain-view --path part-i/article-i/section-100
+open-legal-codes caselaw --jurisdiction ca-pen --path part-1/title-8/section-187
+open-legal-codes toc     --jurisdiction ca-mountain-view --depth 2
+open-legal-codes list    --state CA
+open-legal-codes lookup  --city "Mountain View" --state CA
+open-legal-codes crawl   --jurisdiction ca-mountain-view   # warm the cache`}</div>
     </div>
   );
 }

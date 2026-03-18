@@ -65,15 +65,34 @@ curl 'https://openlegalcodes.org/api/v1/lookup?city=Seattle&state=WA'`}</div>
 }`}</div>
 
       <h3>REST API</h3>
-      <div className="code-block">{`GET /api/v1/jurisdictions?state=CA          # List jurisdictions
-GET /api/v1/jurisdictions/:id/toc           # Table of contents
-GET /api/v1/jurisdictions/:id/code/:path    # Section text + permalink
-GET /api/v1/jurisdictions/:id/search?q=dog  # Keyword search
-GET /api/v1/lookup?city=Miami&state=FL      # Find by city name`}</div>
+      <div className="code-block">{`GET /api/v1/jurisdictions?state=CA              # List jurisdictions
+GET /api/v1/jurisdictions/:id/toc               # Table of contents
+GET /api/v1/jurisdictions/:id/code/:path        # Section text + permalink
+GET /api/v1/jurisdictions/:id/search?q=dog      # Keyword search
+GET /api/v1/jurisdictions/:id/caselaw/:path     # Citing court opinions
+GET /api/v1/lookup?city=Miami&state=FL          # Find by city name`}</div>
 
       <p className="text-sm text-muted mt-16">
         <a href="/developers">Full API docs, CLI, and MCP tool reference &rarr;</a>
       </p>
+
+      <h2>Case law citations</h2>
+      <div className="prose">
+        <p>
+          For every statute, we show court opinions that have cited it &mdash; most recent first.
+          This is powered by{' '}
+          <a href="https://www.courtlistener.com" target="_blank" rel="noopener noreferrer">CourtListener</a>,
+          a free legal database from the{' '}
+          <a href="https://free.law" target="_blank" rel="noopener noreferrer">Free Law Project</a>.
+          We link directly to their records &mdash; we do not host or reproduce case law.
+        </p>
+        <p>
+          Citations are matched automatically using standard citation formats and are
+          likely imperfect. Some relevant opinions will be missed, and some results may be
+          tangential. Currently supported for federal and state statutes.
+          Nothing here constitutes legal advice.
+        </p>
+      </div>
 
       <h2>Coverage</h2>
       <div className="prose">
