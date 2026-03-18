@@ -99,32 +99,39 @@ function runMigrations(db: Database.Database): void {
       FOREIGN KEY (jurisdiction_id) REFERENCES jurisdictions(id)
     );
 
-    -- Case law cache metadata
-    CREATE TABLE IF NOT EXISTS caselaw_cache (
-      jurisdiction_id TEXT NOT NULL,
-      section_path    TEXT NOT NULL,
-      queries         TEXT NOT NULL,
-      fetched_at      TEXT NOT NULL,
-      total_count     INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (jurisdiction_id, section_path)
-    );
-
-    -- Individual case law results
-    CREATE TABLE IF NOT EXISTS caselaw_results (
-      jurisdiction_id TEXT NOT NULL,
-      section_path    TEXT NOT NULL,
-      cluster_id      INTEGER NOT NULL,
+    -- Court decisions (one row per unique CourtListener opinion cluster)
+    CREATE TABLE IF NOT EXISTS court_decisions (
+      cluster_id      INTEGER PRIMARY KEY,
       case_name       TEXT NOT NULL,
       court           TEXT NOT NULL,
       date_filed      TEXT NOT NULL,
       url             TEXT NOT NULL,
-      snippet         TEXT,
       citation        TEXT,
       cite_count      INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (jurisdiction_id, section_path, cluster_id)
+      fetched_at      TEXT NOT NULL
     );
-    CREATE INDEX IF NOT EXISTS idx_caselaw_date
-      ON caselaw_results(jurisdiction_id, section_path, date_filed DESC);
+
+    -- Many-to-many: which decisions cite which statutes
+    CREATE TABLE IF NOT EXISTS court_decision_statute_references (
+      cluster_id      INTEGER NOT NULL REFERENCES court_decisions(cluster_id),
+      jurisdiction_id TEXT NOT NULL,
+      section_path    TEXT NOT NULL,
+      snippet         TEXT,
+      PRIMARY KEY (cluster_id, jurisdiction_id, section_path),
+      FOREIGN KEY (jurisdiction_id, section_path) REFERENCES sections(jurisdiction_id, path)
+    );
+    CREATE INDEX IF NOT EXISTS idx_refs_by_statute
+      ON court_decision_statute_references(jurisdiction_id, section_path);
+
+    -- Search tracking: when did we last check CourtListener for each statute?
+    CREATE TABLE IF NOT EXISTS caselaw_search_log (
+      jurisdiction_id TEXT NOT NULL,
+      section_path    TEXT NOT NULL,
+      queries         TEXT NOT NULL,
+      last_checked_at TEXT NOT NULL,
+      total_count     INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (jurisdiction_id, section_path)
+    );
 
     -- User feedback / issue reports
     CREATE TABLE IF NOT EXISTS feedback (
@@ -142,6 +149,18 @@ function runMigrations(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
     CREATE INDEX IF NOT EXISTS idx_feedback_jurisdiction ON feedback(jurisdiction_id);
   `);
+
+  // Migrate from old flat caselaw tables to normalized schema
+  const hasOldTable = db.prepare(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='caselaw_cache'"
+  ).get();
+  if (hasOldTable) {
+    db.exec(`
+      DROP TABLE IF EXISTS caselaw_results;
+      DROP TABLE IF EXISTS caselaw_cache;
+    `);
+  }
+
 
   // FTS5 virtual table — CREATE VIRTUAL TABLE doesn't support IF NOT EXISTS,
   // so we check for existence first.
