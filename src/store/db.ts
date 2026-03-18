@@ -117,8 +117,7 @@ function runMigrations(db: Database.Database): void {
       jurisdiction_id TEXT NOT NULL,
       section_path    TEXT NOT NULL,
       snippet         TEXT,
-      PRIMARY KEY (cluster_id, jurisdiction_id, section_path),
-      FOREIGN KEY (jurisdiction_id, section_path) REFERENCES sections(jurisdiction_id, path)
+      PRIMARY KEY (cluster_id, jurisdiction_id, section_path)
     );
     CREATE INDEX IF NOT EXISTS idx_refs_by_statute
       ON court_decision_statute_references(jurisdiction_id, section_path);
@@ -158,6 +157,25 @@ function runMigrations(db: Database.Database): void {
     db.exec(`
       DROP TABLE IF EXISTS caselaw_results;
       DROP TABLE IF EXISTS caselaw_cache;
+    `);
+  }
+
+  // Remove FK constraint from court_decision_statute_references (path may not exist in sections)
+  const refTableSql = db.prepare(
+    "SELECT sql FROM sqlite_master WHERE type='table' AND name='court_decision_statute_references'"
+  ).get() as { sql: string } | undefined;
+  if (refTableSql?.sql?.includes('REFERENCES sections')) {
+    db.exec(`
+      DROP TABLE IF EXISTS court_decision_statute_references;
+      CREATE TABLE court_decision_statute_references (
+        cluster_id      INTEGER NOT NULL REFERENCES court_decisions(cluster_id),
+        jurisdiction_id TEXT NOT NULL,
+        section_path    TEXT NOT NULL,
+        snippet         TEXT,
+        PRIMARY KEY (cluster_id, jurisdiction_id, section_path)
+      );
+      CREATE INDEX IF NOT EXISTS idx_refs_by_statute
+        ON court_decision_statute_references(jurisdiction_id, section_path);
     `);
   }
 
