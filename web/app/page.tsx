@@ -85,6 +85,27 @@ GET /api/v1/lookup?city=Miami&state=FL      # Find by city name`}</div>
         </p>
       </div>
 
+      <h2 id="roadmap">Roadmap</h2>
+      <div className="prose">
+        <p>
+          Two things matter most right now:
+        </p>
+        <ol>
+          <li>
+            <strong>Coverage.</strong> We&apos;re focused on making sure the law is
+            actually available &mdash; more jurisdictions, more publishers, better
+            reliability. This is the primary goal today.
+          </li>
+          <li>
+            <strong>Change monitoring.</strong> If you&apos;re building compliance
+            software (real estate, construction, permits), you need to know when
+            local laws change &mdash; not just what they say today. We want to add
+            automatic change detection so you can alert your users when a relevant
+            ordinance is updated. This is important and on our list, but not yet built.
+          </li>
+        </ol>
+      </div>
+
       <h2>About</h2>
       <div className="prose">
         <p>
