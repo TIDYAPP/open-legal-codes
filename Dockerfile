@@ -15,4 +15,4 @@ COPY --from=builder /app/dist ./dist
 # Registry data (jurisdiction catalog for auto-crawl discovery)
 COPY data/ data/
 EXPOSE 3100
-CMD ["node", "--max-old-space-size=2048", "dist/server.js"]
+CMD ["node", "--max-old-space-size=1536", "dist/server.js"]

@@ -87,7 +87,7 @@ export async function runCrawl(
   onProgress?.(progress);
   crawlTracker.updateProgress(jurisdiction.id, progress);
 
-  const limit = pLimit(options.concurrency ?? 5);
+  const limit = pLimit(options.concurrency ?? 3);
   const force = options.force ?? false;
 
   await Promise.all(contentNodes.map((node) => limit(async () => {
