@@ -115,6 +115,11 @@ GET /api/v1/lookup?city=Miami&state=FL      # Find by city name`}</div>
           of charge by <a href="https://tidy.com" target="_blank" rel="noopener noreferrer">TIDY</a>,
           an AI property management company that needed this and decided to open it up.
         </p>
+        <p>
+          We believe the law should be machine-readable for everyone. If an AI agent can
+          answer a legal question, it should be able to show its work &mdash; and every
+          person should be able to verify the actual text of the laws that govern them.
+        </p>
       </div>
     </div>
   );
