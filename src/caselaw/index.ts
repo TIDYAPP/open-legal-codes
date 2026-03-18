@@ -40,17 +40,23 @@ export async function getCaseLaw(
   const db = getDb();
 
   // Check if we have a recent search for this statute
+  const queryStringsForCache = queries.map(q => q.query);
   const searchLog = getSearchLog(db, jurisdiction.id, codePath);
   if (searchLog && !isStale(searchLog.lastCheckedAt)) {
-    const results = getCachedResults(db, jurisdiction.id, codePath, limit, offset);
-    const totalCount = countCachedResults(db, jurisdiction.id, codePath);
-    return {
-      results,
-      totalCount,
-      queries,
-      supported: true,
-      fromCache: true,
-    };
+    // Bust cache if queries changed (e.g., new citation variants added)
+    const cachedQueries = searchLog.queries;
+    const queriesMatch = cachedQueries === JSON.stringify(queryStringsForCache);
+    if (queriesMatch) {
+      const results = getCachedResults(db, jurisdiction.id, codePath, limit, offset);
+      const totalCount = countCachedResults(db, jurisdiction.id, codePath);
+      return {
+        results,
+        totalCount,
+        queries,
+        supported: true,
+        fromCache: true,
+      };
+    }
   }
 
   // Query CourtListener
@@ -78,6 +84,7 @@ export async function getCaseLaw(
 interface SearchLog {
   lastCheckedAt: string;
   totalCount: number;
+  queries: string;
 }
 
 function isStale(lastCheckedAt: string): boolean {
@@ -91,10 +98,10 @@ function getSearchLog(
   sectionPath: string,
 ): SearchLog | null {
   const row = db.prepare(
-    'SELECT last_checked_at, total_count FROM caselaw_search_log WHERE jurisdiction_id = ? AND section_path = ?'
-  ).get(jurisdictionId, sectionPath) as { last_checked_at: string; total_count: number } | undefined;
+    'SELECT last_checked_at, total_count, queries FROM caselaw_search_log WHERE jurisdiction_id = ? AND section_path = ?'
+  ).get(jurisdictionId, sectionPath) as { last_checked_at: string; total_count: number; queries: string } | undefined;
 
-  return row ? { lastCheckedAt: row.last_checked_at, totalCount: row.total_count } : null;
+  return row ? { lastCheckedAt: row.last_checked_at, totalCount: row.total_count, queries: row.queries } : null;
 }
 
 function getCachedResults(
