@@ -1,5 +1,10 @@
 /**
  * Case law service — orchestrates citation mapping, caching, and CourtListener queries.
+ *
+ * Uses normalized tables:
+ * - court_decisions: one row per unique CourtListener opinion cluster
+ * - court_decision_statute_references: many-to-many join between decisions and statutes
+ * - caselaw_search_log: tracks when we last checked CourtListener for each statute
  */
 
 import type Database from 'better-sqlite3';
@@ -10,7 +15,6 @@ import { searchCaseLaw } from './courtlistener.js';
 import { getDb } from '../store/db.js';
 
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-const MAX_CACHED_RESULTS = 100;
 
 export async function getCaseLaw(
   jurisdiction: Jurisdiction,
@@ -35,34 +39,27 @@ export async function getCaseLaw(
 
   const db = getDb();
 
-  // Check cache
-  const cached = getCachedCaseLawMeta(db, jurisdiction.id, codePath);
-  if (cached && !isStale(cached.fetchedAt)) {
-    // Serve from cache using SQL LIMIT/OFFSET
+  // Check if we have a recent search for this statute
+  const searchLog = getSearchLog(db, jurisdiction.id, codePath);
+  if (searchLog && !isStale(searchLog.lastCheckedAt)) {
     const results = getCachedResults(db, jurisdiction.id, codePath, limit, offset);
-    if (results.length > 0 || offset === 0) {
-      return {
-        results,
-        totalCount: cached.totalCount,
-        queries,
-        supported: true,
-        fromCache: true,
-      };
-    }
+    const totalCount = countCachedResults(db, jurisdiction.id, codePath);
+    return {
+      results,
+      totalCount,
+      queries,
+      supported: true,
+      fromCache: true,
+    };
   }
 
   // Query CourtListener
   const queryStrings = queries.map(q => q.query);
   const { results, totalCount } = await searchCaseLaw(queryStrings, { limit, offset });
 
-  // If this is page 1, cache the results
+  // On first page, cache decisions and references
   if (offset === 0) {
-    writeCaseLawCache(db, jurisdiction.id, codePath, {
-      queries: queryStrings,
-      fetchedAt: new Date().toISOString(),
-      totalCount,
-      results: results.slice(0, MAX_CACHED_RESULTS),
-    });
+    writeResults(db, jurisdiction.id, codePath, queryStrings, results, totalCount);
   }
 
   return {
@@ -78,26 +75,26 @@ export async function getCaseLaw(
 // Cache helpers
 // ---------------------------------------------------------------------------
 
-interface CachedMeta {
-  fetchedAt: string;
+interface SearchLog {
+  lastCheckedAt: string;
   totalCount: number;
 }
 
-function isStale(fetchedAt: string): boolean {
-  const age = Date.now() - new Date(fetchedAt).getTime();
+function isStale(lastCheckedAt: string): boolean {
+  const age = Date.now() - new Date(lastCheckedAt).getTime();
   return age > CACHE_TTL_MS;
 }
 
-function getCachedCaseLawMeta(
+function getSearchLog(
   db: Database.Database,
   jurisdictionId: string,
   sectionPath: string,
-): CachedMeta | null {
+): SearchLog | null {
   const row = db.prepare(
-    'SELECT fetched_at, total_count FROM caselaw_cache WHERE jurisdiction_id = ? AND section_path = ?'
-  ).get(jurisdictionId, sectionPath) as { fetched_at: string; total_count: number } | undefined;
+    'SELECT last_checked_at, total_count FROM caselaw_search_log WHERE jurisdiction_id = ? AND section_path = ?'
+  ).get(jurisdictionId, sectionPath) as { last_checked_at: string; total_count: number } | undefined;
 
-  return row ? { fetchedAt: row.fetched_at, totalCount: row.total_count } : null;
+  return row ? { lastCheckedAt: row.last_checked_at, totalCount: row.total_count } : null;
 }
 
 function getCachedResults(
@@ -108,49 +105,76 @@ function getCachedResults(
   offset: number,
 ): CaseLawResult[] {
   const rows = db.prepare(
-    `SELECT cluster_id, case_name, court, date_filed, url, snippet, citation, cite_count
-     FROM caselaw_results
-     WHERE jurisdiction_id = ? AND section_path = ?
-     ORDER BY date_filed DESC
+    `SELECT d.cluster_id, d.case_name, d.court, d.date_filed, d.url,
+            r.snippet, d.citation, d.cite_count
+     FROM court_decision_statute_references r
+     JOIN court_decisions d ON d.cluster_id = r.cluster_id
+     WHERE r.jurisdiction_id = ? AND r.section_path = ?
+     ORDER BY d.date_filed DESC
      LIMIT ? OFFSET ?`
   ).all(jurisdictionId, sectionPath, limit, offset) as any[];
 
   return rows.map(rowToCaseLawResult);
 }
 
-function writeCaseLawCache(
+function countCachedResults(
   db: Database.Database,
   jurisdictionId: string,
   sectionPath: string,
-  data: { queries: string[]; fetchedAt: string; totalCount: number; results: CaseLawResult[] },
+): number {
+  const row = db.prepare(
+    `SELECT COUNT(*) as cnt
+     FROM court_decision_statute_references
+     WHERE jurisdiction_id = ? AND section_path = ?`
+  ).get(jurisdictionId, sectionPath) as { cnt: number };
+
+  return row.cnt;
+}
+
+function writeResults(
+  db: Database.Database,
+  jurisdictionId: string,
+  sectionPath: string,
+  queryStrings: string[],
+  results: CaseLawResult[],
+  totalCount: number,
 ): void {
+  const now = new Date().toISOString();
+
   const run = db.transaction(() => {
-    // Clear old cache for this section
-    db.prepare('DELETE FROM caselaw_results WHERE jurisdiction_id = ? AND section_path = ?')
-      .run(jurisdictionId, sectionPath);
-    db.prepare('DELETE FROM caselaw_cache WHERE jurisdiction_id = ? AND section_path = ?')
-      .run(jurisdictionId, sectionPath);
-
-    // Insert cache metadata
-    db.prepare(`
-      INSERT INTO caselaw_cache (jurisdiction_id, section_path, queries, fetched_at, total_count)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(jurisdictionId, sectionPath, JSON.stringify(data.queries), data.fetchedAt, data.totalCount);
-
-    // Insert results
-    const insert = db.prepare(`
-      INSERT INTO caselaw_results
-        (jurisdiction_id, section_path, cluster_id, case_name, court, date_filed, url, snippet, citation, cite_count)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    // Upsert each decision (INSERT OR IGNORE — don't overwrite if it already exists)
+    const upsertDecision = db.prepare(`
+      INSERT INTO court_decisions (cluster_id, case_name, court, date_filed, url, citation, cite_count, fetched_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(cluster_id) DO UPDATE SET
+        cite_count = excluded.cite_count,
+        fetched_at = excluded.fetched_at
     `);
 
-    for (const r of data.results) {
-      insert.run(
-        jurisdictionId, sectionPath, r.clusterId,
-        r.caseName, r.court, r.dateFiled, r.url,
-        r.snippet, r.citation, r.citeCount,
+    // Insert reference (link decision to this statute)
+    const insertRef = db.prepare(`
+      INSERT OR IGNORE INTO court_decision_statute_references
+        (cluster_id, jurisdiction_id, section_path, snippet)
+      VALUES (?, ?, ?, ?)
+    `);
+
+    for (const r of results) {
+      upsertDecision.run(
+        r.clusterId, r.caseName, r.court, r.dateFiled,
+        r.url, r.citation, r.citeCount, now,
       );
+      insertRef.run(r.clusterId, jurisdictionId, sectionPath, r.snippet);
     }
+
+    // Update search log
+    db.prepare(`
+      INSERT INTO caselaw_search_log (jurisdiction_id, section_path, queries, last_checked_at, total_count)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(jurisdiction_id, section_path) DO UPDATE SET
+        queries = excluded.queries,
+        last_checked_at = excluded.last_checked_at,
+        total_count = excluded.total_count
+    `).run(jurisdictionId, sectionPath, JSON.stringify(queryStrings), now, totalCount);
   });
 
   run();
