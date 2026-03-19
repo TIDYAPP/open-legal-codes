@@ -135,10 +135,6 @@ export class ApiClient {
     });
   }
 
-  async crawl(id: string): Promise<ApiResult<CrawlingResponse>> {
-    // Hitting the TOC endpoint for an uncached jurisdiction triggers a crawl
-    return this.request<CrawlingResponse>(`jurisdictions/${encodeURIComponent(id)}/toc`);
-  }
 }
 
 export interface CaseResult {
