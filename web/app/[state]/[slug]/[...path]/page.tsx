@@ -240,6 +240,8 @@ function sanitizeSnippet(html: string): string {
 function sanitizeHtml(html: string): string {
   // Strip the leading h1 (already rendered by the page heading)
   let cleaned = html.replace(/<h1[\s>][\s\S]*?<\/h1>/i, '');
+  // Strip href from <a> tags — publisher links don't work in our app
+  cleaned = cleaned.replace(/<a\b[^>]*>/gi, '<a>');
   // Allow only safe structural tags
   const allowed = /^\/?(div|a|h[2-6]|p|ul|ol|li|span|br|small|table|tr|td|th|thead|tbody|strong|b|em|i)\b/i;
   cleaned = cleaned.replace(/<\/?([^>]+)>/gi, (match, inner) => {

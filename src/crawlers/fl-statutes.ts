@@ -108,9 +108,14 @@ export class FloridaStatutesCrawler implements CrawlerAdapter {
             const text = link.text().trim();
             if (!text || text.length < 2) return;
 
+            // The chapter description is in the next <td> sibling (class="ChapterTOC")
+            const descTd = link.closest('td').next('td.ChapterTOC, td');
+            const desc = descTd.text().trim();
+            const title = desc ? `${text} — ${desc}` : text;
+
             const chapterNode: RawTocNode = {
               id: buildChapterIdFromUrl(href) || buildNodeId('chapter', text),
-              title: text,
+              title,
               level: 'chapter',
               hasContent: true,
               children: [],
@@ -245,6 +250,25 @@ function buildPermalink(sectionId: string): string | null {
  * The leg.state.fl.us pages embed statute text in various containers.
  */
 function extractStatuteContent($: cheerio.CheerioAPI): string {
+  // Chapter index pages embed an XHTML document inside a <font> tag
+  // containing .CatchlineIndex with section links
+  const catchlineIndex = $('.CatchlineIndex');
+  if (catchlineIndex.length > 0) {
+    const chapterTitle = $('.ChapterTitle');
+    const parts: string[] = [];
+    if (chapterTitle.length > 0) {
+      const num = chapterTitle.find('.ChapterNumber').text().trim();
+      const name = chapterTitle.find('.ChapterName').text().trim();
+      if (num || name) parts.push(`<h2>${num}${name ? ` — ${name}` : ''}</h2>`);
+    }
+    catchlineIndex.find('.IndexItem').each((_i, el) => {
+      const sectionNum = $(el).find('a').text().trim();
+      const catchline = $(el).find('.Catchline').text().trim();
+      parts.push(`<p><strong>${sectionNum}</strong> ${catchline}</p>`);
+    });
+    if (parts.length > 0) return parts.join('\n');
+  }
+
   // Try known content containers in order of specificity
   const selectors = [
     // The statute display area
