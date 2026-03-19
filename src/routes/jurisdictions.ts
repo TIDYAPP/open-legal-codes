@@ -5,8 +5,37 @@ import { registryStore } from '../registry/store.js';
 import { crawlTracker } from '../crawl-tracker.js';
 import { BRANDING } from '../branding.js';
 import { getUsableCachedJurisdiction, isUsableCachedJurisdiction } from '../cached-jurisdictions.js';
+import { triggerAutoCrawl } from '../auto-crawl.js';
 
 export const jurisdictionsRoutes = new Hono();
+
+const ADMIN_SECRET = process.env.ADMIN_SECRET || '';
+
+/**
+ * POST /jurisdictions/:id/recrawl
+ * Hidden admin endpoint — invalidates cached data and triggers a re-crawl.
+ * Requires ?secret= query param matching ADMIN_SECRET env var.
+ */
+jurisdictionsRoutes.post('/:id/recrawl', (c) => {
+  const secret = c.req.query('secret');
+  if (!ADMIN_SECRET || secret !== ADMIN_SECRET) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const id = c.req.param('id');
+  const entry = registryStore.getById(id);
+  if (!entry) {
+    return c.json({ error: `Jurisdiction '${id}' not found in registry` }, 404);
+  }
+
+  const result = store.invalidateCache(id);
+  triggerAutoCrawl(entry);
+
+  return c.json({
+    message: `Invalidated cache for '${id}' and triggered re-crawl.`,
+    ...result,
+  });
+});
 
 /**
  * GET /jurisdictions
