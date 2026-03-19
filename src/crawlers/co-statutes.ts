@@ -118,25 +118,30 @@ function parseToc($: cheerio.CheerioAPI): RawTocNode[] {
 }
 
 function extractContent($: cheerio.CheerioAPI): string {
+  // colorado.public.law-specific selectors in priority order
   const selectors = [
-    'div.statute-content',
-    'div.law-content',
-    'article.statute',
-    'div.tab-content',
-    'main',
-    '#content',
-    'div.container',
+    '#leaf-statute-body',   // Section pages: statute text
+    'article',              // Section pages: full article (title + body)
+    '#mid-level-node',      // Title/article pages: division/section listings
   ];
 
   for (const sel of selectors) {
     const el = $(sel).first();
+    if (!el.length) continue;
+    el.find('script, style, nav, .breadcrumb, .adsbygoogle, ins.adsbygoogle, .d-print-none.mt-5').remove();
     const html = el.html() || '';
-    if (html.length > 200) {
-      el.find('script, style, nav, .navbar, .footer, .breadcrumb, aside, .ad, .advertisement, .signup').remove();
-      return el.html() || '';
-    }
+    if (html.length > 50) return html;
   }
 
-  $('script, style, nav, header, footer, .navbar, aside, .ad, .advertisement').remove();
+  // Fallback: main content column (excludes ad sidebar)
+  const contentCol = $('div.col-sm-10.col-print-12').first();
+  if (contentCol.length) {
+    contentCol.find('script, style, nav, .breadcrumb, .adsbygoogle, ins.adsbygoogle').remove();
+    const html = contentCol.html() || '';
+    if (html.length > 50) return html;
+  }
+
+  // Last resort
+  $('script, style, nav#top-navbar, header, footer, .adsbygoogle, .breadcrumb, #sibling-nav').remove();
   return $('body').html() || '';
 }
