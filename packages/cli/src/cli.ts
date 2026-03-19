@@ -11,15 +11,19 @@ Commands:
   query   --jurisdiction <id> --path <code-path>   Get the text of a code section
   toc     --jurisdiction <id> [--depth N]           Browse table of contents
   search  --jurisdiction <id> --query <terms>       Search code text
+  caselaw --jurisdiction <id> --path <code-path>   Find citing court opinions
   list    [--state XX] [--type TYPE]                List available jurisdictions
   lookup  --city <name> --state <XX>                Find jurisdiction by name
+  crawl   --jurisdiction <id>                       Warm the cache for a jurisdiction
 
 Examples:
   open-legal-codes query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
   open-legal-codes toc --jurisdiction ca-mountain-view --depth 2
   open-legal-codes search --jurisdiction ca-mountain-view --query "parking"
+  open-legal-codes caselaw --jurisdiction ca-pen --path part-1/title-8/section-187
   open-legal-codes list --state CA
   open-legal-codes lookup --city "Mountain View" --state CA
+  open-legal-codes crawl --jurisdiction ca-mountain-view
 
 A free service by TIDY — AI Property Manager (tidy.com)
 `;
@@ -159,6 +163,68 @@ async function main() {
         }
         for (const j of result) {
           console.log(`${j.id}\t${j.name}`);
+        }
+        break;
+      }
+
+      case 'caselaw': {
+        const jurisdiction = flags['jurisdiction'];
+        const path = flags['path'];
+        if (!jurisdiction || !path) {
+          console.error('Error: --jurisdiction and --path are required');
+          console.log('\nUsage: open-legal-codes caselaw --jurisdiction <id> --path <code-path> [--limit N]');
+          process.exit(1);
+        }
+        const limit = flags['limit'] ? parseInt(flags['limit'], 10) : 20;
+        const result = await client.getCaseLaw(jurisdiction, path, { limit });
+        if (isCrawling(result)) {
+          console.log('This jurisdiction is being loaded. Try again in ~30 seconds.');
+          return;
+        }
+        if (!result.supported) {
+          console.log(result.note || 'Case law lookup is not supported for this jurisdiction type.');
+          return;
+        }
+        if (result.jurisdictionName) {
+          console.log(result.jurisdictionName);
+        }
+        if (result.num) {
+          console.log(`${result.num}${result.heading ? ' — ' + result.heading : ''}`);
+        }
+        if (result.citationQueries.length > 0) {
+          console.log(`Searching for: ${result.citationQueries.join(', ')}`);
+        }
+        console.log('─'.repeat(60));
+        if (result.cases.length === 0) {
+          console.log('No citing opinions found.');
+        } else {
+          for (let i = 0; i < result.cases.length; i++) {
+            const c = result.cases[i];
+            console.log(`${i + 1}. ${c.caseName} (${c.court}, ${c.dateFiled})`);
+            if (c.citation) console.log(`   ${c.citation}${c.citeCount ? ` — cited by ${c.citeCount} opinions` : ''}`);
+            console.log(`   ${c.url}`);
+            if (c.snippet) console.log(`   ${c.snippet}`);
+            console.log();
+          }
+          console.log(`Showing ${result.cases.length} of ${result.totalCount} results.`);
+        }
+        break;
+      }
+
+      case 'crawl': {
+        const jurisdiction = flags['jurisdiction'];
+        if (!jurisdiction) {
+          console.error('Error: --jurisdiction is required');
+          console.log('\nUsage: open-legal-codes crawl --jurisdiction <id>');
+          process.exit(1);
+        }
+        console.log(`Requesting crawl for ${jurisdiction}...`);
+        const result = await client.crawl(jurisdiction);
+        if (isCrawling(result)) {
+          console.log(`Crawl started. Phase: ${result.progress.phase}. Retry in ${result.retryAfter}s.`);
+          console.log('Poll the API or run this command again to check progress.');
+        } else {
+          console.log(`${jurisdiction} is already cached and ready.`);
         }
         break;
       }
