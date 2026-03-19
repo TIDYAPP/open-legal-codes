@@ -1,7 +1,7 @@
 [
   {
     "id": "us-cfr-title-1",
-    "name": "CFR Title 1 — General Provisions",
+    "name": "CFR Title 1 \u2014 General Provisions",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -17,7 +17,7 @@
   },
   {
     "id": "us-cfr-title-10",
-    "name": "CFR Title 10 — Energy",
+    "name": "CFR Title 10 \u2014 Energy",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -33,7 +33,7 @@
   },
   {
     "id": "us-cfr-title-11",
-    "name": "CFR Title 11 — Federal Elections",
+    "name": "CFR Title 11 \u2014 Federal Elections",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -49,7 +49,7 @@
   },
   {
     "id": "us-cfr-title-12",
-    "name": "CFR Title 12 — Banks and Banking",
+    "name": "CFR Title 12 \u2014 Banks and Banking",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -65,7 +65,7 @@
   },
   {
     "id": "us-cfr-title-13",
-    "name": "CFR Title 13 — Business Credit and Assistance",
+    "name": "CFR Title 13 \u2014 Business Credit and Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -81,7 +81,7 @@
   },
   {
     "id": "us-cfr-title-14",
-    "name": "CFR Title 14 — Aeronautics and Space",
+    "name": "CFR Title 14 \u2014 Aeronautics and Space",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -97,7 +97,7 @@
   },
   {
     "id": "us-cfr-title-15",
-    "name": "CFR Title 15 — Commerce and Foreign Trade",
+    "name": "CFR Title 15 \u2014 Commerce and Foreign Trade",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -113,7 +113,7 @@
   },
   {
     "id": "us-cfr-title-16",
-    "name": "CFR Title 16 — Commercial Practices",
+    "name": "CFR Title 16 \u2014 Commercial Practices",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -129,7 +129,7 @@
   },
   {
     "id": "us-cfr-title-17",
-    "name": "CFR Title 17 — Commodity and Securities Exchanges",
+    "name": "CFR Title 17 \u2014 Commodity and Securities Exchanges",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -145,7 +145,7 @@
   },
   {
     "id": "us-cfr-title-18",
-    "name": "CFR Title 18 — Conservation of Power and Water Resources",
+    "name": "CFR Title 18 \u2014 Conservation of Power and Water Resources",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -161,7 +161,7 @@
   },
   {
     "id": "us-cfr-title-19",
-    "name": "CFR Title 19 — Customs Duties",
+    "name": "CFR Title 19 \u2014 Customs Duties",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -177,7 +177,7 @@
   },
   {
     "id": "us-cfr-title-2",
-    "name": "CFR Title 2 — Federal Financial Assistance",
+    "name": "CFR Title 2 \u2014 Federal Financial Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -193,7 +193,7 @@
   },
   {
     "id": "us-cfr-title-20",
-    "name": "CFR Title 20 — Employees' Benefits",
+    "name": "CFR Title 20 \u2014 Employees' Benefits",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -209,7 +209,7 @@
   },
   {
     "id": "us-cfr-title-21",
-    "name": "CFR Title 21 — Food and Drugs",
+    "name": "CFR Title 21 \u2014 Food and Drugs",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -225,7 +225,7 @@
   },
   {
     "id": "us-cfr-title-22",
-    "name": "CFR Title 22 — Foreign Relations",
+    "name": "CFR Title 22 \u2014 Foreign Relations",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -241,7 +241,7 @@
   },
   {
     "id": "us-cfr-title-23",
-    "name": "CFR Title 23 — Highways",
+    "name": "CFR Title 23 \u2014 Highways",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -257,7 +257,7 @@
   },
   {
     "id": "us-cfr-title-24",
-    "name": "CFR Title 24 — Housing and Urban Development",
+    "name": "CFR Title 24 \u2014 Housing and Urban Development",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -273,7 +273,7 @@
   },
   {
     "id": "us-cfr-title-25",
-    "name": "CFR Title 25 — Indians",
+    "name": "CFR Title 25 \u2014 Indians",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -289,7 +289,7 @@
   },
   {
     "id": "us-cfr-title-26",
-    "name": "CFR Title 26 — Internal Revenue",
+    "name": "CFR Title 26 \u2014 Internal Revenue",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -305,7 +305,7 @@
   },
   {
     "id": "us-cfr-title-27",
-    "name": "CFR Title 27 — Alcohol, Tobacco Products and Firearms",
+    "name": "CFR Title 27 \u2014 Alcohol, Tobacco Products and Firearms",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -321,7 +321,7 @@
   },
   {
     "id": "us-cfr-title-28",
-    "name": "CFR Title 28 — Judicial Administration",
+    "name": "CFR Title 28 \u2014 Judicial Administration",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -337,7 +337,7 @@
   },
   {
     "id": "us-cfr-title-29",
-    "name": "CFR Title 29 — Labor",
+    "name": "CFR Title 29 \u2014 Labor",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -353,7 +353,7 @@
   },
   {
     "id": "us-cfr-title-3",
-    "name": "CFR Title 3 — The President",
+    "name": "CFR Title 3 \u2014 The President",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -369,7 +369,7 @@
   },
   {
     "id": "us-cfr-title-30",
-    "name": "CFR Title 30 — Mineral Resources",
+    "name": "CFR Title 30 \u2014 Mineral Resources",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -385,7 +385,7 @@
   },
   {
     "id": "us-cfr-title-31",
-    "name": "CFR Title 31 — Money and Finance: Treasury",
+    "name": "CFR Title 31 \u2014 Money and Finance: Treasury",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -401,7 +401,7 @@
   },
   {
     "id": "us-cfr-title-32",
-    "name": "CFR Title 32 — National Defense",
+    "name": "CFR Title 32 \u2014 National Defense",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -417,7 +417,7 @@
   },
   {
     "id": "us-cfr-title-33",
-    "name": "CFR Title 33 — Navigation and Navigable Waters",
+    "name": "CFR Title 33 \u2014 Navigation and Navigable Waters",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -433,7 +433,7 @@
   },
   {
     "id": "us-cfr-title-34",
-    "name": "CFR Title 34 — Education",
+    "name": "CFR Title 34 \u2014 Education",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -449,7 +449,7 @@
   },
   {
     "id": "us-cfr-title-36",
-    "name": "CFR Title 36 — Parks, Forests, and Public Property",
+    "name": "CFR Title 36 \u2014 Parks, Forests, and Public Property",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -465,7 +465,7 @@
   },
   {
     "id": "us-cfr-title-37",
-    "name": "CFR Title 37 — Patents, Trademarks, and Copyrights",
+    "name": "CFR Title 37 \u2014 Patents, Trademarks, and Copyrights",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -481,7 +481,7 @@
   },
   {
     "id": "us-cfr-title-38",
-    "name": "CFR Title 38 — Pensions, Bonuses, and Veterans' Relief",
+    "name": "CFR Title 38 \u2014 Pensions, Bonuses, and Veterans' Relief",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -497,7 +497,7 @@
   },
   {
     "id": "us-cfr-title-39",
-    "name": "CFR Title 39 — Postal Service",
+    "name": "CFR Title 39 \u2014 Postal Service",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -513,7 +513,7 @@
   },
   {
     "id": "us-cfr-title-4",
-    "name": "CFR Title 4 — Accounts",
+    "name": "CFR Title 4 \u2014 Accounts",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -529,7 +529,7 @@
   },
   {
     "id": "us-cfr-title-40",
-    "name": "CFR Title 40 — Protection of Environment",
+    "name": "CFR Title 40 \u2014 Protection of Environment",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -545,7 +545,7 @@
   },
   {
     "id": "us-cfr-title-41",
-    "name": "CFR Title 41 — Public Contracts and Property Management",
+    "name": "CFR Title 41 \u2014 Public Contracts and Property Management",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -561,7 +561,7 @@
   },
   {
     "id": "us-cfr-title-42",
-    "name": "CFR Title 42 — Public Health",
+    "name": "CFR Title 42 \u2014 Public Health",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -577,7 +577,7 @@
   },
   {
     "id": "us-cfr-title-43",
-    "name": "CFR Title 43 — Public Lands: Interior",
+    "name": "CFR Title 43 \u2014 Public Lands: Interior",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -593,7 +593,7 @@
   },
   {
     "id": "us-cfr-title-44",
-    "name": "CFR Title 44 — Emergency Management and Assistance",
+    "name": "CFR Title 44 \u2014 Emergency Management and Assistance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -609,7 +609,7 @@
   },
   {
     "id": "us-cfr-title-45",
-    "name": "CFR Title 45 — Public Welfare",
+    "name": "CFR Title 45 \u2014 Public Welfare",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -625,7 +625,7 @@
   },
   {
     "id": "us-cfr-title-46",
-    "name": "CFR Title 46 — Shipping",
+    "name": "CFR Title 46 \u2014 Shipping",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -641,7 +641,7 @@
   },
   {
     "id": "us-cfr-title-47",
-    "name": "CFR Title 47 — Telecommunication",
+    "name": "CFR Title 47 \u2014 Telecommunication",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -657,7 +657,7 @@
   },
   {
     "id": "us-cfr-title-48",
-    "name": "CFR Title 48 — Federal Acquisition Regulations System",
+    "name": "CFR Title 48 \u2014 Federal Acquisition Regulations System",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -673,7 +673,7 @@
   },
   {
     "id": "us-cfr-title-49",
-    "name": "CFR Title 49 — Transportation",
+    "name": "CFR Title 49 \u2014 Transportation",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -689,7 +689,7 @@
   },
   {
     "id": "us-cfr-title-5",
-    "name": "CFR Title 5 — Administrative Personnel",
+    "name": "CFR Title 5 \u2014 Administrative Personnel",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -705,7 +705,7 @@
   },
   {
     "id": "us-cfr-title-50",
-    "name": "CFR Title 50 — Wildlife and Fisheries",
+    "name": "CFR Title 50 \u2014 Wildlife and Fisheries",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -721,7 +721,7 @@
   },
   {
     "id": "us-cfr-title-6",
-    "name": "CFR Title 6 — Domestic Security",
+    "name": "CFR Title 6 \u2014 Domestic Security",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -737,7 +737,7 @@
   },
   {
     "id": "us-cfr-title-7",
-    "name": "CFR Title 7 — Agriculture",
+    "name": "CFR Title 7 \u2014 Agriculture",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -753,7 +753,7 @@
   },
   {
     "id": "us-cfr-title-8",
-    "name": "CFR Title 8 — Aliens and Nationality",
+    "name": "CFR Title 8 \u2014 Aliens and Nationality",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -769,7 +769,7 @@
   },
   {
     "id": "us-cfr-title-9",
-    "name": "CFR Title 9 — Animals and Animal Products",
+    "name": "CFR Title 9 \u2014 Animals and Animal Products",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -785,7 +785,7 @@
   },
   {
     "id": "us-usc-title-1",
-    "name": "USC Title 1 — General Provisions",
+    "name": "USC Title 1 \u2014 General Provisions",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -801,7 +801,7 @@
   },
   {
     "id": "us-usc-title-10",
-    "name": "USC Title 10 — Armed Forces",
+    "name": "USC Title 10 \u2014 Armed Forces",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -817,7 +817,7 @@
   },
   {
     "id": "us-usc-title-11",
-    "name": "USC Title 11 — Bankruptcy",
+    "name": "USC Title 11 \u2014 Bankruptcy",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -833,7 +833,7 @@
   },
   {
     "id": "us-usc-title-12",
-    "name": "USC Title 12 — Banks and Banking",
+    "name": "USC Title 12 \u2014 Banks and Banking",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -849,7 +849,7 @@
   },
   {
     "id": "us-usc-title-13",
-    "name": "USC Title 13 — Census",
+    "name": "USC Title 13 \u2014 Census",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -865,7 +865,7 @@
   },
   {
     "id": "us-usc-title-14",
-    "name": "USC Title 14 — Coast Guard",
+    "name": "USC Title 14 \u2014 Coast Guard",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -881,7 +881,7 @@
   },
   {
     "id": "us-usc-title-15",
-    "name": "USC Title 15 — Commerce and Trade",
+    "name": "USC Title 15 \u2014 Commerce and Trade",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -897,7 +897,7 @@
   },
   {
     "id": "us-usc-title-16",
-    "name": "USC Title 16 — Conservation",
+    "name": "USC Title 16 \u2014 Conservation",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -913,7 +913,7 @@
   },
   {
     "id": "us-usc-title-17",
-    "name": "USC Title 17 — Copyrights",
+    "name": "USC Title 17 \u2014 Copyrights",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -929,7 +929,7 @@
   },
   {
     "id": "us-usc-title-18",
-    "name": "USC Title 18 — Crimes and Criminal Procedure",
+    "name": "USC Title 18 \u2014 Crimes and Criminal Procedure",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -945,7 +945,7 @@
   },
   {
     "id": "us-usc-title-19",
-    "name": "USC Title 19 — Customs Duties",
+    "name": "USC Title 19 \u2014 Customs Duties",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -961,7 +961,7 @@
   },
   {
     "id": "us-usc-title-2",
-    "name": "USC Title 2 — The Congress",
+    "name": "USC Title 2 \u2014 The Congress",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -977,7 +977,7 @@
   },
   {
     "id": "us-usc-title-20",
-    "name": "USC Title 20 — Education",
+    "name": "USC Title 20 \u2014 Education",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -993,7 +993,7 @@
   },
   {
     "id": "us-usc-title-21",
-    "name": "USC Title 21 — Food and Drugs",
+    "name": "USC Title 21 \u2014 Food and Drugs",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1009,7 +1009,7 @@
   },
   {
     "id": "us-usc-title-22",
-    "name": "USC Title 22 — Foreign Relations",
+    "name": "USC Title 22 \u2014 Foreign Relations",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1025,7 +1025,7 @@
   },
   {
     "id": "us-usc-title-23",
-    "name": "USC Title 23 — Highways",
+    "name": "USC Title 23 \u2014 Highways",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1041,7 +1041,7 @@
   },
   {
     "id": "us-usc-title-24",
-    "name": "USC Title 24 — Hospitals and Asylums",
+    "name": "USC Title 24 \u2014 Hospitals and Asylums",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1057,7 +1057,7 @@
   },
   {
     "id": "us-usc-title-25",
-    "name": "USC Title 25 — Indians",
+    "name": "USC Title 25 \u2014 Indians",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1073,7 +1073,7 @@
   },
   {
     "id": "us-usc-title-26",
-    "name": "USC Title 26 — Internal Revenue Code",
+    "name": "USC Title 26 \u2014 Internal Revenue Code",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1089,7 +1089,7 @@
   },
   {
     "id": "us-usc-title-27",
-    "name": "USC Title 27 — Intoxicating Liquors",
+    "name": "USC Title 27 \u2014 Intoxicating Liquors",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1105,7 +1105,7 @@
   },
   {
     "id": "us-usc-title-28",
-    "name": "USC Title 28 — Judiciary and Judicial Procedure",
+    "name": "USC Title 28 \u2014 Judiciary and Judicial Procedure",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1121,7 +1121,7 @@
   },
   {
     "id": "us-usc-title-29",
-    "name": "USC Title 29 — Labor",
+    "name": "USC Title 29 \u2014 Labor",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1137,7 +1137,7 @@
   },
   {
     "id": "us-usc-title-3",
-    "name": "USC Title 3 — The President",
+    "name": "USC Title 3 \u2014 The President",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1153,7 +1153,7 @@
   },
   {
     "id": "us-usc-title-30",
-    "name": "USC Title 30 — Mineral Lands and Mining",
+    "name": "USC Title 30 \u2014 Mineral Lands and Mining",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1169,7 +1169,7 @@
   },
   {
     "id": "us-usc-title-31",
-    "name": "USC Title 31 — Money and Finance",
+    "name": "USC Title 31 \u2014 Money and Finance",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1185,7 +1185,7 @@
   },
   {
     "id": "us-usc-title-32",
-    "name": "USC Title 32 — National Guard",
+    "name": "USC Title 32 \u2014 National Guard",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1201,7 +1201,7 @@
   },
   {
     "id": "us-usc-title-33",
-    "name": "USC Title 33 — Navigation and Navigable Waters",
+    "name": "USC Title 33 \u2014 Navigation and Navigable Waters",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1217,7 +1217,7 @@
   },
   {
     "id": "us-usc-title-34",
-    "name": "USC Title 34 — Crime Control and Law Enforcement",
+    "name": "USC Title 34 \u2014 Crime Control and Law Enforcement",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1233,7 +1233,7 @@
   },
   {
     "id": "us-usc-title-35",
-    "name": "USC Title 35 — Patents",
+    "name": "USC Title 35 \u2014 Patents",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1249,7 +1249,7 @@
   },
   {
     "id": "us-usc-title-36",
-    "name": "USC Title 36 — Patriotic Societies and Observances",
+    "name": "USC Title 36 \u2014 Patriotic Societies and Observances",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1265,7 +1265,7 @@
   },
   {
     "id": "us-usc-title-37",
-    "name": "USC Title 37 — Pay and Allowances of the Uniformed Services",
+    "name": "USC Title 37 \u2014 Pay and Allowances of the Uniformed Services",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1281,7 +1281,7 @@
   },
   {
     "id": "us-usc-title-38",
-    "name": "USC Title 38 — Veterans Benefits",
+    "name": "USC Title 38 \u2014 Veterans Benefits",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1297,7 +1297,7 @@
   },
   {
     "id": "us-usc-title-39",
-    "name": "USC Title 39 — Postal Service",
+    "name": "USC Title 39 \u2014 Postal Service",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1313,7 +1313,7 @@
   },
   {
     "id": "us-usc-title-4",
-    "name": "USC Title 4 — Flag and Seal",
+    "name": "USC Title 4 \u2014 Flag and Seal",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1329,7 +1329,7 @@
   },
   {
     "id": "us-usc-title-40",
-    "name": "USC Title 40 — Public Buildings and Works",
+    "name": "USC Title 40 \u2014 Public Buildings and Works",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1345,7 +1345,7 @@
   },
   {
     "id": "us-usc-title-41",
-    "name": "USC Title 41 — Public Contracts",
+    "name": "USC Title 41 \u2014 Public Contracts",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1361,7 +1361,7 @@
   },
   {
     "id": "us-usc-title-42",
-    "name": "USC Title 42 — The Public Health and Welfare",
+    "name": "USC Title 42 \u2014 The Public Health and Welfare",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1377,7 +1377,7 @@
   },
   {
     "id": "us-usc-title-43",
-    "name": "USC Title 43 — Public Lands",
+    "name": "USC Title 43 \u2014 Public Lands",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1393,7 +1393,7 @@
   },
   {
     "id": "us-usc-title-44",
-    "name": "USC Title 44 — Public Printing and Documents",
+    "name": "USC Title 44 \u2014 Public Printing and Documents",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1409,7 +1409,7 @@
   },
   {
     "id": "us-usc-title-45",
-    "name": "USC Title 45 — Railroads",
+    "name": "USC Title 45 \u2014 Railroads",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1425,7 +1425,7 @@
   },
   {
     "id": "us-usc-title-46",
-    "name": "USC Title 46 — Shipping",
+    "name": "USC Title 46 \u2014 Shipping",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1441,7 +1441,7 @@
   },
   {
     "id": "us-usc-title-47",
-    "name": "USC Title 47 — Telecommunications",
+    "name": "USC Title 47 \u2014 Telecommunications",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1457,7 +1457,7 @@
   },
   {
     "id": "us-usc-title-48",
-    "name": "USC Title 48 — Territories and Insular Possessions",
+    "name": "USC Title 48 \u2014 Territories and Insular Possessions",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "us-usc-title-49",
-    "name": "USC Title 49 — Transportation",
+    "name": "USC Title 49 \u2014 Transportation",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1489,7 +1489,7 @@
   },
   {
     "id": "us-usc-title-5",
-    "name": "USC Title 5 — Government Organization and Employees",
+    "name": "USC Title 5 \u2014 Government Organization and Employees",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1505,7 +1505,7 @@
   },
   {
     "id": "us-usc-title-50",
-    "name": "USC Title 50 — War and National Defense",
+    "name": "USC Title 50 \u2014 War and National Defense",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "us-usc-title-51",
-    "name": "USC Title 51 — National and Commercial Space Programs",
+    "name": "USC Title 51 \u2014 National and Commercial Space Programs",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1537,7 +1537,7 @@
   },
   {
     "id": "us-usc-title-52",
-    "name": "USC Title 52 — Voting and Elections",
+    "name": "USC Title 52 \u2014 Voting and Elections",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1553,7 +1553,7 @@
   },
   {
     "id": "us-usc-title-54",
-    "name": "USC Title 54 — National Park Service",
+    "name": "USC Title 54 \u2014 National Park Service",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1569,7 +1569,7 @@
   },
   {
     "id": "us-usc-title-6",
-    "name": "USC Title 6 — Homeland Security",
+    "name": "USC Title 6 \u2014 Homeland Security",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1585,7 +1585,7 @@
   },
   {
     "id": "us-usc-title-7",
-    "name": "USC Title 7 — Agriculture",
+    "name": "USC Title 7 \u2014 Agriculture",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1601,7 +1601,7 @@
   },
   {
     "id": "us-usc-title-8",
-    "name": "USC Title 8 — Aliens and Nationality",
+    "name": "USC Title 8 \u2014 Aliens and Nationality",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -1617,7 +1617,7 @@
   },
   {
     "id": "us-usc-title-9",
-    "name": "USC Title 9 — Arbitration",
+    "name": "USC Title 9 \u2014 Arbitration",
     "type": "federal",
     "state": null,
     "fips": null,
@@ -5070,22 +5070,6 @@
     "status": "available",
     "censusMatch": "0452930",
     "lastScanned": "2026-03-09T15:59:26.936Z"
-  },
-  {
-    "id": "az-phoenix",
-    "name": "Phoenix, AZ",
-    "type": "city",
-    "state": "AZ",
-    "fips": "0455000",
-    "lat": null,
-    "lng": null,
-    "population": null,
-    "publisher": "amlegal",
-    "sourceId": "phoenix",
-    "sourceUrl": "https://codelibrary.amlegal.com/codes/phoenix/latest/overview",
-    "status": "available",
-    "censusMatch": null,
-    "lastScanned": "2026-03-17T06:19:03.438Z"
   },
   {
     "id": "az-pinal-county",
@@ -25454,22 +25438,6 @@
     "status": "available",
     "censusMatch": null,
     "lastScanned": "2026-03-09T15:59:26.936Z"
-  },
-  {
-    "id": "ga-atlanta",
-    "name": "Atlanta, GA",
-    "type": "city",
-    "state": "GA",
-    "fips": "1304000",
-    "lat": null,
-    "lng": null,
-    "population": null,
-    "publisher": "amlegal",
-    "sourceId": "atlanta",
-    "sourceUrl": "https://codelibrary.amlegal.com/codes/atlanta/latest/overview",
-    "status": "available",
-    "censusMatch": null,
-    "lastScanned": "2026-03-17T06:19:03.438Z"
   },
   {
     "id": "ga-atlanta",
@@ -75217,7 +75185,7 @@
   },
   {
     "id": "nm-ecode360-es2879",
-    "name": "City of Española",
+    "name": "City of Espa\u00f1ola",
     "type": "city",
     "state": "NM",
     "fips": "3525170",
@@ -75297,7 +75265,7 @@
   },
   {
     "id": "nm-ecode360-do2860",
-    "name": "Doña Ana County",
+    "name": "Do\u00f1a Ana County",
     "type": "county",
     "state": "NM",
     "fips": "35013",
@@ -77145,8 +77113,8 @@
     "lng": null,
     "population": null,
     "publisher": "amlegal",
-    "sourceId": "new_york_city",
-    "sourceUrl": "https://codelibrary.amlegal.com/codes/new_york_city/latest/overview",
+    "sourceId": "newyorkcity",
+    "sourceUrl": "https://codelibrary.amlegal.com/codes/newyorkcity/latest/overview",
     "status": "available",
     "censusMatch": null,
     "lastScanned": "2026-03-17T06:19:03.438Z"
@@ -91992,10 +91960,10 @@
     "lat": null,
     "lng": null,
     "population": null,
-    "publisher": "amlegal",
-    "sourceId": "portland",
-    "sourceUrl": "https://codelibrary.amlegal.com/codes/portland/latest/overview",
-    "status": "available",
+    "publisher": "manual",
+    "sourceId": "portland-or",
+    "sourceUrl": "https://www.portland.gov/code",
+    "status": "unavailable",
     "censusMatch": null,
     "lastScanned": "2026-03-17T06:19:03.438Z"
   },
@@ -120248,9 +120216,9 @@
     "lat": 40.657328,
     "lng": -111.493756,
     "population": 0,
-    "publisher": "municode",
-    "sourceId": "3781",
-    "sourceUrl": "https://library.municode.com/ut/park-city/codes/code_of_ordinances",
+    "publisher": "municipal-code-online",
+    "sourceId": "parkcity",
+    "sourceUrl": "https://parkcity.municipalcodeonline.com/book?type=ordinances",
     "status": "available",
     "censusMatch": "4958070",
     "lastScanned": "2026-03-09T15:59:26.936Z"
