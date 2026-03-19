@@ -127,6 +127,43 @@ export class ApiClient {
       slug: opts.slug,
     });
   }
+
+  async getCaseLaw(id: string, path: string, opts?: { limit?: number; offset?: number }): Promise<ApiResult<CaseLawResponse>> {
+    return this.request<CaseLawResponse>(`jurisdictions/${encodeURIComponent(id)}/caselaw/${path}`, {
+      limit: opts?.limit?.toString(),
+      offset: opts?.offset?.toString(),
+    });
+  }
+
+  async crawl(id: string): Promise<ApiResult<CrawlingResponse>> {
+    // Hitting the TOC endpoint for an uncached jurisdiction triggers a crawl
+    return this.request<CrawlingResponse>(`jurisdictions/${encodeURIComponent(id)}/toc`);
+  }
+}
+
+export interface CaseResult {
+  caseName: string;
+  court: string;
+  dateFiled: string;
+  url: string;
+  citation?: string;
+  citeCount?: number;
+  snippet?: string;
+}
+
+export interface CaseLawResponse {
+  jurisdiction: string;
+  jurisdictionName: string;
+  path: string;
+  num: string;
+  heading: string;
+  citationQueries: string[];
+  cases: CaseResult[];
+  totalCount: number;
+  offset: number;
+  limit: number;
+  supported: boolean;
+  note?: string;
 }
 
 export { isCrawling };
