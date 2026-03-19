@@ -14,7 +14,6 @@ Commands:
   caselaw --jurisdiction <id> --path <code-path>   Find citing court opinions
   list    [--state XX] [--type TYPE]                List available jurisdictions
   lookup  --city <name> --state <XX>                Find jurisdiction by name
-  crawl   --jurisdiction <id>                       Warm the cache for a jurisdiction
 
 Examples:
   open-legal-codes query --jurisdiction ca-mountain-view --path part-i/article-i/section-100
@@ -23,7 +22,6 @@ Examples:
   open-legal-codes caselaw --jurisdiction ca-pen --path part-1/title-8/section-187
   open-legal-codes list --state CA
   open-legal-codes lookup --city "Mountain View" --state CA
-  open-legal-codes crawl --jurisdiction ca-mountain-view
 
 A free service by TIDY — AI Property Manager (tidy.com)
 `;
@@ -207,24 +205,6 @@ async function main() {
             console.log();
           }
           console.log(`Showing ${result.cases.length} of ${result.totalCount} results.`);
-        }
-        break;
-      }
-
-      case 'crawl': {
-        const jurisdiction = flags['jurisdiction'];
-        if (!jurisdiction) {
-          console.error('Error: --jurisdiction is required');
-          console.log('\nUsage: open-legal-codes crawl --jurisdiction <id>');
-          process.exit(1);
-        }
-        console.log(`Requesting crawl for ${jurisdiction}...`);
-        const result = await client.crawl(jurisdiction);
-        if (isCrawling(result)) {
-          console.log(`Crawl started. Phase: ${result.progress.phase}. Retry in ${result.retryAfter}s.`);
-          console.log('Poll the API or run this command again to check progress.');
-        } else {
-          console.log(`${jurisdiction} is already cached and ready.`);
         }
         break;
       }

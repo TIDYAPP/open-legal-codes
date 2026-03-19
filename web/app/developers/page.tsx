@@ -160,8 +160,7 @@ open-legal-codes query   --jurisdiction ca-mountain-view --path part-i/article-i
 open-legal-codes caselaw --jurisdiction ca-pen --path part-1/title-8/section-187
 open-legal-codes toc     --jurisdiction ca-mountain-view --depth 2
 open-legal-codes list    --state CA
-open-legal-codes lookup  --city "Mountain View" --state CA
-open-legal-codes crawl   --jurisdiction ca-mountain-view   # warm the cache`}</div>
+open-legal-codes lookup  --city "Mountain View" --state CA`}</div>
     </div>
   );
 }
