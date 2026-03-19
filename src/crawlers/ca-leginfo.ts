@@ -112,7 +112,7 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
       const title = link.text().trim();
       if (!title || title.length < 3) return;
       // Skip navigation links like "Up^"
-      if (/^Up\^?$/i.test(title) || link.hasClass('portletNav')) return;
+      if (/^Up\^?$/i.test(title)) return;
 
       // Store the full query string as the node ID so we can reconstruct the URL directly.
       // This avoids fragile positional mapping of colon-separated params.
@@ -165,7 +165,7 @@ export class CaliforniaLeginfoCrawler implements CrawlerAdapter {
         const title = link.text().trim();
         if (!title || title.length < 3) return;
         // Skip navigation links like "Up^"
-        if (/^Up\^?$/i.test(title) || link.hasClass('portletNav')) return;
+        if (/^Up\^?$/i.test(title)) return;
 
         const childQueryString = href.split('?')[1] || '';
         const id = `${sourceId}|${childQueryString}`;
