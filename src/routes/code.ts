@@ -54,6 +54,7 @@ codeRoutes.get('/:id/code/*', (c) => {
       path,
       num: tocInfo?.num ?? null,
       heading: tocInfo?.heading ?? null,
+      level: tocInfo?.level ?? null,
       text,
       url: permalinkUrl(jurisdiction, path),
       lastCrawled: jurisdiction.lastCrawled || null,
