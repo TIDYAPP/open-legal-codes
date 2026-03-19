@@ -16,8 +16,7 @@ export const globalSearchRoutes = new Hono();
  * Uses in-memory search index — no disk I/O at query time.
  * Handles 100+ concurrent requests without blocking.
  */
-searchRoutes.get('/:id/search', (c) => {
-  const id = c.req.param('id');
+function handleSearch(c: any, id: string, codeId?: string) {
   const query = c.req.query('q');
   const limit = Math.min(parseInt(c.req.query('limit') || '20', 10), 100);
 
@@ -35,28 +34,34 @@ searchRoutes.get('/:id/search', (c) => {
 
   const { jurisdiction } = resolved;
 
-  if (!store.hasSearchIndex(id)) {
+  if (!store.hasSearchIndex(id, codeId)) {
     return notFoundOrCrawling(c, id, `No code data available for '${id}'`);
   }
 
-  const results = store.search(id, query, limit).map((r) => ({
+  const results = store.search(id, query, limit, codeId).map((r) => ({
     ...r,
-    url: permalinkUrl(jurisdiction, r.path),
+    url: permalinkUrl(jurisdiction, r.path, r.codeId),
   }));
 
-  // Search is deterministic for a cached jurisdiction — cache 1 hour at edge
   c.header('Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=604800');
   return c.json({
     data: {
       jurisdiction: id,
       jurisdictionName: jurisdiction.name,
+      codeId: codeId || store.resolveCodeId(id),
       query,
       results,
       total: results.length,
     },
     meta: { timestamp: new Date().toISOString(), poweredBy: BRANDING.poweredBy },
   });
-});
+}
+
+/** GET /jurisdictions/:id/search — default code */
+searchRoutes.get('/:id/search', (c) => handleSearch(c, c.req.param('id')));
+
+/** GET /jurisdictions/:id/codes/:codeId/search — specific code */
+searchRoutes.get('/:id/codes/:codeId/search', (c) => handleSearch(c, c.req.param('id'), c.req.param('codeId')));
 
 /**
  * GET /search?q=rental&state=TX&type=city&limit=20

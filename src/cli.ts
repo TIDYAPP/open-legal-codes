@@ -74,13 +74,14 @@ function printUsage() {
   console.log(`Open Legal Codes CLI
 
 Commands:
-  query   --jurisdiction <id> --path <code-path>   Get the text of a code section
-  toc     --jurisdiction <id> [--depth N]           Browse table of contents
-  search  --jurisdiction <id> --query <terms>       Search code text
-  caselaw --jurisdiction <id> --path <code-path>   Find citing court opinions
-  report  --jurisdiction <id> --path <path> --type <type> [--description "..."]
+  query   --jurisdiction <id> [--code <codeId>] --path <code-path>   Get the text of a code section
+  toc     --jurisdiction <id> [--code <codeId>] [--depth N]           Browse table of contents
+  codes   --jurisdiction <id>                                         List available codes
+  search  --jurisdiction <id> [--code <codeId>] --query <terms>       Search code text
+  caselaw --jurisdiction <id> [--code <codeId>] --path <code-path>   Find citing court opinions
+  report  --jurisdiction <id> [--code <codeId>] --path <path> --type <type> [--description "..."]
                                                     Report a bad result (types: bad_citation, out_of_date, wrong_text, other)
-  crawl   --jurisdiction <id>                       Crawl a jurisdiction from publisher
+  crawl   --jurisdiction <id> [--code <codeId>]     Crawl a jurisdiction from publisher (omit --code to crawl all)
   list    [--state XX] [--publisher NAME]           List available jurisdictions
   catalog [--publisher NAME] [--state XX]           Scan publishers to build registry
   census                                            Download Census Bureau geographic data
@@ -105,8 +106,9 @@ async function main() {
     case 'query': {
       const jurisdictionId = getArg('jurisdiction');
       const codePath = getArg('path');
+      const codeId = getArg('code');
       if (!jurisdictionId || !codePath) {
-        console.error('Usage: open-legal-codes query --jurisdiction <id> --path <code-path>');
+        console.error('Usage: open-legal-codes query --jurisdiction <id> [--code <codeId>] --path <code-path>');
         process.exit(1);
       }
 
@@ -119,14 +121,14 @@ async function main() {
         process.exit(1);
       }
 
-      const text = store.getCodeText(jurisdictionId, codePath);
+      const text = store.getCodeText(jurisdictionId, codePath, codeId);
       if (!text) {
         console.error(`Code path "${codePath}" not found in "${jurisdictionId}".`);
         console.error('Use "toc" command to browse available sections.');
         process.exit(1);
       }
 
-      const tocNode = store.getTocNode(jurisdictionId, codePath);
+      const tocNode = store.getTocNode(jurisdictionId, codePath, codeId);
       if (tocNode) {
         console.log(`${jurisdiction.name}`);
         console.log(`${tocNode.num}${tocNode.heading ? ' — ' + tocNode.heading : ''}`);
@@ -138,15 +140,16 @@ async function main() {
 
     case 'toc': {
       const jurisdictionId = getArg('jurisdiction');
+      const codeId = getArg('code');
       if (!jurisdictionId) {
-        console.error('Usage: open-legal-codes toc --jurisdiction <id> [--depth N]');
+        console.error('Usage: open-legal-codes toc --jurisdiction <id> [--code <codeId>] [--depth N]');
         process.exit(1);
       }
 
       const store = new CodeStore();
       store.initialize();
 
-      const toc = store.getToc(jurisdictionId);
+      const toc = store.getToc(jurisdictionId, codeId);
       if (!toc) {
         console.error(`Jurisdiction "${jurisdictionId}" not found.`);
         process.exit(1);
@@ -158,11 +161,37 @@ async function main() {
       break;
     }
 
+    case 'codes': {
+      const jurisdictionId = getArg('jurisdiction');
+      if (!jurisdictionId) {
+        console.error('Usage: open-legal-codes codes --jurisdiction <id>');
+        process.exit(1);
+      }
+
+      const store = new CodeStore();
+      store.initialize();
+
+      const codes = store.listCodes(jurisdictionId);
+      if (codes.length === 0) {
+        console.error(`No codes found for "${jurisdictionId}". The jurisdiction may not have been crawled yet.`);
+        process.exit(1);
+      }
+
+      console.log(`Codes for ${jurisdictionId}:\n`);
+      for (const code of codes) {
+        const primary = code.isPrimary ? ' [primary]' : '';
+        console.log(`  ${code.codeId} — ${code.name}${primary}`);
+      }
+      console.log(`\n${codes.length} code(s) found.`);
+      break;
+    }
+
     case 'search': {
       const jurisdictionId = getArg('jurisdiction');
       const query = getArg('query');
+      const codeId = getArg('code');
       if (!jurisdictionId || !query) {
-        console.error('Usage: open-legal-codes search --jurisdiction <id> --query <terms>');
+        console.error('Usage: open-legal-codes search --jurisdiction <id> [--code <codeId>] --query <terms>');
         process.exit(1);
       }
 
@@ -176,7 +205,7 @@ async function main() {
       }
 
       console.log(`Searching "${query}" in ${jurisdictionId}...\n`);
-      const results = store.search(jurisdictionId, query);
+      const results = store.search(jurisdictionId, query, undefined, codeId);
 
       for (const r of results) {
         console.log(`  ${r.path}`);
@@ -190,8 +219,9 @@ async function main() {
     case 'caselaw': {
       const jurisdictionId = getArg('jurisdiction');
       const codePath = getArg('path');
+      const codeId = getArg('code');
       if (!jurisdictionId || !codePath) {
-        console.error('Usage: open-legal-codes caselaw --jurisdiction <id> --path <code-path> [--limit N]');
+        console.error('Usage: open-legal-codes caselaw --jurisdiction <id> [--code <codeId>] --path <code-path> [--limit N]');
         process.exit(1);
       }
 
@@ -203,7 +233,7 @@ async function main() {
         process.exit(1);
       }
 
-      const tocNode = store.getTocNode(jurisdictionId, codePath);
+      const tocNode = store.getTocNode(jurisdictionId, codePath, codeId);
       const limit = getArg('limit') ? parseInt(getArg('limit')!, 10) : 20;
 
       try {
@@ -246,9 +276,10 @@ async function main() {
       const codePath = getArg('path');
       const reportType = getArg('type');
       const description = getArg('description') || '';
+      const codeId = getArg('code');
 
       if (!jurisdictionId || !codePath || !reportType) {
-        console.error('Usage: open-legal-codes report --jurisdiction <id> --path <path> --type <type> [--description "..."]');
+        console.error('Usage: open-legal-codes report --jurisdiction <id> [--code <codeId>] --path <path> --type <type> [--description "..."]');
         console.error('Types: bad_citation, out_of_date, wrong_text, other');
         process.exit(1);
       }
@@ -265,6 +296,7 @@ async function main() {
         path: codePath,
         reportType,
         description,
+        codeId: codeId || undefined,
       });
 
       console.log(`Report #${feedbackId} submitted. Thank you for the feedback.`);
@@ -273,8 +305,9 @@ async function main() {
 
     case 'crawl': {
       const jurisdictionId = getArg('jurisdiction');
+      const codeId = getArg('code');
       if (!jurisdictionId) {
-        console.error('Usage: open-legal-codes crawl --jurisdiction <id>');
+        console.error('Usage: open-legal-codes crawl --jurisdiction <id> [--code <codeId>]');
         console.error('Example: open-legal-codes crawl --jurisdiction ca-mountain-view');
         process.exit(1);
       }
@@ -285,14 +318,15 @@ async function main() {
         process.exit(1);
       }
 
-      console.log(`Crawling ${jurisdiction.name} (${jurisdiction.publisher.name}, sourceId: ${jurisdiction.publisher.sourceId})`);
+      console.log(`Crawling ${jurisdiction.name} (${jurisdiction.publisher.name}, sourceId: ${jurisdiction.publisher.sourceId})${codeId ? ` [code: ${codeId}]` : ''}`);
 
       const crawler = getCrawler(jurisdiction.publisher.name);
-      const progress = await crawlQueue.enqueue(crawler, { jurisdiction }, (p) => {
+      const progress = await crawlQueue.enqueue(crawler, { jurisdiction, codeId }, (p) => {
         if (p.phase === 'sections' && p.total > 0) {
           const pct = Math.round((p.completed / p.total) * 100);
+          const codeLabel = p.currentCode ? `[${p.currentCode}] ` : '';
           process.stdout.write(
-            `\r[${p.phase}] ${p.completed}/${p.total} (${pct}%) ${p.currentPath || ''}`.padEnd(80),
+            `\r${codeLabel}[${p.phase}] ${p.completed}/${p.total} (${pct}%) ${p.currentPath || ''}`.padEnd(80),
           );
         }
       });

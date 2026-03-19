@@ -83,15 +83,32 @@ export function createMcpServer(store: CodeStore): McpServer {
   );
 
   server.tool(
+    'list_codes',
+    'List all codes available for a jurisdiction. Some jurisdictions have multiple codes (e.g. Code of Ordinances, Land Development Code). Returns code IDs you can use with other tools.',
+    {
+      jurisdiction: z.string().describe('Jurisdiction ID, e.g. "tx-austin"'),
+    },
+    async ({ jurisdiction }) => {
+      const codes = store.listCodes(jurisdiction);
+      if (codes.length === 0) {
+        return { content: [{ type: 'text', text: `No codes found for '${jurisdiction}'. The jurisdiction may not have been crawled yet.` }] };
+      }
+      const lines = codes.map(c => `${c.codeId} — ${c.name}${c.isPrimary ? ' [primary]' : ''}`);
+      return { content: [{ type: 'text', text: lines.join('\n') }] };
+    }
+  );
+
+  server.tool(
     'get_table_of_contents',
     'Get the table of contents for a jurisdiction\'s legal code. Use depth to limit how deep the tree goes. Returns section paths you can use with get_code_text.',
     {
       jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-mountain-view"'),
+      code: z.string().optional().describe('Code ID within the jurisdiction (use list_codes to see available codes). Defaults to the primary code.'),
       path: z.string().optional().describe('Path to a subtree, e.g. "chapter-5/article-i"'),
       depth: z.number().optional().describe('Max depth of tree to return (default: 2)'),
     },
-    async ({ jurisdiction, path, depth }) => {
-      const toc = store.getToc(jurisdiction);
+    async ({ jurisdiction, code, path, depth }) => {
+      const toc = store.getToc(jurisdiction, code);
       if (!toc) {
         return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found. Use list_jurisdictions to see available ones.` }] };
       }
@@ -119,19 +136,20 @@ export function createMcpServer(store: CodeStore): McpServer {
     {
       jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-mountain-view"'),
       path: z.string().describe('Code path, e.g. "part-i/article-i/section-100"'),
+      code: z.string().optional().describe('Code ID within the jurisdiction. Defaults to the primary code.'),
     },
-    async ({ jurisdiction, path }) => {
+    async ({ jurisdiction, path, code }) => {
       const j = store.getJurisdiction(jurisdiction);
       if (!j) {
         return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found. Use list_jurisdictions to see available ones.` }] };
       }
 
-      const text = store.getCodeText(jurisdiction, path);
+      const text = store.getCodeText(jurisdiction, path, code);
       if (!text) {
         return { content: [{ type: 'text', text: `Code section '${path}' not found in '${jurisdiction}'. Use get_table_of_contents to browse available sections.` }] };
       }
 
-      const url = permalinkUrl(j, path);
+      const url = permalinkUrl(j, path, code);
       return {
         content: [{
           type: 'text',
@@ -146,11 +164,12 @@ export function createMcpServer(store: CodeStore): McpServer {
     'Search for sections containing specific terms. Provide a jurisdiction ID to search within one jurisdiction, or omit it to search across all cached jurisdictions (optionally filtered by state).',
     {
       jurisdiction: z.string().optional().describe('Jurisdiction ID, e.g. "ca-mountain-view". Omit to search across all cached jurisdictions.'),
+      code: z.string().optional().describe('Code ID within the jurisdiction. Defaults to searching all codes.'),
       state: z.string().optional().describe('Two-letter state code to filter cross-jurisdiction search, e.g. "CA"'),
       query: z.string().describe('Search terms to look for in code text'),
       max_results: z.number().optional().describe('Maximum results to return (default: 10)'),
     },
-    async ({ jurisdiction, state, query, max_results }) => {
+    async ({ jurisdiction, code, state, query, max_results }) => {
       const limit = max_results ?? 10;
 
       // Single-jurisdiction search
@@ -160,9 +179,9 @@ export function createMcpServer(store: CodeStore): McpServer {
           return { content: [{ type: 'text', text: `Jurisdiction '${jurisdiction}' not found.` }] };
         }
 
-        const results = store.search(jurisdiction, query, limit).map((r) => ({
+        const results = store.search(jurisdiction, query, limit, code).map((r) => ({
           ...r,
-          url: permalinkUrl(j, r.path),
+          url: permalinkUrl(j, r.path, r.codeId),
         }));
 
         if (results.length === 0) {
@@ -213,15 +232,16 @@ export function createMcpServer(store: CodeStore): McpServer {
     {
       jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-gov", "us-usc-title-42"'),
       path: z.string().describe('Code section path, e.g. "title-2/.../section-12965"'),
+      code: z.string().optional().describe('Code ID within the jurisdiction. Defaults to the primary code.'),
       limit: z.number().optional().default(10).describe('Max results to return (default 10)'),
     },
-    async ({ jurisdiction: jurisdictionId, path, limit }) => {
+    async ({ jurisdiction: jurisdictionId, path, code, limit }) => {
       const jurisdiction = store.getJurisdiction(jurisdictionId);
       if (!jurisdiction) {
         return { content: [{ type: 'text', text: `Jurisdiction "${jurisdictionId}" not found. Use lookup_jurisdiction to find the right ID.` }] };
       }
 
-      const tocNode = store.getTocNode(jurisdictionId, path);
+      const tocNode = store.getTocNode(jurisdictionId, path, code);
 
       try {
         const result = await getCaseLaw(jurisdiction, path, tocNode || undefined, { limit });

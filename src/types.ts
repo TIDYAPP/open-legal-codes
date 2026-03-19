@@ -32,6 +32,22 @@ export interface Jurisdiction {
 }
 
 // ---------------------------------------------------------------------------
+// Codes (a jurisdiction can have multiple codes)
+// ---------------------------------------------------------------------------
+
+export interface Code {
+  jurisdictionId: string;
+  codeId: string;
+  name: string;
+  sourceId: string | null;
+  sourceUrl: string | null;
+  lastCrawled: string;
+  lastUpdated: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+// ---------------------------------------------------------------------------
 // Table of Contents
 // ---------------------------------------------------------------------------
 
@@ -69,6 +85,7 @@ export interface TocNode {
 
 export interface TocTree {
   jurisdiction: string;
+  codeId?: string;
   title: string;
   children: TocNode[];
 }
@@ -156,8 +173,17 @@ export interface CrawlerAdapter {
   readonly publisherName: 'municode' | 'amlegal' | 'ecode360' | 'ecfr' | 'ca-leginfo' | 'ny-openleg' | 'fl-statutes' | 'tx-statutes' | 'usc' | 'codepublishing' | 'manual' | 'nc-statutes' | 'va-statutes' | 'wa-statutes' | 'oh-statutes' | 'ma-statutes' | 'il-statutes' | 'pa-statutes' | 'nj-statutes' | 'ga-statutes' | 'co-statutes' | 'az-statutes' | 'tn-statutes' | 'municipal-code-online';
   /** Discover all available jurisdictions from this publisher */
   listJurisdictions(state?: string): AsyncIterable<Jurisdiction>;
-  /** Fetch the table of contents tree for a jurisdiction */
-  fetchToc(sourceId: string): Promise<RawTocNode[]>;
+  /** Fetch the table of contents tree for a jurisdiction (optionally for a specific code) */
+  fetchToc(sourceId: string, codeSourceId?: string): Promise<RawTocNode[]>;
   /** Fetch the raw HTML content of a single section */
-  fetchSection(sourceId: string, sectionId: string): Promise<RawContent>;
+  fetchSection(sourceId: string, sectionId: string, codeSourceId?: string): Promise<RawContent>;
+  /** Discover all codes/products available for a jurisdiction (optional — defaults to single code) */
+  listCodes?(sourceId: string): Promise<Array<{
+    codeId: string;
+    name: string;
+    sourceId: string;
+    sourceUrl?: string;
+    isPrimary: boolean;
+    sortOrder: number;
+  }>>;
 }

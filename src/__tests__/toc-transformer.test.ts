@@ -58,6 +58,59 @@ describe('transformToc', () => {
     expect(tree.children[0].num).toBe('SUPPLEMENT HISTORY TABLE');
     expect(tree.children[0].heading).toBe('');
   });
+
+  it('collapses duplicate container nodes (Austin chapter-2-15 bug)', () => {
+    const raw: RawTocNode[] = [
+      {
+        id: 'CH2-15',
+        title: 'CHAPTER 2-15 - POLICE OVERSIGHT',
+        level: 'chapter',
+        hasContent: false,
+        children: [
+          {
+            id: 'CH2-15_DUP',
+            title: 'CHAPTER 2-15 - POLICE OVERSIGHT',
+            level: 'chapter',
+            hasContent: false,
+            children: [
+              {
+                id: 'S2-15-1',
+                title: 'Section 2-15-1. - Definitions.',
+                level: 'section',
+                hasContent: true,
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const tree = transformToc(raw, 'test-austin', 'Test Austin Code');
+    const chapter = tree.children[0];
+
+    // The duplicate nesting should be collapsed
+    expect(chapter.slug).toBe('chapter-2-15');
+    expect(chapter.path).toBe('chapter-2-15');
+    // The section should be a direct child, not nested under a duplicate
+    expect(chapter.children).toHaveLength(1);
+    expect(chapter.children![0].path).toBe('chapter-2-15/section-2-15-1');
+  });
+
+  it('propagates codeId to the tree', () => {
+    const raw: RawTocNode[] = [
+      {
+        id: 'CH1',
+        title: 'CHAPTER 1 - TEST',
+        level: 'chapter',
+        hasContent: true,
+        children: [],
+      },
+    ];
+
+    const tree = transformToc(raw, 'test', 'Test', 'land-development');
+    expect(tree.codeId).toBe('land-development');
+  });
 });
 
 describe('flattenContentNodes', () => {

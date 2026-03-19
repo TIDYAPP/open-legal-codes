@@ -239,3 +239,165 @@ describe('CodeStore search (FTS5)', () => {
     expect(text).not.toContain('<p>');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Multi-code tests
+// ---------------------------------------------------------------------------
+
+describe('CodeStore multi-code', () => {
+  let mcDb: Database.Database;
+  let mcStore: CodeStore;
+
+  beforeAll(async () => {
+    mcDb = createDb(':memory:');
+    const writer = new CodeWriter(mcDb);
+
+    await writer.updateRegistry({
+      id: 'test-multicode',
+      name: 'Multi-Code City',
+      type: 'city',
+      state: 'TS',
+      parentId: null,
+      fips: null,
+      publisher: { name: 'municode' as any, sourceId: '99', url: '' },
+      lastCrawled: '',
+      lastUpdated: '',
+    } as any);
+
+    // Write two codes
+    writer.writeCodes('test-multicode', [
+      { codeId: 'code-of-ordinances', name: 'Code of Ordinances', sourceId: '100', sourceUrl: null, isPrimary: true, sortOrder: 0, lastCrawled: '', lastUpdated: '' },
+      { codeId: 'land-development', name: 'Land Development Code', sourceId: '101', sourceUrl: null, isPrimary: false, sortOrder: 1, lastCrawled: '', lastUpdated: '' },
+    ]);
+
+    // Write TOC for code-of-ordinances
+    await writer.writeToc('test-multicode', {
+      jurisdiction: 'test-multicode',
+      title: 'Code of Ordinances',
+      children: [
+        { slug: 'chapter-1', path: 'chapter-1', level: 'chapter' as any, num: 'Chapter 1', heading: 'General', hasContent: true },
+      ],
+    }, 'code-of-ordinances');
+
+    // Write TOC for land-development
+    await writer.writeToc('test-multicode', {
+      jurisdiction: 'test-multicode',
+      title: 'Land Development Code',
+      children: [
+        { slug: 'article-1', path: 'article-1', level: 'article' as any, num: 'Article 1', heading: 'Zoning', hasContent: true },
+      ],
+    }, 'land-development');
+
+    // Write sections
+    await writer.writeSection('test-multicode', 'chapter-1', '<xml/>', '<p>General ordinance text about parking.</p>', 'code-of-ordinances');
+    await writer.writeSection('test-multicode', 'article-1', '<xml/>', '<p>Zoning and land use regulations.</p>', 'land-development');
+
+    mcStore = new CodeStore(mcDb);
+  });
+
+  afterAll(() => {
+    mcDb?.close();
+  });
+
+  it('listCodes returns all codes for a jurisdiction', () => {
+    const codes = mcStore.listCodes('test-multicode');
+    expect(codes).toHaveLength(2);
+    expect(codes[0].codeId).toBe('code-of-ordinances');
+    expect(codes[0].isPrimary).toBe(true);
+    expect(codes[1].codeId).toBe('land-development');
+    expect(codes[1].isPrimary).toBe(false);
+  });
+
+  it('listCodes returns empty for unknown jurisdiction', () => {
+    expect(mcStore.listCodes('nonexistent')).toEqual([]);
+  });
+
+  it('resolveCodeId returns primary code when none specified', () => {
+    const resolved = mcStore.resolveCodeId('test-multicode');
+    expect(resolved).toBe('code-of-ordinances');
+  });
+
+  it('resolveCodeId returns specified code when provided', () => {
+    const resolved = mcStore.resolveCodeId('test-multicode', 'land-development');
+    expect(resolved).toBe('land-development');
+  });
+
+  it('getToc returns correct TOC for each code', () => {
+    const ordinancesToc = mcStore.getToc('test-multicode', 'code-of-ordinances');
+    expect(ordinancesToc).toBeDefined();
+    expect(ordinancesToc!.children[0].num).toBe('Chapter 1');
+
+    const ldcToc = mcStore.getToc('test-multicode', 'land-development');
+    expect(ldcToc).toBeDefined();
+    expect(ldcToc!.children[0].num).toBe('Article 1');
+  });
+
+  it('getToc defaults to primary code', () => {
+    const toc = mcStore.getToc('test-multicode');
+    expect(toc).toBeDefined();
+    expect(toc!.children[0].num).toBe('Chapter 1');
+  });
+
+  it('getCodeText returns text for specific code', () => {
+    const text = mcStore.getCodeText('test-multicode', 'article-1', 'land-development');
+    expect(text).toContain('Zoning');
+  });
+
+  it('getCodeText defaults to primary code', () => {
+    const text = mcStore.getCodeText('test-multicode', 'chapter-1');
+    expect(text).toContain('parking');
+  });
+
+  it('search scoped to specific code', () => {
+    const results = mcStore.search('test-multicode', 'zoning', undefined, 'land-development');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].path).toBe('article-1');
+  });
+
+  it('invalidateCache can scope to specific code', () => {
+    // Create a separate db to test invalidation without affecting other tests
+    const invDb = createDb(':memory:');
+    const invWriter = new CodeWriter(invDb);
+
+    invWriter.updateRegistry({
+      id: 'test-inv',
+      name: 'Inv City',
+      type: 'city',
+      state: 'TS',
+      parentId: null,
+      fips: null,
+      publisher: { name: 'municode' as any, sourceId: '1', url: '' },
+      lastCrawled: '',
+      lastUpdated: '',
+    } as any);
+
+    invWriter.writeCodes('test-inv', [
+      { codeId: 'code-a', name: 'Code A', sourceId: null, sourceUrl: null, isPrimary: true, sortOrder: 0, lastCrawled: '', lastUpdated: '' },
+      { codeId: 'code-b', name: 'Code B', sourceId: null, sourceUrl: null, isPrimary: false, sortOrder: 1, lastCrawled: '', lastUpdated: '' },
+    ]);
+
+    invWriter.writeToc('test-inv', {
+      jurisdiction: 'test-inv',
+      title: 'Code A',
+      children: [{ slug: 's1', path: 's1', level: 'section' as any, num: 'S1', heading: 'A', hasContent: true }],
+    }, 'code-a');
+
+    invWriter.writeToc('test-inv', {
+      jurisdiction: 'test-inv',
+      title: 'Code B',
+      children: [{ slug: 's1', path: 's1', level: 'section' as any, num: 'S1', heading: 'B', hasContent: true }],
+    }, 'code-b');
+
+    const invStore = new CodeStore(invDb);
+
+    // Invalidate only code-a
+    invStore.invalidateCache('test-inv', 'code-a');
+
+    // code-a TOC should be gone
+    expect(invStore.getToc('test-inv', 'code-a')).toBeUndefined();
+    // code-b TOC should remain
+    expect(invStore.getToc('test-inv', 'code-b')).toBeDefined();
+
+    invDb.close();
+  });
+});
