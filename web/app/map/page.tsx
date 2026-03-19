@@ -28,15 +28,19 @@ export default async function MapPage() {
               </span>
             )}
           </div>
-          {stats && (
-            <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#999' }}>
-              {Object.entries(stats.byPublisher)
-                .sort(([, a], [, b]) => b - a)
-                .map(([pub, count]) => (
+          {stats && (() => {
+            const sorted = Object.entries(stats.byPublisher).sort(([, a], [, b]) => b - a);
+            const shown = sorted.slice(0, 5);
+            const rest = sorted.length - shown.length;
+            return (
+              <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#999', flexShrink: 0 }}>
+                {shown.map(([pub, count]) => (
                   <span key={pub}>{pub}: {count.toLocaleString()}</span>
                 ))}
-            </div>
-          )}
+                {rest > 0 && <span>+{rest} more</span>}
+              </div>
+            );
+          })()}
         </div>
       </div>
       <div style={{ flex: 1, position: 'relative' }}>
