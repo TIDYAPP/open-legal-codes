@@ -66,7 +66,7 @@ describe('TexasStatutesCrawler', () => {
       title: 'CHAPTER 53. CODE OF MUNICIPAL ORDINANCES',
       level: 'chapter',
       hasContent: true,
-      id: 'LG|/LG/pdf/LG.53.pdf',
+      id: 'LG|/LG/htm/LG.53.htm',
     });
   });
 });

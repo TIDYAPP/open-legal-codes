@@ -143,7 +143,8 @@ export class TexasStatutesCrawler implements CrawlerAdapter {
 
   private headingToRawNode(sourceId: string, node: TexasHeadingNode): RawTocNode {
     const children = (node.children ?? []).map((child) => this.headingToRawNode(sourceId, child));
-    const sourcePath = node.pdfLink || node.htmLink || node.valuePath;
+    // Prefer htmLink over pdfLink — the TX site now serves an SPA shell at PDF URLs
+    const sourcePath = node.htmLink || node.pdfLink || node.valuePath;
 
     return {
       id: `${sourceId}|${sourcePath}`,
@@ -169,6 +170,11 @@ export class TexasStatutesCrawler implements CrawlerAdapter {
         let sections = this.pdfCache.get(url);
         if (!sections) {
           const buffer = await this.http.getBuffer(url);
+          // Detect if the response is actually HTML (TX site now returns SPA shell at PDF URLs)
+          const header = new TextDecoder().decode(buffer.slice(0, 20));
+          if (header.startsWith('<!DOCTYPE') || header.startsWith('<html')) {
+            throw new Error('PDF URL returned HTML — Texas site may have been redesigned');
+          }
           const parsed = await parsePdf(buffer);
           sections = parsed.sections;
           this.pdfCache.set(url, sections);
