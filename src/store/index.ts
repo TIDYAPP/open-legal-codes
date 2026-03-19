@@ -167,6 +167,13 @@ export class CodeStore {
     return row.has_index === 1;
   }
 
+  /** Delete cached sections and TOC for a jurisdiction so it can be re-crawled. */
+  invalidateCache(jurisdictionId: string): { deletedSections: number; deletedTocNodes: number } {
+    const sections = this.db.prepare('DELETE FROM sections WHERE jurisdiction_id = ?').run(jurisdictionId);
+    const tocNodes = this.db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ?').run(jurisdictionId);
+    return { deletedSections: sections.changes, deletedTocNodes: tocNodes.changes };
+  }
+
   listFeedback(filters?: {
     status?: string;
     jurisdictionId?: string;
@@ -351,6 +358,7 @@ export const store: CodeStore = Object.create(CodeStore.prototype, {
   getCodeXml: { value(id: string, p: string) { return getStore().getCodeXml(id, p); }, writable: true, configurable: true },
   search: { value(id: string, q: string, l?: number) { return getStore().search(id, q, l); }, writable: true, configurable: true },
   hasSearchIndex: { value(id: string) { return getStore().hasSearchIndex(id); }, writable: true, configurable: true },
+  invalidateCache: { value(id: string) { return getStore().invalidateCache(id); }, writable: true, configurable: true },
   listFeedback: { value(f?: any) { return getStore().listFeedback(f); }, writable: true, configurable: true },
   getFeedback: { value(id: number) { return getStore().getFeedback(id); }, writable: true, configurable: true },
   countRecentFeedback: { value(ip: string, m: number) { return getStore().countRecentFeedback(ip, m); }, writable: true, configurable: true },
