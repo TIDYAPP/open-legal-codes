@@ -2,10 +2,10 @@ import type { CrawlerAdapter, RawTocNode, RawContent } from './types.js';
 import type { Jurisdiction } from '../types.js';
 import { HttpClient } from './http-client.js';
 import * as cheerio from 'cheerio';
-import { parsePdf, type PdfSection } from '../converter/pdf-to-html.js';
 
 const SITE_BASE = 'https://statutes.capitol.texas.gov';
 const API_BASE = 'https://tcss.legis.texas.gov/api';
+const RESOURCE_BASE = 'https://tcss.legis.texas.gov/resources';
 
 /**
  * Texas Statutes — ~27 codes
@@ -69,18 +69,18 @@ interface TexasHeadingNode {
 /**
  * Texas Statutes Crawler Adapter
  *
- * Scrapes Texas statutes from statutes.capitol.texas.gov using cheerio.
- * Texas statute pages are plain HTML — no JavaScript rendering needed.
+ * Uses the TCSS API (tcss.legis.texas.gov) for TOC and content.
+ * The main site (statutes.capitol.texas.gov) was redesigned as an Angular SPA,
+ * but static HTML content is available at tcss.legis.texas.gov/resources/.
  *
  * The sourceId is the code abbreviation (e.g., "AG", "PE", "GV").
  * The sectionId is "{CODE}|{relative-path}" where relative-path is the
- * href from the TOC page (e.g., "PE|PE.1.htm").
+ * htmLink from the TCSS API (e.g., "PR|/PR/htm/PR.92.htm").
  */
 export class TexasStatutesCrawler implements CrawlerAdapter {
   readonly publisherName = 'tx-statutes' as const;
   private http: HttpClient;
   private codeIdByCodePromise: Promise<Map<string, string>> | null = null;
-  private pdfCache = new Map<string, PdfSection[]>();
 
   constructor(http?: HttpClient) {
     this.http = http ?? new HttpClient({ minDelayMs: 1500 });
@@ -155,57 +155,37 @@ export class TexasStatutesCrawler implements CrawlerAdapter {
     };
   }
 
-  async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    // sectionId format: "{CODE}|{path}" e.g. "LG|/LG/pdf/LG.53.pdf"
+  async fetchSection(_sourceId: string, sectionId: string): Promise<RawContent> {
+    // sectionId format: "{CODE}|{path}" e.g. "LG|/LG/htm/LG.53.htm"
     const parts = sectionId.split('|');
     const resourcePath = parts[1] || sectionId;
 
-    const url = resourcePath.startsWith('http')
+    // TX site was redesigned as an SPA — static content now lives on tcss.legis.texas.gov/resources/
+    const contentUrl = resourcePath.startsWith('http')
       ? resourcePath
-      : `${SITE_BASE}${resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`}`;
-    console.log(`[tx-statutes] Fetching section ${sectionId} from ${url}`);
+      : `${RESOURCE_BASE}${resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`}`;
+    // Public permalink uses the official site (even though it's an SPA now)
+    const permalink = resourcePath.startsWith('http')
+      ? resourcePath
+      : `${SITE_BASE}/Docs${resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`}`;
+    console.log(`[tx-statutes] Fetching section ${sectionId} from ${contentUrl}`);
 
     try {
-      if (resourcePath.toLowerCase().endsWith('.pdf')) {
-        let sections = this.pdfCache.get(url);
-        if (!sections) {
-          const buffer = await this.http.getBuffer(url);
-          // Detect if the response is actually HTML (TX site now returns SPA shell at PDF URLs)
-          const header = new TextDecoder().decode(buffer.slice(0, 20));
-          if (header.startsWith('<!DOCTYPE') || header.startsWith('<html')) {
-            throw new Error('PDF URL returned HTML — Texas site may have been redesigned');
-          }
-          const parsed = await parsePdf(buffer);
-          sections = parsed.sections;
-          this.pdfCache.set(url, sections);
-        }
-
-        const html = sections
-          .map((section) => `<h2>${escapeHtml(section.title)}</h2>\n${section.html}`)
-          .join('\n');
-
-        return {
-          html,
-          fetchedAt: new Date().toISOString(),
-          sourceUrl: url,
-        };
-      }
-
-      const html = await this.http.getHtml(url);
+      const html = await this.http.getHtml(contentUrl);
       const $ = cheerio.load(html);
       const cleanHtml = extractContent($);
 
       return {
         html: cleanHtml || html,
         fetchedAt: new Date().toISOString(),
-        sourceUrl: url,
+        sourceUrl: permalink,
       };
     } catch (err) {
       console.error(`[tx-statutes] Failed to fetch section ${sectionId}:`, err);
       return {
         html: `<p>Failed to fetch section: ${sectionId}</p>`,
         fetchedAt: new Date().toISOString(),
-        sourceUrl: url,
+        sourceUrl: permalink,
       };
     }
   }
@@ -255,10 +235,3 @@ function guessLevelFromTitle(title: string): string {
   return 'title';
 }
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
