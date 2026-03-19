@@ -15,15 +15,26 @@ export default function CodePage({
   const codePath = path.join('/');
   const { id, name, urlBase } = useJurisdiction();
 
-  const [code, setCode] = useState<{ text: string; num: string | null; heading: string | null; url?: string } | null>(null);
+  const [code, setCode] = useState<{ text: string; html?: string; num: string | null; heading: string | null; level?: string | null; url?: string } | null>(null);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const isSection = !code?.level || code.level === 'section';
 
   useEffect(() => {
     if (!id) return;
     fetch(`${API_BASE}/api/v1/jurisdictions/${id}/code/${codePath}`)
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(data => setCode(data.data))
+      .then(data => {
+        const d = data.data;
+        setCode(d);
+        // For non-section pages, also fetch HTML to preserve structure
+        if (d.level && d.level !== 'section') {
+          fetch(`${API_BASE}/api/v1/jurisdictions/${id}/code/${codePath}?format=html`)
+            .then(r => r.ok ? r.text() : null)
+            .then(html => { if (html) setCode(prev => prev ? { ...prev, html } : prev); });
+        }
+      })
       .catch(() => setError(true));
   }, [id, codePath]);
 
@@ -70,9 +81,13 @@ export default function CodePage({
         </div>
       )}
 
-      <div className="section-text">{code.text}</div>
+      {!isSection && code.html ? (
+        <div className="section-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(code.html) }} />
+      ) : (
+        <div className="section-text">{code.text}</div>
+      )}
 
-      {id && <CaseLawSection jurisdictionId={id} codePath={codePath} />}
+      {id && isSection && <CaseLawSection jurisdictionId={id} codePath={codePath} />}
       {id && <ReportIssueButton jurisdictionId={id} codePath={codePath} />}
     </div>
   );
@@ -218,8 +233,16 @@ function CaseLawSection({ jurisdictionId, codePath }: { jurisdictionId: string; 
 
 /** Allow only <mark> and <em> tags from CourtListener snippets. */
 function sanitizeSnippet(html: string): string {
-  // Strip all tags except <mark>, </mark>, <em>, </em>
   return html.replace(/<\/?(?!mark\b|em\b)[^>]+>/gi, '');
+}
+
+/** Allow only safe structural tags for rendering container page HTML. */
+function sanitizeHtml(html: string): string {
+  const allowed = /^\/?(div|a|h[1-6]|p|ul|ol|li|span|br|table|tr|td|th|thead|tbody|strong|b|em|i)\b/i;
+  return html.replace(/<\/?([^>]+)>/gi, (match, inner) => {
+    if (allowed.test(inner.trim())) return match;
+    return ' ';
+  });
 }
 
 function ReportIssueButton({ jurisdictionId, codePath }: { jurisdictionId: string; codePath: string }) {

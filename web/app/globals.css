@@ -305,6 +305,20 @@ code {
   max-width: 680px;
 }
 
+.section-html {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.75;
+  max-width: 680px;
+}
+.section-html a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.section-html a:hover {
+  text-decoration: underline;
+}
+
 /* Meta row */
 .meta {
   font-size: 12px;
