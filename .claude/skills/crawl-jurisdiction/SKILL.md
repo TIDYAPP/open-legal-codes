@@ -9,6 +9,12 @@ user-invocable: true
 
 Crawl a jurisdiction's municipal code from its publisher and cache it locally.
 
+## CRITICAL: AMLegal and Municipal Code Online require Browserbase + Stagehand
+
+AMLegal and municipalcodeonline.com are SPAs behind Cloudflare. They MUST use Browserbase + Stagehand (StagehandClient). NEVER use plain HTTP, BrowserbaseHttpClient, FallbackHttpClient, fetch, or cheerio for these publishers. If Stagehand fails, fix Stagehand — do NOT switch to HTTP.
+
+## Steps
+
 1. First, check if the jurisdiction exists: `npx tsx src/cli.ts list --state` (use appropriate state)
 2. Run: `npx tsx src/cli.ts crawl --jurisdiction $0`
 3. This may take up to a minute for a full code. Wait for it to complete.

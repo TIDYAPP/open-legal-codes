@@ -14,11 +14,13 @@ export function transformToc(
   raw: RawTocNode[],
   jurisdictionId: string,
   codeName: string,
+  codeId?: string,
 ): TocTree {
   return {
     jurisdiction: jurisdictionId,
+    codeId,
     title: codeName,
-    children: raw.map(node => transformNode(node, '')),
+    children: deduplicateNodes(raw).map(node => transformNode(node, '')),
   };
 }
 
@@ -29,6 +31,9 @@ function transformNode(raw: RawTocNode, parentPath: string): TocNode {
 
   const path = parentPath ? `${parentPath}/${slug}` : slug;
 
+  // Deduplicate children before recursing
+  const children = deduplicateNodes(raw.children);
+
   return {
     slug,
     path,
@@ -37,8 +42,31 @@ function transformNode(raw: RawTocNode, parentPath: string): TocNode {
     heading,
     hasContent: raw.hasContent,
     sourceNodeId: raw.id,
-    children: raw.children.map(child => transformNode(child, path)),
+    children: children.map(child => transformNode(child, path)),
   };
+}
+
+/**
+ * Collapse duplicate container nodes from publisher data.
+ *
+ * Some publishers (e.g., Municode for Austin Chapter 2-15) nest a node inside
+ * a copy of itself: "CHAPTER 2-15" → child "CHAPTER 2-15" → actual sections.
+ * When a parent has exactly one child that would produce the same slug,
+ * we skip the redundant wrapper and hoist its children up.
+ */
+function deduplicateNodes(nodes: RawTocNode[]): RawTocNode[] {
+  return nodes.map(node => {
+    if (node.children.length === 1) {
+      const child = node.children[0];
+      const parentSlug = makeSlug(normalizeLevel(node.level), parseTocTitle(node.title).num || node.title);
+      const childSlug = makeSlug(normalizeLevel(child.level), parseTocTitle(child.title).num || child.title);
+      if (parentSlug === childSlug) {
+        // Hoist the grandchildren up, keeping the parent's metadata
+        return { ...node, children: child.children, hasContent: child.hasContent || node.hasContent };
+      }
+    }
+    return node;
+  });
 }
 
 /**

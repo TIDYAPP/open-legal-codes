@@ -17,6 +17,7 @@ function slugify(text: string): string {
 export function permalinkUrl(
   jurisdiction: { id: string; name: string; type: string; state: string | null },
   codePath?: string,
+  codeId?: string,
 ): string {
   let base: string;
 
@@ -28,6 +29,11 @@ export function permalinkUrl(
     base = `${BASE_URL}/${jurisdiction.state.toLowerCase()}/${slug}`;
   } else {
     base = `${BASE_URL}/${jurisdiction.id}`;
+  }
+
+  // Include code segment for non-default codes
+  if (codeId && codeId !== '_default') {
+    base = `${base}/${codeId}`;
   }
 
   return codePath ? `${base}/${codePath}` : base;

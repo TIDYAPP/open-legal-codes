@@ -1,5 +1,5 @@
 import type Database from 'better-sqlite3';
-import type { TocTree, TocNode, Jurisdiction } from '../types.js';
+import type { TocTree, TocNode, Jurisdiction, Code } from '../types.js';
 import { getDb } from './db.js';
 
 /**
@@ -17,22 +17,26 @@ export class CodeWriter {
     // The jurisdiction row is created/updated via updateRegistry().
   }
 
-  async writeToc(jurisdictionId: string, tocTree: TocTree): Promise<void> {
+  async writeToc(jurisdictionId: string, tocTree: TocTree, codeId?: string): Promise<void> {
+    const effectiveCodeId = codeId || tocTree.codeId || '_default';
+
     const insertNode = this.db.prepare(`
       INSERT OR REPLACE INTO toc_nodes
-        (jurisdiction_id, path, slug, parent_path, level, num, heading, has_content, sort_order)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (jurisdiction_id, code_id, path, slug, parent_path, level, num, heading, has_content, sort_order)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const run = this.db.transaction(() => {
-      // Clear existing TOC for this jurisdiction
-      this.db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ?').run(jurisdictionId);
+      // Clear existing TOC for this jurisdiction + code
+      this.db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ?')
+        .run(jurisdictionId, effectiveCodeId);
 
       let order = 0;
       const walk = (nodes: TocNode[], parentPath: string | null) => {
         for (const node of nodes) {
           insertNode.run(
             jurisdictionId,
+            effectiveCodeId,
             node.path,
             node.slug,
             parentPath,
@@ -59,20 +63,23 @@ export class CodeWriter {
     codePath: string,
     xml: string,
     html: string,
+    codeId?: string,
   ): Promise<void> {
+    const effectiveCodeId = codeId || '_default';
     const text = stripHtml(html);
 
     // Try to get num/heading from the TOC node
     const tocNode = this.db.prepare(
-      'SELECT num, heading FROM toc_nodes WHERE jurisdiction_id = ? AND path = ?'
-    ).get(jurisdictionId, codePath) as { num: string; heading: string } | undefined;
+      'SELECT num, heading FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ? AND path = ?'
+    ).get(jurisdictionId, effectiveCodeId, codePath) as { num: string; heading: string } | undefined;
 
     this.db.prepare(`
       INSERT OR REPLACE INTO sections
-        (jurisdiction_id, path, html, xml, text, num, heading, fetched_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (jurisdiction_id, code_id, path, html, xml, text, num, heading, fetched_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       jurisdictionId,
+      effectiveCodeId,
       codePath,
       html,
       xml,
@@ -83,18 +90,47 @@ export class CodeWriter {
     );
   }
 
+  writeCode(jurisdictionId: string, code: Omit<Code, 'jurisdictionId'>): void {
+    this.db.prepare(`
+      INSERT OR REPLACE INTO codes
+        (jurisdiction_id, code_id, name, source_id, source_url, last_crawled, last_updated, is_primary, sort_order)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      jurisdictionId,
+      code.codeId,
+      code.name,
+      code.sourceId || null,
+      code.sourceUrl || null,
+      code.lastCrawled || '',
+      code.lastUpdated || '',
+      code.isPrimary ? 1 : 0,
+      code.sortOrder,
+    );
+  }
+
+  writeCodes(jurisdictionId: string, codes: Array<Omit<Code, 'jurisdictionId'>>): void {
+    const run = this.db.transaction(() => {
+      for (const code of codes) {
+        this.writeCode(jurisdictionId, code);
+      }
+    });
+    run();
+  }
+
   createFeedback(params: {
     jurisdictionId: string;
     path: string;
     reportType: string;
     description: string;
     ipAddress?: string;
+    codeId?: string;
   }): number {
     const result = this.db.prepare(`
-      INSERT INTO feedback (jurisdiction_id, path, report_type, description, ip_address)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO feedback (jurisdiction_id, code_id, path, report_type, description, ip_address)
+      VALUES (?, ?, ?, ?, ?, ?)
     `).run(
       params.jurisdictionId,
+      params.codeId || '_default',
       params.path,
       params.reportType,
       params.description,

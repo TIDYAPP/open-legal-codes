@@ -1,5 +1,5 @@
 import type Database from 'better-sqlite3';
-import type { Jurisdiction, TocTree, TocNode } from '../types.js';
+import type { Jurisdiction, TocTree, TocNode, Code } from '../types.js';
 import { getDb } from './db.js';
 export interface SearchResult {
   path: string;
@@ -7,14 +7,17 @@ export interface SearchResult {
   heading: string;
   snippet: string;
   url: string;
+  codeId?: string;
 }
 
 /**
  * CodeStore — reads jurisdiction metadata, TOC trees, and code content from SQLite.
  *
- * Replaces the previous filesystem + in-memory Map implementation.
  * All reads go directly to SQLite (WAL mode enables concurrent reads).
  * Search uses FTS5 full-text search.
+ *
+ * Methods accept an optional codeId parameter. When omitted, the primary/default
+ * code for the jurisdiction is used (backwards compatible).
  */
 export class CodeStore {
   private db: Database.Database;
@@ -28,6 +31,41 @@ export class CodeStore {
 
   /** No-op — SQLite is always current. Kept for backward compatibility. */
   loadOneJurisdiction(_id: string): void {}
+
+  /** Resolve a codeId: use provided value, or find the primary/default code. */
+  resolveCodeId(jurisdictionId: string, codeId?: string): string {
+    if (codeId) return codeId;
+    const primary = this.db.prepare(
+      'SELECT code_id FROM codes WHERE jurisdiction_id = ? AND is_primary = 1'
+    ).get(jurisdictionId) as { code_id: string } | undefined;
+    if (primary) return primary.code_id;
+    const first = this.db.prepare(
+      'SELECT code_id FROM codes WHERE jurisdiction_id = ? ORDER BY sort_order LIMIT 1'
+    ).get(jurisdictionId) as { code_id: string } | undefined;
+    return first?.code_id || '_default';
+  }
+
+  // ---------------------------------------------------------------------------
+  // Codes
+  // ---------------------------------------------------------------------------
+
+  listCodes(jurisdictionId: string): Code[] {
+    const rows = this.db.prepare(
+      'SELECT * FROM codes WHERE jurisdiction_id = ? ORDER BY sort_order'
+    ).all(jurisdictionId) as any[];
+    return rows.map(rowToCode);
+  }
+
+  getCode(jurisdictionId: string, codeId: string): Code | undefined {
+    const row = this.db.prepare(
+      'SELECT * FROM codes WHERE jurisdiction_id = ? AND code_id = ?'
+    ).get(jurisdictionId, codeId) as any;
+    return row ? rowToCode(row) : undefined;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Jurisdictions
+  // ---------------------------------------------------------------------------
 
   getJurisdiction(id: string): Jurisdiction | undefined {
     const row = this.db.prepare('SELECT * FROM jurisdictions WHERE id = ?').get(id) as any;
@@ -63,79 +101,110 @@ export class CodeStore {
     return rows.map(rowToJurisdiction);
   }
 
-  getToc(jurisdictionId: string): TocTree | undefined {
+  // ---------------------------------------------------------------------------
+  // TOC
+  // ---------------------------------------------------------------------------
+
+  getToc(jurisdictionId: string, codeId?: string): TocTree | undefined {
+    const effectiveCodeId = this.resolveCodeId(jurisdictionId, codeId);
     const rows = this.db.prepare(
-      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? ORDER BY sort_order'
-    ).all(jurisdictionId) as TocNodeRow[];
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ? ORDER BY sort_order'
+    ).all(jurisdictionId, effectiveCodeId) as TocNodeRow[];
 
     if (rows.length === 0) return undefined;
 
     const jurisdiction = this.getJurisdiction(jurisdictionId);
-    const tree = buildTocTree(rows, jurisdiction?.name || jurisdictionId);
+    const code = this.getCode(jurisdictionId, effectiveCodeId);
+    const title = code?.name || jurisdiction?.name || jurisdictionId;
+    const tree = buildTocTree(rows, title);
     tree.jurisdiction = jurisdictionId;
+    tree.codeId = effectiveCodeId;
     return tree;
   }
 
-  hasUsableToc(jurisdictionId: string): boolean {
+  hasUsableToc(jurisdictionId: string, codeId?: string): boolean {
+    if (codeId) {
+      const row = this.db.prepare(
+        'SELECT EXISTS(SELECT 1 FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ?) as has_toc'
+      ).get(jurisdictionId, codeId) as { has_toc: number };
+      return row.has_toc === 1;
+    }
     const row = this.db.prepare(
       'SELECT EXISTS(SELECT 1 FROM toc_nodes WHERE jurisdiction_id = ?) as has_toc'
     ).get(jurisdictionId) as { has_toc: number };
     return row.has_toc === 1;
   }
 
-  getTocNode(jurisdictionId: string, codePath: string): TocNode | undefined {
+  getTocNode(jurisdictionId: string, codePath: string, codeId?: string): TocNode | undefined {
+    const effectiveCodeId = this.resolveCodeId(jurisdictionId, codeId);
     const row = this.db.prepare(
-      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND path = ?'
-    ).get(jurisdictionId, codePath) as TocNodeRow | undefined;
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ? AND path = ?'
+    ).get(jurisdictionId, effectiveCodeId, codePath) as TocNodeRow | undefined;
 
     if (!row) return undefined;
 
     // Also fetch children
     const children = this.db.prepare(
-      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND parent_path = ? ORDER BY sort_order'
-    ).all(jurisdictionId, codePath) as TocNodeRow[];
+      'SELECT * FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ? AND parent_path = ? ORDER BY sort_order'
+    ).all(jurisdictionId, effectiveCodeId, codePath) as TocNodeRow[];
 
     return rowToTocNode(row, children);
   }
 
-  getCodeText(jurisdictionId: string, codePath: string): string | null {
+  // ---------------------------------------------------------------------------
+  // Code Content
+  // ---------------------------------------------------------------------------
+
+  getCodeText(jurisdictionId: string, codePath: string, codeId?: string): string | null {
+    const effectiveCodeId = this.resolveCodeId(jurisdictionId, codeId);
     const row = this.db.prepare(
-      'SELECT text FROM sections WHERE jurisdiction_id = ? AND path = ?'
-    ).get(jurisdictionId, codePath) as { text: string | null } | undefined;
+      'SELECT text FROM sections WHERE jurisdiction_id = ? AND code_id = ? AND path = ?'
+    ).get(jurisdictionId, effectiveCodeId, codePath) as { text: string | null } | undefined;
     return row?.text ?? null;
   }
 
-  getCodeHtml(jurisdictionId: string, codePath: string): string | null {
+  getCodeHtml(jurisdictionId: string, codePath: string, codeId?: string): string | null {
+    const effectiveCodeId = this.resolveCodeId(jurisdictionId, codeId);
     const row = this.db.prepare(
-      'SELECT html FROM sections WHERE jurisdiction_id = ? AND path = ?'
-    ).get(jurisdictionId, codePath) as { html: string | null } | undefined;
+      'SELECT html FROM sections WHERE jurisdiction_id = ? AND code_id = ? AND path = ?'
+    ).get(jurisdictionId, effectiveCodeId, codePath) as { html: string | null } | undefined;
     return row?.html ?? null;
   }
 
-  getCodeXml(jurisdictionId: string, codePath: string): string | null {
+  getCodeXml(jurisdictionId: string, codePath: string, codeId?: string): string | null {
+    const effectiveCodeId = this.resolveCodeId(jurisdictionId, codeId);
     const row = this.db.prepare(
-      'SELECT xml FROM sections WHERE jurisdiction_id = ? AND path = ?'
-    ).get(jurisdictionId, codePath) as { xml: string | null } | undefined;
+      'SELECT xml FROM sections WHERE jurisdiction_id = ? AND code_id = ? AND path = ?'
+    ).get(jurisdictionId, effectiveCodeId, codePath) as { xml: string | null } | undefined;
     return row?.xml ?? null;
   }
 
+  // ---------------------------------------------------------------------------
+  // Search
+  // ---------------------------------------------------------------------------
+
   /**
    * Full-text search using FTS5.
-   *
-   * FTS5 uses tokenized word matching (better than the old substring search).
-   * The snippet() function provides highlighted context automatically.
+   * When codeId is provided, searches within that code only.
+   * When omitted, searches across all codes for the jurisdiction.
    */
-  search(jurisdictionId: string, query: string, limit = 20): SearchResult[] {
+  search(jurisdictionId: string, query: string, limit = 20, codeId?: string): SearchResult[] {
     if (!query.trim()) return [];
 
-    // Escape FTS5 special characters and build a prefix query
     const ftsQuery = sanitizeFtsQuery(query);
     if (!ftsQuery) return [];
 
     try {
+      const effectiveCodeId = codeId ? codeId : undefined;
+      const codeFilter = effectiveCodeId ? 'AND s.code_id = ?' : '';
+      const params: any[] = [ftsQuery, jurisdictionId];
+      if (effectiveCodeId) params.push(effectiveCodeId);
+      params.push(limit);
+
       const rows = this.db.prepare(`
         SELECT
           s.jurisdiction_id,
+          s.code_id,
           s.path,
           s.num,
           s.heading,
@@ -144,8 +213,9 @@ export class CodeStore {
         JOIN sections s ON s.rowid = f.rowid
         WHERE sections_fts MATCH ?
           AND s.jurisdiction_id = ?
+          ${codeFilter}
         LIMIT ?
-      `).all(ftsQuery, jurisdictionId, limit) as any[];
+      `).all(...params) as any[];
 
       return rows.map((r: any) => ({
         path: r.path,
@@ -153,26 +223,45 @@ export class CodeStore {
         heading: r.heading || '',
         snippet: r.snippet || '',
         url: `https://openlegalcodes.org/${jurisdictionId}/${r.path}`,
+        codeId: r.code_id !== '_default' ? r.code_id : undefined,
       }));
     } catch {
-      // FTS query syntax error — fall back to empty results
       return [];
     }
   }
 
-  hasSearchIndex(jurisdictionId: string): boolean {
+  hasSearchIndex(jurisdictionId: string, codeId?: string): boolean {
+    if (codeId) {
+      const row = this.db.prepare(
+        'SELECT EXISTS(SELECT 1 FROM sections WHERE jurisdiction_id = ? AND code_id = ? AND text IS NOT NULL) as has_index'
+      ).get(jurisdictionId, codeId) as { has_index: number };
+      return row.has_index === 1;
+    }
     const row = this.db.prepare(
       'SELECT EXISTS(SELECT 1 FROM sections WHERE jurisdiction_id = ? AND text IS NOT NULL) as has_index'
     ).get(jurisdictionId) as { has_index: number };
     return row.has_index === 1;
   }
 
-  /** Delete cached sections and TOC for a jurisdiction so it can be re-crawled. */
-  invalidateCache(jurisdictionId: string): { deletedSections: number; deletedTocNodes: number } {
+  // ---------------------------------------------------------------------------
+  // Cache Management
+  // ---------------------------------------------------------------------------
+
+  /** Delete cached sections and TOC for a jurisdiction (optionally scoped to one code). */
+  invalidateCache(jurisdictionId: string, codeId?: string): { deletedSections: number; deletedTocNodes: number } {
+    if (codeId) {
+      const sections = this.db.prepare('DELETE FROM sections WHERE jurisdiction_id = ? AND code_id = ?').run(jurisdictionId, codeId);
+      const tocNodes = this.db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ? AND code_id = ?').run(jurisdictionId, codeId);
+      return { deletedSections: sections.changes, deletedTocNodes: tocNodes.changes };
+    }
     const sections = this.db.prepare('DELETE FROM sections WHERE jurisdiction_id = ?').run(jurisdictionId);
     const tocNodes = this.db.prepare('DELETE FROM toc_nodes WHERE jurisdiction_id = ?').run(jurisdictionId);
     return { deletedSections: sections.changes, deletedTocNodes: tocNodes.changes };
   }
+
+  // ---------------------------------------------------------------------------
+  // Feedback
+  // ---------------------------------------------------------------------------
 
   listFeedback(filters?: {
     status?: string;
@@ -218,6 +307,7 @@ export class CodeStore {
 export interface FeedbackRow {
   id: number;
   jurisdiction_id: string;
+  code_id: string;
   path: string;
   report_type: string;
   description: string;
@@ -234,6 +324,7 @@ export interface FeedbackRow {
 
 interface TocNodeRow {
   jurisdiction_id: string;
+  code_id: string;
   path: string;
   slug: string;
   parent_path: string | null;
@@ -259,6 +350,20 @@ function rowToJurisdiction(row: any): Jurisdiction {
     },
     lastCrawled: row.last_crawled,
     lastUpdated: row.last_updated,
+  };
+}
+
+function rowToCode(row: any): Code {
+  return {
+    jurisdictionId: row.jurisdiction_id,
+    codeId: row.code_id,
+    name: row.name,
+    sourceId: row.source_id,
+    sourceUrl: row.source_url,
+    lastCrawled: row.last_crawled,
+    lastUpdated: row.last_updated,
+    isPrimary: row.is_primary === 1,
+    sortOrder: row.sort_order,
   };
 }
 
@@ -350,17 +455,19 @@ export const store: CodeStore = Object.create(CodeStore.prototype, {
   loadOneJurisdiction: { value(id: string) { getStore().loadOneJurisdiction(id); }, writable: true, configurable: true },
   getJurisdiction: { value(id: string) { return getStore().getJurisdiction(id); }, writable: true, configurable: true },
   listJurisdictions: { value(f?: any) { return getStore().listJurisdictions(f); }, writable: true, configurable: true },
-  getToc: { value(id: string) { return getStore().getToc(id); }, writable: true, configurable: true },
-  hasUsableToc: { value(id: string) { return getStore().hasUsableToc(id); }, writable: true, configurable: true },
-  getTocNode: { value(id: string, p: string) { return getStore().getTocNode(id, p); }, writable: true, configurable: true },
-  getCodeText: { value(id: string, p: string) { return getStore().getCodeText(id, p); }, writable: true, configurable: true },
-  getCodeHtml: { value(id: string, p: string) { return getStore().getCodeHtml(id, p); }, writable: true, configurable: true },
-  getCodeXml: { value(id: string, p: string) { return getStore().getCodeXml(id, p); }, writable: true, configurable: true },
-  search: { value(id: string, q: string, l?: number) { return getStore().search(id, q, l); }, writable: true, configurable: true },
-  hasSearchIndex: { value(id: string) { return getStore().hasSearchIndex(id); }, writable: true, configurable: true },
-  invalidateCache: { value(id: string) { return getStore().invalidateCache(id); }, writable: true, configurable: true },
+  resolveCodeId: { value(id: string, codeId?: string) { return getStore().resolveCodeId(id, codeId); }, writable: true, configurable: true },
+  listCodes: { value(id: string) { return getStore().listCodes(id); }, writable: true, configurable: true },
+  getCode: { value(id: string, codeId: string) { return getStore().getCode(id, codeId); }, writable: true, configurable: true },
+  getToc: { value(id: string, codeId?: string) { return getStore().getToc(id, codeId); }, writable: true, configurable: true },
+  hasUsableToc: { value(id: string, codeId?: string) { return getStore().hasUsableToc(id, codeId); }, writable: true, configurable: true },
+  getTocNode: { value(id: string, p: string, codeId?: string) { return getStore().getTocNode(id, p, codeId); }, writable: true, configurable: true },
+  getCodeText: { value(id: string, p: string, codeId?: string) { return getStore().getCodeText(id, p, codeId); }, writable: true, configurable: true },
+  getCodeHtml: { value(id: string, p: string, codeId?: string) { return getStore().getCodeHtml(id, p, codeId); }, writable: true, configurable: true },
+  getCodeXml: { value(id: string, p: string, codeId?: string) { return getStore().getCodeXml(id, p, codeId); }, writable: true, configurable: true },
+  search: { value(id: string, q: string, l?: number, codeId?: string) { return getStore().search(id, q, l, codeId); }, writable: true, configurable: true },
+  hasSearchIndex: { value(id: string, codeId?: string) { return getStore().hasSearchIndex(id, codeId); }, writable: true, configurable: true },
+  invalidateCache: { value(id: string, codeId?: string) { return getStore().invalidateCache(id, codeId); }, writable: true, configurable: true },
   listFeedback: { value(f?: any) { return getStore().listFeedback(f); }, writable: true, configurable: true },
   getFeedback: { value(id: number) { return getStore().getFeedback(id); }, writable: true, configurable: true },
   countRecentFeedback: { value(ip: string, m: number) { return getStore().countRecentFeedback(ip, m); }, writable: true, configurable: true },
 });
-

@@ -77,6 +77,30 @@ export class MunicodeCrawler implements CrawlerAdapter {
     this.http = http ?? new HttpClient({ minDelayMs: 500 });
   }
 
+  /** Discover all code products available for a jurisdiction. */
+  async listCodes(sourceId: string): Promise<Array<{
+    codeId: string; name: string; sourceId: string;
+    sourceUrl?: string; isPrimary: boolean; sortOrder: number;
+  }>> {
+    const clientId = parseInt(sourceId, 10);
+    if (isNaN(clientId)) {
+      throw new Error(`sourceId must be a numeric ClientID, got "${sourceId}"`);
+    }
+
+    const products = await this.http.getJson<MunicodeProduct[]>(
+      `${API_BASE}/Products/clientId/${clientId}`,
+    );
+
+    const codesProducts = products.filter(p => p.ContentType.Id === 'CODES');
+    return codesProducts.map((p, index) => ({
+      codeId: slugify(p.ProductName),
+      name: p.ProductName,
+      sourceId: String(p.ProductID),
+      isPrimary: index === 0,
+      sortOrder: index,
+    }));
+  }
+
   async *listJurisdictions(state?: string): AsyncIterable<Jurisdiction> {
     const states = state ? [state.toUpperCase()] : STATE_ABBRS;
 
@@ -113,9 +137,13 @@ export class MunicodeCrawler implements CrawlerAdapter {
     }
   }
 
-  /** Resolve a numeric ClientID to productId and jobId. */
-  async resolve(sourceId: string): Promise<{ clientId: number; productId: number; jobId: number }> {
-    const cached = this.resolveCache.get(sourceId);
+  /**
+   * Resolve a numeric ClientID to productId and jobId.
+   * If productIdOverride is provided, use that specific product instead of auto-detecting.
+   */
+  async resolve(sourceId: string, productIdOverride?: string): Promise<{ clientId: number; productId: number; jobId: number }> {
+    const cacheKey = productIdOverride ? `${sourceId}:${productIdOverride}` : sourceId;
+    const cached = this.resolveCache.get(cacheKey);
     if (cached) return cached;
 
     const clientId = parseInt(sourceId, 10);
@@ -123,25 +151,34 @@ export class MunicodeCrawler implements CrawlerAdapter {
       throw new Error(`sourceId must be a numeric ClientID, got "${sourceId}"`);
     }
 
-    const products = await this.http.getJson<MunicodeProduct[]>(
-      `${API_BASE}/Products/clientId/${clientId}`,
-    );
-    const codesProduct = products.find(p => p.ContentType.Id === 'CODES');
-    if (!codesProduct) {
-      throw new Error(`No Codes product found for client ${clientId}`);
+    let productId: number;
+    if (productIdOverride) {
+      productId = parseInt(productIdOverride, 10);
+      if (isNaN(productId)) {
+        throw new Error(`productIdOverride must be numeric, got "${productIdOverride}"`);
+      }
+    } else {
+      const products = await this.http.getJson<MunicodeProduct[]>(
+        `${API_BASE}/Products/clientId/${clientId}`,
+      );
+      const codesProduct = products.find(p => p.ContentType.Id === 'CODES');
+      if (!codesProduct) {
+        throw new Error(`No Codes product found for client ${clientId}`);
+      }
+      productId = codesProduct.ProductID;
     }
 
     const job = await this.http.getJson<MunicodeJob>(
-      `${API_BASE}/Jobs/latest/${codesProduct.ProductID}`,
+      `${API_BASE}/Jobs/latest/${productId}`,
     );
 
-    const result = { clientId, productId: codesProduct.ProductID, jobId: job.Id };
-    this.resolveCache.set(sourceId, result);
+    const result = { clientId, productId, jobId: job.Id };
+    this.resolveCache.set(cacheKey, result);
     return result;
   }
 
-  async fetchToc(sourceId: string): Promise<RawTocNode[]> {
-    const { productId, jobId } = await this.resolve(sourceId);
+  async fetchToc(sourceId: string, codeSourceId?: string): Promise<RawTocNode[]> {
+    const { productId, jobId } = await this.resolve(sourceId, codeSourceId);
     const params = { productId: String(productId), jobId: String(jobId) };
 
     console.log(`[municode] Fetching TOC for product ${productId}, job ${jobId}`);
@@ -180,8 +217,8 @@ export class MunicodeCrawler implements CrawlerAdapter {
     return raw;
   }
 
-  async fetchSection(sourceId: string, sectionId: string): Promise<RawContent> {
-    const { productId, jobId } = await this.resolve(sourceId);
+  async fetchSection(sourceId: string, sectionId: string, codeSourceId?: string): Promise<RawContent> {
+    const { productId, jobId } = await this.resolve(sourceId, codeSourceId);
 
     const data = await this.http.getJson<MunicodeContentResponse>(
       `${API_BASE}/CodesContent`,

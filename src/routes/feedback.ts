@@ -23,7 +23,7 @@ feedbackRoutes.post('/:id/feedback', async (c) => {
     return c.json({ error: { code: 'BAD_REQUEST', message: 'Invalid JSON body' } }, 400);
   }
 
-  const { path, reportType, description } = body;
+  const { path, reportType, description, codeId } = body;
 
   if (!path || typeof path !== 'string') {
     return c.json({ error: { code: 'BAD_REQUEST', message: 'path is required' } }, 400);
@@ -66,6 +66,7 @@ feedbackRoutes.post('/:id/feedback', async (c) => {
     reportType,
     description: (description || '').trim(),
     ipAddress: ip,
+    codeId: codeId || undefined,
   });
 
   return c.json({

@@ -11,9 +11,7 @@ export const caselawRoutes = new Hono();
  * Find court opinions that cite a specific code section.
  * Query params: ?limit=20 (default), ?offset=0 (for pagination)
  */
-caselawRoutes.get('/:id/caselaw/*', async (c) => {
-  const id = c.req.param('id');
-  const path = c.req.path.split('/caselaw/')[1] || '';
+async function handleCaselaw(c: any, id: string, path: string, codeId?: string) {
   const limit = Math.min(parseInt(c.req.query('limit') || '20', 10), 100);
   const offset = parseInt(c.req.query('offset') || '0', 10);
 
@@ -27,7 +25,7 @@ caselawRoutes.get('/:id/caselaw/*', async (c) => {
   if (resolved.status === 'crawl_failed') return crawlFailedResponse(c, resolved);
 
   const { jurisdiction } = resolved;
-  const tocNode = store.getTocNode(id, path);
+  const tocNode = store.getTocNode(id, path, codeId);
 
   try {
     const result = await getCaseLaw(jurisdiction, path, tocNode || undefined, { limit, offset });
@@ -63,4 +61,22 @@ caselawRoutes.get('/:id/caselaw/*', async (c) => {
     }
     throw err;
   }
+}
+
+/** GET /jurisdictions/:id/caselaw/*path — default code */
+caselawRoutes.get('/:id/caselaw/*', async (c) => {
+  const id = c.req.param('id');
+  const path = c.req.path.split('/caselaw/')[1] || '';
+  return handleCaselaw(c, id, path);
+});
+
+/** GET /jurisdictions/:id/codes/:codeId/caselaw/*path — specific code */
+caselawRoutes.get('/:id/codes/:codeId/caselaw/*', async (c) => {
+  const id = c.req.param('id');
+  const codeId = c.req.param('codeId');
+  const fullPath = c.req.path;
+  const segment = `/codes/${codeId}/caselaw/`;
+  const idx = fullPath.indexOf(segment);
+  const path = idx >= 0 ? fullPath.slice(idx + segment.length) : '';
+  return handleCaselaw(c, id, path, codeId);
 });

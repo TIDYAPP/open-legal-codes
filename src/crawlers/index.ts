@@ -22,19 +22,22 @@ import { CoStatutesCrawler } from './co-statutes.js';
 import { ArizonaStatutesCrawler } from './az-statutes.js';
 import { TnStatutesCrawler } from './tn-statutes.js';
 import { CodepublishingCrawler } from './codepublishing.js';
+import { MunicipalCodeOnlineCrawler } from './municipal-code-online.js';
 import { createFallbackClient } from './browserbase-client.js';
 
 /**
  * Get the appropriate crawler adapter for a given publisher name.
- * For amlegal and ecode360, uses a fallback client that tries plain HTTP
- * first and only switches to Browserbase if blocked (cheaper).
+ * AMLegal and municipal-code-online ALWAYS use Browserbase + Stagehand (never plain HTTP).
+ * eCode360 uses a fallback client (plain HTTP first, Browserbase if blocked).
  */
 export function getCrawler(publisherName: string): CrawlerAdapter {
   switch (publisherName) {
     case 'municode':
       return new MunicodeCrawler();
     case 'amlegal':
-      return new AmlegalCrawler(createFallbackClient({ minDelayMs: 1000 }) as any);
+      // CRITICAL: AmlegalCrawler uses Stagehand internally. NEVER pass an HTTP client here.
+      // If this breaks, fix StagehandClient — do NOT switch to BrowserbaseHttpClient or FallbackHttpClient.
+      return new AmlegalCrawler();
     case 'ecode360':
       return new Ecode360Crawler(createFallbackClient({ minDelayMs: 500 }) as any);
     case 'ecfr':
@@ -77,9 +80,12 @@ export function getCrawler(publisherName: string): CrawlerAdapter {
       return new TnStatutesCrawler(createFallbackClient({ minDelayMs: 2000 }));
     case 'codepublishing':
       return new CodepublishingCrawler();
+    case 'municipal-code-online':
+      // CRITICAL: Uses Stagehand internally. NEVER pass an HTTP client here.
+      return new MunicipalCodeOnlineCrawler();
     default:
       throw new Error(
-        `Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual, nc-statutes, va-statutes, wa-statutes, oh-statutes, ma-statutes, il-statutes, pa-statutes, nj-statutes, ga-statutes, co-statutes, az-statutes, tn-statutes, codepublishing`,
+        `Unknown publisher: "${publisherName}". Available: municode, amlegal, ecode360, ecfr, ca-leginfo, ny-openleg, fl-statutes, usc, tx-statutes, manual, nc-statutes, va-statutes, wa-statutes, oh-statutes, ma-statutes, il-statutes, pa-statutes, nj-statutes, ga-statutes, co-statutes, az-statutes, tn-statutes, codepublishing, municipal-code-online`,
       );
   }
 }
@@ -111,4 +117,5 @@ export const PUBLISHERS = [
   'az-statutes',
   'tn-statutes',
   'codepublishing',
+  'municipal-code-online',
 ] as const;

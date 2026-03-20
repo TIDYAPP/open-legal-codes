@@ -74,7 +74,7 @@ Each publisher gets its own adapter implementing `CrawlerAdapter` (defined in `s
 - `fetchSection(sourceId, sectionId)` — get section content (HTML)
 
 **Implemented**: Municode (`municode.ts`) — uses their JSON API at `api.municode.com`
-**Adapter built**: American Legal (`amlegal.ts`) — extracts Redux state from HTML, no Playwright needed
+**Adapter built**: American Legal (`amlegal.ts`) — **ALWAYS uses Browserbase + Stagehand** (never plain HTTP — Cloudflare blocks it). Uses Stagehand for TOC extraction and page navigation for section content.
 **Adapter built**: eCFR (`ecfr.ts`) — free REST API for all 50 CFR titles (federal regulations)
 **Adapter built**: eCode360 (`ecode360.ts`) — HTML scraper for ~4,400 municipal/county codes
 **Adapter built**: CA Leginfo (`ca-leginfo.ts`) — scrapes California's 30 state statute codes
@@ -162,11 +162,38 @@ HTML-to-XML conversion. Not the current priority — text retrieval matters more
 - **US only for now.** Don't over-generalize for international codes yet.
 - **Keep it simple.** Avoid over-engineering.
 
+## CRITICAL: AMLegal MUST use Browserbase + Stagehand — NEVER plain HTTP
+
+**This is the single most important rule in this codebase.**
+
+American Legal Publishing (AMLegal) is a React SPA behind Cloudflare. It REQUIRES Browserbase + Stagehand (cloud browser with LLM). There are ZERO exceptions.
+
+**What you MUST do:**
+- AMLegal adapter (`src/crawlers/amlegal.ts`) uses `StagehandClient` from `./stagehand-client.ts`
+- StagehandClient uses `@browserbasehq/stagehand` which connects to Browserbase cloud browsers
+- If Stagehand fails, THROW AN ERROR. Do not try to work around it.
+- If ANTHROPIC_API_KEY is missing, THROW AN ERROR. Do not try to work around it.
+- If BROWSERBASE_API_KEY is missing, THROW AN ERROR. Do not try to work around it.
+
+**What you MUST NEVER do:**
+- NEVER use `fetch()`, `axios`, `got`, or any HTTP client for AMLegal
+- NEVER use `BrowserbaseHttpClient` (raw CDP) for AMLegal — it can't handle the SPA
+- NEVER use `FallbackHttpClient` for AMLegal — it tries plain HTTP first
+- NEVER create a "fallback" or "try HTTP first" pattern for AMLegal
+- NEVER try to parse AMLegal HTML from a plain HTTP response
+- NEVER use cheerio/regex to scrape AMLegal — it's a React SPA, the HTML is empty without JS
+- NEVER work around Stagehand errors by switching to HTTP. If Stagehand breaks, fix Stagehand.
+- NEVER remove the Stagehand dependency to "simplify" the adapter
+
+**If you are tempted to use plain HTTP for AMLegal, STOP. You are wrong. Ask the user.**
+
+The same applies to `municipal-code-online` (municipalcodeonline.com) — it's an AngularJS SPA that also requires Browserbase + Stagehand.
+
 ## Current State
 
 ### Publisher Adapters
 - Municode crawler: **working** — can crawl full municipal codes (cities + counties)
-- American Legal crawler: **adapter built** — Redux state extraction from HTML
+- American Legal crawler: **adapter built** — uses Browserbase + Stagehand (NEVER plain HTTP)
 - eCFR crawler: **adapter built** — free REST API, all 50 CFR titles, no key needed
 - eCode360 crawler: **adapter built** — HTML scraper with cheerio (cities + counties)
 - CA Leginfo crawler: **adapter built** — scrapes all 30 CA codes, public domain data
