@@ -18,6 +18,7 @@ import { registryRoutes } from './routes/registry.js';
 import { jurisdictionsRoutes } from './routes/jurisdictions.js';
 import { caselawRoutes } from './routes/caselaw.js';
 import { feedbackRoutes, globalFeedbackRoutes } from './routes/feedback.js';
+import { annotationRoutes, globalAnnotationRoutes } from './routes/annotations.js';
 import { createMcpRoutes } from './mcp-http.js';
 
 import { store } from './store/index.js';
@@ -59,6 +60,7 @@ app.get('/', (c) =>
       caselaw: '/api/v1/jurisdictions/:id/caselaw/*path?limit=20&offset=0',
       search: '/api/v1/jurisdictions/:id/search?q=keyword',
       globalSearch: '/api/v1/search?q=rental&state=CA',
+      annotations: '/api/v1/jurisdictions/:id/annotations/*path',
     },
   })
 );
@@ -110,9 +112,11 @@ api.route('/jurisdictions', codeRoutes);
 api.route('/jurisdictions', searchRoutes);
 api.route('/jurisdictions', caselawRoutes);
 api.route('/jurisdictions', feedbackRoutes);
+api.route('/jurisdictions', annotationRoutes);
 api.route('/lookup', lookupRoutes);
 api.route('/search', globalSearchRoutes);
 api.route('/feedback', globalFeedbackRoutes);
+api.route('/annotations', globalAnnotationRoutes);
 api.route('/registry', registryRoutes);
 
 api.get('/status', (c) =>

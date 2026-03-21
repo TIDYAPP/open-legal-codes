@@ -8,6 +8,7 @@
 import Database from 'better-sqlite3';
 import { join } from 'node:path';
 import { mkdirSync } from 'node:fs';
+import { TRUSTED_DOMAINS } from '../data/trusted-domains.js';
 
 let _db: Database.Database | null = null;
 
@@ -167,6 +168,63 @@ function runMigrations(db: Database.Database): void {
     );
     CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
     CREATE INDEX IF NOT EXISTS idx_feedback_jurisdiction ON feedback(jurisdiction_id);
+
+    -- Community annotations: external references linked to statute sections or case law
+    CREATE TABLE IF NOT EXISTS annotations (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      target_type     TEXT NOT NULL DEFAULT 'section'
+        CHECK(target_type IN ('section','caselaw')),
+      jurisdiction_id TEXT NOT NULL,
+      code_id         TEXT NOT NULL DEFAULT '_default',
+      path            TEXT NOT NULL DEFAULT '',
+      cluster_id      INTEGER REFERENCES court_decisions(cluster_id),
+      url             TEXT NOT NULL,
+      title           TEXT NOT NULL,
+      source_name     TEXT NOT NULL DEFAULT '',
+      source_domain   TEXT NOT NULL,
+      annotation_type TEXT NOT NULL DEFAULT 'other'
+        CHECK(annotation_type IN ('legal_analysis','government_guidance','academic','news','other')),
+      description     TEXT NOT NULL DEFAULT '',
+      status          TEXT NOT NULL DEFAULT 'pending'
+        CHECK(status IN ('pending','approved','rejected')),
+      triage_notes    TEXT,
+      created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+      reviewed_at     TEXT,
+      ip_address      TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_annotations_status ON annotations(status);
+    CREATE INDEX IF NOT EXISTS idx_annotations_domain ON annotations(source_domain);
+
+    -- Trusted domains for annotation auto-approval
+    CREATE TABLE IF NOT EXISTS trusted_domains (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      domain      TEXT NOT NULL UNIQUE,
+      source_name TEXT NOT NULL,
+      source_type TEXT NOT NULL DEFAULT 'other'
+        CHECK(source_type IN ('law_firm','government','academic','legal_publisher','news','other')),
+      created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+
+  // Seed trusted domains (INSERT OR IGNORE so existing rows aren't overwritten)
+  const insertDomain = db.prepare(
+    'INSERT OR IGNORE INTO trusted_domains (domain, source_name, source_type) VALUES (?, ?, ?)'
+  );
+  for (const d of TRUSTED_DOMAINS) {
+    insertDomain.run(d.domain, d.sourceName, d.sourceType);
+  }
+
+  // Migration: add polymorphic target columns to annotations (section vs caselaw)
+  migrateAnnotationsPolymorphic(db);
+
+  // Create indexes that depend on polymorphic columns (must run after migration)
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_annotations_path ON annotations(jurisdiction_id, code_id, path, status);
+    CREATE INDEX IF NOT EXISTS idx_annotations_cluster ON annotations(cluster_id, status);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_annotations_unique_section
+      ON annotations(jurisdiction_id, code_id, path, url) WHERE target_type = 'section';
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_annotations_unique_caselaw
+      ON annotations(cluster_id, url) WHERE target_type = 'caselaw';
   `);
 
   // Migration: add code_id to existing tables that don't have it yet
@@ -371,5 +429,59 @@ function migrateAddCodeId(db: Database.Database): void {
     END;
   `);
 
+  db.pragma('foreign_keys = ON');
+}
+
+/**
+ * Migrate annotations table: add target_type and cluster_id columns for polymorphic targeting.
+ * Must recreate the table to drop the old inline UNIQUE constraint (SQLite can't ALTER constraints).
+ */
+function migrateAnnotationsPolymorphic(db: Database.Database): void {
+  const annotationsSql = db.prepare(
+    "SELECT sql FROM sqlite_master WHERE type='table' AND name='annotations'"
+  ).get() as { sql: string } | undefined;
+
+  // Skip if table doesn't exist yet (fresh DB) or already has target_type
+  if (!annotationsSql || annotationsSql.sql.includes('target_type')) return;
+
+  db.pragma('foreign_keys = OFF');
+  db.exec(`
+    ALTER TABLE annotations RENAME TO annotations_old;
+    CREATE TABLE annotations (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      target_type     TEXT NOT NULL DEFAULT 'section'
+        CHECK(target_type IN ('section','caselaw')),
+      jurisdiction_id TEXT NOT NULL,
+      code_id         TEXT NOT NULL DEFAULT '_default',
+      path            TEXT NOT NULL DEFAULT '',
+      cluster_id      INTEGER REFERENCES court_decisions(cluster_id),
+      url             TEXT NOT NULL,
+      title           TEXT NOT NULL,
+      source_name     TEXT NOT NULL DEFAULT '',
+      source_domain   TEXT NOT NULL,
+      annotation_type TEXT NOT NULL DEFAULT 'other'
+        CHECK(annotation_type IN ('legal_analysis','government_guidance','academic','news','other')),
+      description     TEXT NOT NULL DEFAULT '',
+      status          TEXT NOT NULL DEFAULT 'pending'
+        CHECK(status IN ('pending','approved','rejected')),
+      triage_notes    TEXT,
+      created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+      reviewed_at     TEXT,
+      ip_address      TEXT
+    );
+    INSERT INTO annotations (id, target_type, jurisdiction_id, code_id, path, url, title, source_name, source_domain, annotation_type, description, status, triage_notes, created_at, reviewed_at, ip_address)
+      SELECT id, 'section', jurisdiction_id, code_id, path, url, title, source_name, source_domain, annotation_type, description, status, triage_notes, created_at, reviewed_at, ip_address
+      FROM annotations_old;
+    DROP TABLE annotations_old;
+
+    CREATE INDEX IF NOT EXISTS idx_annotations_status ON annotations(status);
+    CREATE INDEX IF NOT EXISTS idx_annotations_path ON annotations(jurisdiction_id, code_id, path, status);
+    CREATE INDEX IF NOT EXISTS idx_annotations_cluster ON annotations(cluster_id, status);
+    CREATE INDEX IF NOT EXISTS idx_annotations_domain ON annotations(source_domain);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_annotations_unique_section
+      ON annotations(jurisdiction_id, code_id, path, url) WHERE target_type = 'section';
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_annotations_unique_caselaw
+      ON annotations(cluster_id, url) WHERE target_type = 'caselaw';
+  `);
   db.pragma('foreign_keys = ON');
 }
