@@ -302,6 +302,108 @@ export class CodeStore {
     ).get(ipAddress, windowMinutes) as { cnt: number };
     return row.cnt;
   }
+
+  // ---------------------------------------------------------------------------
+  // Annotations
+  // ---------------------------------------------------------------------------
+
+  listAnnotations(filters: {
+    targetType?: 'section' | 'caselaw';
+    jurisdictionId?: string;
+    path?: string;
+    codeId?: string;
+    clusterId?: number;
+    status?: string;
+    type?: string;
+    limit?: number;
+    offset?: number;
+  }): AnnotationRow[] {
+    const conditions: string[] = [];
+    const params: any[] = [];
+
+    // Default to approved-only for public reads
+    const status = filters.status || 'approved';
+    conditions.push('status = ?');
+    params.push(status);
+
+    if (filters.targetType) {
+      conditions.push('target_type = ?');
+      params.push(filters.targetType);
+    }
+    if (filters.jurisdictionId) {
+      conditions.push('jurisdiction_id = ?');
+      params.push(filters.jurisdictionId);
+    }
+    if (filters.path) {
+      conditions.push('path = ?');
+      params.push(filters.path);
+    }
+    if (filters.codeId) {
+      conditions.push('code_id = ?');
+      params.push(filters.codeId);
+    }
+    if (filters.clusterId != null) {
+      conditions.push('cluster_id = ?');
+      params.push(filters.clusterId);
+    }
+    if (filters.type) {
+      conditions.push('annotation_type = ?');
+      params.push(filters.type);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const limit = Math.min(filters.limit || 50, 200);
+    const offset = filters.offset || 0;
+    params.push(limit, offset);
+
+    return this.db.prepare(
+      `SELECT * FROM annotations ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`
+    ).all(...params) as AnnotationRow[];
+  }
+
+  getAnnotation(id: number): AnnotationRow | undefined {
+    return this.db.prepare('SELECT * FROM annotations WHERE id = ?').get(id) as AnnotationRow | undefined;
+  }
+
+  countRecentAnnotations(ipAddress: string, windowMinutes: number): number {
+    const row = this.db.prepare(
+      `SELECT COUNT(*) as cnt FROM annotations
+       WHERE ip_address = ? AND created_at > datetime('now', '-' || ? || ' minutes')`
+    ).get(ipAddress, windowMinutes) as { cnt: number };
+    return row.cnt;
+  }
+
+  listTrustedDomains(): TrustedDomainRow[] {
+    return this.db.prepare('SELECT * FROM trusted_domains ORDER BY source_type, domain').all() as TrustedDomainRow[];
+  }
+
+  isTrustedDomain(domain: string): { trusted: boolean; sourceName?: string; sourceType?: string } {
+    // Strip www. prefix
+    const cleaned = domain.replace(/^www\./, '');
+
+    // Auto-trust any .gov domain
+    if (cleaned.endsWith('.gov')) {
+      // Try to find a specific match for the source name
+      const exact = this.db.prepare(
+        'SELECT source_name, source_type FROM trusted_domains WHERE domain = ?'
+      ).get(cleaned) as { source_name: string; source_type: string } | undefined;
+      return {
+        trusted: true,
+        sourceName: exact?.source_name || cleaned,
+        sourceType: exact?.source_type || 'government',
+      };
+    }
+
+    // Load all domains and check suffix match (e.g. blog.lw.com matches lw.com)
+    const domains = this.db.prepare('SELECT domain, source_name, source_type FROM trusted_domains').all() as TrustedDomainRow[];
+    for (const d of domains) {
+      if (cleaned === d.domain || cleaned.endsWith('.' + d.domain)) {
+        return { trusted: true, sourceName: d.source_name, sourceType: d.source_type };
+      }
+    }
+
+    return { trusted: false };
+  }
 }
 
 export interface FeedbackRow {
@@ -316,6 +418,34 @@ export interface FeedbackRow {
   created_at: string;
   resolved_at: string | null;
   ip_address: string | null;
+}
+
+export interface AnnotationRow {
+  id: number;
+  target_type: 'section' | 'caselaw';
+  jurisdiction_id: string;
+  code_id: string;
+  path: string;
+  cluster_id: number | null;
+  url: string;
+  title: string;
+  source_name: string;
+  source_domain: string;
+  annotation_type: string;
+  description: string;
+  status: string;
+  triage_notes: string | null;
+  created_at: string;
+  reviewed_at: string | null;
+  ip_address: string | null;
+}
+
+export interface TrustedDomainRow {
+  id: number;
+  domain: string;
+  source_name: string;
+  source_type: string;
+  created_at: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -470,4 +600,9 @@ export const store: CodeStore = Object.create(CodeStore.prototype, {
   listFeedback: { value(f?: any) { return getStore().listFeedback(f); }, writable: true, configurable: true },
   getFeedback: { value(id: number) { return getStore().getFeedback(id); }, writable: true, configurable: true },
   countRecentFeedback: { value(ip: string, m: number) { return getStore().countRecentFeedback(ip, m); }, writable: true, configurable: true },
+  listAnnotations: { value(f: any) { return getStore().listAnnotations(f); }, writable: true, configurable: true },
+  getAnnotation: { value(id: number) { return getStore().getAnnotation(id); }, writable: true, configurable: true },
+  countRecentAnnotations: { value(ip: string, m: number) { return getStore().countRecentAnnotations(ip, m); }, writable: true, configurable: true },
+  listTrustedDomains: { value() { return getStore().listTrustedDomains(); }, writable: true, configurable: true },
+  isTrustedDomain: { value(d: string) { return getStore().isTrustedDomain(d); }, writable: true, configurable: true },
 });

@@ -188,6 +188,64 @@ export async function getRegistryEntries(): Promise<RegistryEntry[]> {
   return data.data;
 }
 
+// --- Annotations ---
+
+export interface Annotation {
+  id: number;
+  target_type: 'section' | 'caselaw';
+  jurisdiction_id: string;
+  code_id: string;
+  path: string;
+  cluster_id: number | null;
+  url: string;
+  title: string;
+  source_name: string;
+  source_domain: string;
+  annotation_type: string;
+  description: string;
+  status: string;
+  created_at: string;
+}
+
+export async function getAnnotations(
+  jurisdictionId: string,
+  path: string,
+  limit = 50,
+  offset = 0,
+): Promise<Annotation[]> {
+  const res = await fetch(
+    `${API_BASE}/api/v1/jurisdictions/${jurisdictionId}/annotations/${path}?limit=${limit}&offset=${offset}`,
+    { cache: 'no-store' },
+  );
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.data;
+}
+
+export async function submitAnnotation(
+  jurisdictionId: string,
+  body: {
+    path: string;
+    url: string;
+    title: string;
+    sourceName?: string;
+    annotationType: string;
+    description?: string;
+  },
+): Promise<{ id: number; status: string }> {
+  const res = await fetch(`${API_BASE}/api/v1/jurisdictions/${jurisdictionId}/annotations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({}));
+    throw new Error(json?.error?.message || `API error: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data;
+}
+
 // --- Feedback ---
 
 export async function submitFeedback(
