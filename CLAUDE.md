@@ -44,7 +44,7 @@ This repo includes `.claude/skills/` for Claude Code integration:
 
 ### MCP Server
 
-6 tools for AI agents: `lookup_jurisdiction`, `list_jurisdictions`, `get_table_of_contents`, `get_code_text`, `search_code`, `get_case_law`.
+7 tools for AI agents: `lookup_jurisdiction`, `list_jurisdictions`, `get_table_of_contents`, `get_code_text`, `search_code`, `get_case_law`, `get_annotations`.
 
 Configure in `claude_desktop_config.json`:
 ```json
@@ -93,6 +93,8 @@ SQLite database with WAL mode for concurrent reads. Tables:
 - `court_decision_statute_references` — many-to-many: which decisions cite which statutes
 - `caselaw_search_log` — tracks when CourtListener was last checked per statute
 - `feedback` — user-submitted issue reports (bad citations, outdated text, etc.)
+- `annotations` — community-submitted external references linked to statute sections
+- `trusted_domains` — allowlist for annotation auto-approval (seeded with ~50 law firms, .gov, academic, legal publishers)
 
 `CodeStore` (`src/store/index.ts`) provides read access. `CodeWriter` (`src/store/writer.ts`) handles writes during crawls.
 
@@ -134,6 +136,25 @@ Base URL: `https://openlegalcodes.org/api/v1`
 - `POST /jurisdictions/:id/feedback` — submit an issue report (`{ path, reportType, description }`)
 - `GET /jurisdictions/:id/feedback?status=pending&limit=50` — list feedback for a jurisdiction
 - `GET /feedback?status=pending` — list all feedback across jurisdictions
+- `POST /jurisdictions/:id/annotations` — submit an external reference (`{ path, url, title, sourceName?, annotationType, description? }`)
+- `POST /jurisdictions/:id/annotations` — submit for case law (`{ clusterId, url, title, sourceName?, annotationType, description? }`)
+- `GET /jurisdictions/:id/annotations/*path` — approved annotations for a section
+- `GET /jurisdictions/:id/caselaw-annotations/:clusterId` — approved annotations for a court decision
+- `GET /annotations/domains` — list trusted domains for auto-approval
+
+### Community Annotations (`src/routes/annotations.ts`)
+
+Anyone (human or AI agent) can attach external references to statute sections or court decisions — law firm analyses, government guidance, academic articles, news. **No accounts needed**: trust is derived from the URL domain, not the submitter. Links from trusted domains (Am Law 100 firms, .gov, .edu, major legal publishers) are auto-approved; unknown domains go through moderation.
+
+- **Polymorphic targets**: annotations can point at a statute section (`target_type='section'`, keyed by jurisdiction_id/code_id/path) or a case law decision (`target_type='caselaw'`, keyed by cluster_id)
+- **Seed data**: `src/data/trusted-domains.ts` (~50 entries)
+- **Domain matching**: strips `www.`, auto-trusts `.gov`, checks subdomain suffix matching (e.g. `blog.lw.com` matches `lw.com`)
+- **Annotation types**: `legal_analysis`, `government_guidance`, `academic`, `news`, `other`
+- **Statuses**: `pending` (needs moderation), `approved` (visible), `rejected`
+- **Rate limit**: 10 submissions per hour per IP
+- **Duplicate prevention**: partial unique indexes — per-section (jurisdiction_id, code_id, path, url) and per-caselaw (cluster_id, url)
+- **Web UI**: "Legal Analysis & Commentary" expandable section + "Add a reference" form on code section pages
+- **MCP**: `get_annotations` tool for AI agents (supports both path and cluster_id)
 
 ### User Feedback (`src/routes/feedback.ts` + `src/scripts/triage-feedback.ts`)
 
@@ -209,11 +230,12 @@ The same applies to `municipal-code-online` (municipalcodeonline.com) — it's a
 - Data store: **working** — SQLite with FTS5 full-text search
 - HTTP API routes: **working** — all responses include permalink URLs
 - User feedback: **working** — report issues via web UI, API, or CLI; daily triage via Claude + GitHub Actions
+- Community annotations: **working** — external references with domain-based auto-approval; web UI, API, MCP
 - CLI: **working** — query, toc, search, caselaw, report, crawl, list commands; supports all publishers via `--publisher`
 - MCP server: **working** — 6 tools with type/query filters, responses include source URLs
 - Case law: **working** — CourtListener integration for federal and state statutes
 - Web app: **working** — Next.js in `web/`, browse/search/view codes with case law citations
 - Claude Code skills: **working** — `.claude/skills/` for query, search, crawl
-- Tests: **working** — 90 tests across 16 test files (vitest)
+- Tests: **working** — 120 tests across 17 test files (vitest)
 - Search: **working** — FTS5 full-text search, cross-jurisdiction search via `/search?q=&state=`
 - Deployment: **ready** — Dockerfile, docker-compose, Caddy, GitHub Actions CI/CD

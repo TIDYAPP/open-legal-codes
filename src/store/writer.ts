@@ -149,6 +149,53 @@ export class CodeWriter {
     `).run(status, triageNotes || null, resolvedAt, id);
   }
 
+  createAnnotation(params: {
+    targetType?: 'section' | 'caselaw';
+    jurisdictionId: string;
+    codeId?: string;
+    path?: string;
+    clusterId?: number;
+    url: string;
+    title: string;
+    sourceName?: string;
+    sourceDomain: string;
+    annotationType: string;
+    description?: string;
+    ipAddress?: string;
+    status?: string;
+  }): number {
+    const result = this.db.prepare(`
+      INSERT INTO annotations
+        (target_type, jurisdiction_id, code_id, path, cluster_id, url, title, source_name, source_domain, annotation_type, description, ip_address, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      params.targetType || 'section',
+      params.jurisdictionId,
+      params.codeId || '_default',
+      params.path || '',
+      params.clusterId ?? null,
+      params.url,
+      params.title,
+      params.sourceName || '',
+      params.sourceDomain,
+      params.annotationType,
+      params.description || '',
+      params.ipAddress || null,
+      params.status || 'pending',
+    );
+    return Number(result.lastInsertRowid);
+  }
+
+  updateAnnotationStatus(id: number, status: string, triageNotes?: string): void {
+    const reviewedAt = (status === 'approved' || status === 'rejected')
+      ? new Date().toISOString()
+      : null;
+    this.db.prepare(`
+      UPDATE annotations SET status = ?, triage_notes = ?, reviewed_at = COALESCE(?, reviewed_at)
+      WHERE id = ?
+    `).run(status, triageNotes || null, reviewedAt, id);
+  }
+
   async updateRegistry(jurisdiction: Jurisdiction): Promise<void> {
     this.db.prepare(`
       INSERT OR REPLACE INTO jurisdictions

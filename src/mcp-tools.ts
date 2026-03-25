@@ -266,6 +266,52 @@ export function createMcpServer(store: CodeStore): McpServer {
     }
   );
 
+  // ── get_annotations ──
+  server.tool(
+    'get_annotations',
+    'Get external legal analysis and commentary references for a code section or court decision. Returns links to law firm analyses, government guidance, academic articles, and other resources. Provide either a path (for statute sections) or a cluster_id (for case law).',
+    {
+      jurisdiction: z.string().describe('Jurisdiction ID, e.g. "ca-gov", "ca-mountain-view"'),
+      path: z.string().optional().describe('Code section path, e.g. "part-i/section-100". Required for statute annotations.'),
+      cluster_id: z.number().optional().describe('CourtListener cluster ID for case law annotations.'),
+      code: z.string().optional().describe('Code ID within the jurisdiction. Defaults to the primary code.'),
+      type: z.enum(['legal_analysis', 'government_guidance', 'academic', 'news', 'other']).optional().describe('Filter by annotation type'),
+      limit: z.number().optional().default(20).describe('Max results to return (default 20)'),
+    },
+    async ({ jurisdiction: jurisdictionId, path, cluster_id, code, type, limit }) => {
+      if (!path && cluster_id == null) {
+        return { content: [{ type: 'text', text: 'Provide either a path (for statute sections) or a cluster_id (for case law).' }] };
+      }
+
+      const jurisdiction = store.getJurisdiction(jurisdictionId);
+      if (!jurisdiction) {
+        return { content: [{ type: 'text', text: `Jurisdiction "${jurisdictionId}" not found. Use lookup_jurisdiction to find the right ID.` }] };
+      }
+
+      const annotations = store.listAnnotations({
+        targetType: cluster_id != null ? 'caselaw' : 'section',
+        jurisdictionId,
+        path: path || undefined,
+        clusterId: cluster_id ?? undefined,
+        codeId: code || undefined,
+        status: 'approved',
+        type: type || undefined,
+        limit,
+      });
+
+      const target = cluster_id != null ? `case law cluster ${cluster_id}` : path!;
+      if (annotations.length === 0) {
+        return { content: [{ type: 'text', text: `No external references found for ${jurisdiction.name} — ${target}.` }] };
+      }
+
+      const lines = annotations.map((a, i) =>
+        `${i + 1}. ${a.title}\n   ${a.source_name ? a.source_name + ' — ' : ''}${a.annotation_type}\n   ${a.url}${a.description ? '\n   ' + a.description : ''}`
+      );
+
+      return { content: [{ type: 'text', text: `External references for ${jurisdiction.name} — ${target}\n\n${lines.join('\n\n')}` }] };
+    }
+  );
+
   return server;
 }
 
